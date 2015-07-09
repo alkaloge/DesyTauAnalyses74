@@ -1,0 +1,36 @@
+140608_155946: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_5_patch1/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets.cfg
+140608_160314: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_5_patch1/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_5_3_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets_madgraph_newTauId_2014Jun08
+140608_160426: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_5_patch1/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_5_3_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets_madgraph_newTauId_2014Jun08
+140608_162317: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_5_patch1/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets.cfg
+140608_162337: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_5_patch1/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_5_3_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets_madgraph_oldTauId_2014Jun08
+140608_162420: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_5_patch1/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_5_3_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets_madgraph_oldTauId_2014Jun08
+140715_174644: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140715_174901: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Testcrabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_175003: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Testcrabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_175132: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140715_175225: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Testcrabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_175606: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140715_175641: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_175643: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_180424: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140715_180508: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_180510: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_180526: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140715_180600: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_180602: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_181549: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -cleanCache -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns/
+140715_181605: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140715_181627: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140715_181629: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140716_182752: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabProducePFTauIdEffNtuple_ZplusJets20PUat25ns.cfg
+140716_182821: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 1-500 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140716_182917: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 501-1000 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns
+140716_184415: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -status -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns/
+140716_184458: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit 3-9,53-58 -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Test/crabdir_producePFTauIdEffNtuple2_simZplusJets20PUat25ns/
+141205_112105: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg crabProducePFTauIdEffNtuple_ZplusJetsPhys14.cfg
+141205_154142: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -status -c DYJetsToLL_M-50_13TeV_PU20bx25_PHYS14_25_V1_v1
+141205_154214: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -status -c DYJetsToLL_M-50_13TeV_PU20bx25_PHYS14_25_V1_v1
+141205_154251: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -status -c DYJetsToLL_M-50_13TeV_PU20bx25_PHYS14_25_V1_v1
+141205_154455: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -status -c DYJetsToLL_M-50_13TeV_PU20bx25_PHYS14_25_V1_v1
+141211_110845: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg crabProducePFTauIdEffNtuple_QCDPt15to3000Phys14.cfg
+141211_110937: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg crabProducePFTauIdEffNtuple_QCDPt15to3000Phys14.cfg

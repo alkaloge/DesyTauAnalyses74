@@ -1,0 +1,68 @@
+DEBUG 2014-12-11 14:17:38,524: 	 Executing command: 'status'
+DEBUG 2014-12-11 14:17:38,525: 	 Found /afs/desy.de/user/a/anayak/.crab3 file
+DEBUG 2014-12-11 14:17:38,544: 	 Checking credentials
+DEBUG 2014-12-11 14:17:38,545: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 14:17:38,545: 	 Getting proxy life time left
+DEBUG 2014-12-11 14:17:38,948: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 78284
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:17:39,351: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 78283
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:17:39,352: 	 Proxy valid for 21:44:44 hours
+ERROR 2014-12-11 14:17:39,353: 	 Cannot find .requestcache file inside the working directory for task QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1
+ERROR 2014-12-11 14:17:39,354: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/bin/crab", line 179, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/bin/crab", line 164, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 242, in __init__
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 347, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/lib/python2.6/site-packages/CRABClient/client_utilities.py", line 385, in loadCache
+    raise CachefileNotFoundException(msg)
+CachefileNotFoundException: Cannot find .requestcache file inside the working directory for task QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1
+DEBUG 2014-12-11 14:20:02,485: 	 Executing command: 'status'
+DEBUG 2014-12-11 14:20:02,486: 	 Found /afs/desy.de/user/a/anayak/.crab3 file
+DEBUG 2014-12-11 14:20:02,493: 	 Checking credentials
+DEBUG 2014-12-11 14:20:02,493: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 14:20:02,493: 	 Getting proxy life time left
+DEBUG 2014-12-11 14:20:02,895: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 78140
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:03,297: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 78139
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:03,298: 	 Proxy valid for 21:42:20 hours
+ERROR 2014-12-11 14:20:03,298: 	 Cannot find .requestcache file inside the working directory for task QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1
+ERROR 2014-12-11 14:20:03,298: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/bin/crab", line 179, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/bin/crab", line 164, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 242, in __init__
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 347, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.12/lib/python2.6/site-packages/CRABClient/client_utilities.py", line 385, in loadCache
+    raise CachefileNotFoundException(msg)
+CachefileNotFoundException: Cannot find .requestcache file inside the working directory for task QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1

@@ -1,0 +1,9 @@
+140715_183722: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140715_183914: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140715_184054: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140715_184423: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140715_184608: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140715_184942: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Skimming/crabdir_copyToCastor_simZplusJets20PUat25ns/
+140716_144807: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140716_144925: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -create -cfg crabCopyToCastor.cfg
+140716_144951: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_10_6/python/crab.py -submit -c /afs/cern.ch/work/v/veelken/CMSSW_7_0_x/crab/TauAnalysis_Skimming/crabdir_copyToCastor_simZplusJets20PUat25ns

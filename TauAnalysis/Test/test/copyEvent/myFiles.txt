@@ -1,0 +1,5 @@
+file:crab_0_141216_172428/res/pickevents_1_1_coC.root
+file:crab_0_141216_172428/res/pickevents_2_1_QIT.root
+file:crab_0_141216_172428/res/pickevents_3_1_dUa.root
+file:crab_0_141216_172428/res/pickevents_4_1_Iuw.root
+file:crab_0_141216_172428/res/pickevents_5_1_DOh.root

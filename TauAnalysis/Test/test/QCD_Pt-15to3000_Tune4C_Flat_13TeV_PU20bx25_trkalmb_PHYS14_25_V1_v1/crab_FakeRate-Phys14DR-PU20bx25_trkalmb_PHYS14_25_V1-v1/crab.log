@@ -1,0 +1,404 @@
+DEBUG 2014-12-11 12:09:55,177: 	 Executing command: 'submit'
+DEBUG 2014-12-11 12:09:55,177: 	 Found /afs/desy.de/user/a/anayak/.crab3 file
+DEBUG 2014-12-11 12:09:55,183: 	 Checking credentials
+DEBUG 2014-12-11 12:09:55,183: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 12:09:55,183: 	 Getting proxy life time left
+DEBUG 2014-12-11 12:09:55,585: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 85947
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:55,988: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 85947
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:55,988: 	 Proxy valid for 23:52:27 hours
+INFO 2014-12-11 12:09:55,989: 	 Will use configuration file crab3ProducePFTauIdEffNtuple_QCDPt15to3000Phys14_cfg.py
+DEBUG 2014-12-11 12:09:55,989: 	 Loading configuration
+DEBUG 2014-12-11 12:09:56,114: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:56,114: 	 Checking credentials
+DEBUG 2014-12-11 12:09:56,114: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 12:09:56,114: 	 Getting proxy life time left
+DEBUG 2014-12-11 12:09:56,516: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 85946
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:56,919: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 85946
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:56,919: 	 Proxy valid for 23:52:26 hours
+DEBUG 2014-12-11 12:09:57,322: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u24014 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/dcms/Role=NULL/Capability=NULL
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:57,616: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+DEBUG 2014-12-11 12:09:57,722: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 12:09:57,722: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2014-12-11 12:09:57,722: 	 Calculating hash of /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak_cmsweb.cern.ch for credential name
+DEBUG 2014-12-11 12:09:58,325: 	 Executing : 
+ command : myproxy-info -l 6aa9ef1251dc8889108701acdba3f6f13af7eabd -s myproxy.cern.ch
+ output : username: 6aa9ef1251dc8889108701acdba3f6f13af7eabd
+owner: /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  timeleft: 719:57:09  (30.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2014-12-11 12:09:58,326: 	 Myproxy is valid: 2591829
+DEBUG 2014-12-11 12:09:58,326: 	 Command use: submit
+DEBUG 2014-12-11 12:09:58,326: 	 Options use: ['-c', 'crab3ProducePFTauIdEffNtuple_QCDPt15to3000Phys14_cfg.py']
+DEBUG 2014-12-11 12:09:58,713: 	 CRABClient version: 3.3.12 Compatible
+DEBUG 2014-12-11 12:09:58,713: 	 Instance is prod
+DEBUG 2014-12-11 12:09:58,713: 	 Server base url is cmsweb.cern.ch
+DEBUG 2014-12-11 12:09:58,713: 	 Command url /crabserver/prod/workflow
+DEBUG 2014-12-11 12:09:58,713: 	 Started submission
+DEBUG 2014-12-11 12:09:58,713: 	 Working on /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+DEBUG 2014-12-11 12:09:59,334: 	 Found CMSSW_7_2_2 for slc6_amd64_gcc481 with base /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14
+DEBUG 2014-12-11 12:09:59,355: 	 UNIQUE NAME: tarUUID 167c1e9f-48d8-4b24-9a7b-46809cfa4134 
+DEBUG 2014-12-11 12:09:59,356: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.workArea = 'QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1'
+config.General.requestName = 'FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1'
+config.General.serverUrl = 'cmsweb.cern.ch'
+config.section_('JobType')
+config.JobType.psetName = 'producePFTauIdEffNtuple2_cfg.py'
+config.JobType.pluginName = 'Analysis'
+config.JobType.capath = '/etc/grid-security/certificates/'
+config.JobType.proxyfilename = '/tmp/x509up_u24014'
+config.JobType.filecacheurl = 'https://cmsweb.cern.ch/crabcache'
+config.section_('Data')
+config.Data.inputDataset = '/QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8/Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/AODSIM'
+config.Data.outLFN = '/store/user/anayak/TauIdStudies/Phys14/Validation/QCD_11thDec2014/'
+config.Data.publication = False
+config.Data.unitsPerJob = 1
+config.Data.inputDBS = 'global'
+config.Data.splitting = 'FileBased'
+config.section_('Site')
+config.Site.storageSite = 'T2_DE_DESY'
+
+DEBUG 2014-12-11 12:09:59,356: 	 self.config.JobType.psetName: producePFTauIdEffNtuple2_cfg.py
+DEBUG 2014-12-11 12:09:59,356: 	 Importing CMSSW config producePFTauIdEffNtuple2_cfg.py
+DEBUG 2014-12-11 12:10:00,738: 	 The following EDM output files will be collected: []
+DEBUG 2014-12-11 12:10:00,738: 	 The following TFile output files will be collected: ['pfTauIdEffNtuple2_Phys14.root']
+DEBUG 2014-12-11 12:10:00,738: 	 The following user output files will be collected: []
+DEBUG 2014-12-11 12:10:00,738: 	 Writing CMSSW config to /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/inputs/CMSSW_cfg.py
+DEBUG 2014-12-11 12:10:01,021: 	 Found CMSSW_7_2_2 for slc6_amd64_gcc481 with base /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14
+DEBUG 2014-12-11 12:10:01,022: 	 Making tarball in /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/inputs/167c1e9f-48d8-4b24-9a7b-46809cfa4134default.tgz
+DEBUG 2014-12-11 12:10:01,023: 	  checking directory /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/lib
+DEBUG 2014-12-11 12:10:01,023: 	  adding directory /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/lib to tarball
+DEBUG 2014-12-11 12:10:01,168: 	  checking directory /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/module
+DEBUG 2014-12-11 12:10:01,182: 	  adding data directory /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/RecoTools/data to tarball
+DEBUG 2014-12-11 12:10:01,905: 	 tgz contents: [('lib', 0, 1417452652, 'anayak'), ('lib/slc6_amd64_gcc481', 0, 1418290400, 'anayak'), ('lib/slc6_amd64_gcc481/libTauAnalysisTest.so', 42970, 1417456905, 'anayak'), ('lib/slc6_amd64_gcc481/libTauAnalysisBgEstimationTools.so', 29781, 1417456907, 'anayak'), ('lib/slc6_amd64_gcc481/libTauAnalysisCandidateTools.so', 69308, 1417456909, 'anayak'), ('lib/slc6_amd64_gcc481/pluginTauAnalysisTest_plugins.so', 315450, 1418290397, 'anayak'), ('lib/slc6_amd64_gcc481/TauAnalysisTest_plugins.edmplugin', 40, 1418290397, 'anayak'), ('lib/slc6_amd64_gcc481/pluginTauAnalysisRecoTools_plugins.so', 98186, 1417457139, 'anayak'), ('lib/slc6_amd64_gcc481/TauAnalysisRecoTools_plugins.edmplugin', 45, 1417457139, 'anayak'), ('lib/slc6_amd64_gcc481/.edmplugincache', 669, 1418290400, 'anayak'), ('src/TauAnalysis/RecoTools/data', 0, 1405438675, 'anayak'), ('src/TauAnalysis/RecoTools/data/expPUpoissonMean_runs190456to208686_Mu17_Mu8.root', 8331, 1405438675, 'anayak'), ('PSet.py', 101, 1418296201, 'anayak'), ('PSet.pkl', 395061, 1418296201, 'anayak'), ('debug/originalPSet.py', 6094, 1418290585, 'anayak'), ('debug/crabConfig.py', 1048, 1418296201, 'anayak')]
+DEBUG 2014-12-11 12:10:01,905: 	 MD5 checksum: dd2a8b183578d40b475e38a78b4987f4
+DEBUG 2014-12-11 12:10:01,933: 	  uploading archive to cache /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/inputs/167c1e9f-48d8-4b24-9a7b-46809cfa4134default.tgz 
+DEBUG 2014-12-11 12:10:02,498: 	 Result uploading input files: ('https://cmsweb.cern.ch/crabcache', '35024a09c6f33dfab29a36b0c7ecfcf328850f18ea365da091487cf0db0c28d4.tar.gz', 'dd2a8b183578d40b475e38a78b4987f4') 
+INFO 2014-12-11 12:10:02,499: 	 Sending the request to the server
+DEBUG 2014-12-11 12:10:02,499: 	 Submitting {'lfn': '/store/user/anayak/TauIdStudies/Phys14/Validation/QCD_11thDec2014/', 'workflow': 'crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1', 'adduserfiles': [], 'savelogsflag': 0, 'publishname': 'dd2a8b183578d40b475e38a78b4987f4', 'ignorelocality': 0, 'useparent': 0, 'nonprodsw': 0, 'tfileoutfiles': ['pfTauIdEffNtuple2_Phys14.root'], 'asyncdest': 'T2_DE_DESY', 'oneEventMode': 0, 'algoargs': 1, 'saveoutput': 1, 'totalunits': 0, 'cachefilename': '35024a09c6f33dfab29a36b0c7ecfcf328850f18ea365da091487cf0db0c28d4.tar.gz', 'jobarch': 'slc6_amd64_gcc481', 'addoutputfiles': [], 'splitalgo': 'FileBased', 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'jobsw': 'CMSSW_7_2_2', 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader', 'publication': 0, 'edmoutfiles': [], 'cacheurl': 'https://cmsweb.cern.ch/crabcache', 'inputdata': '/QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8/Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/AODSIM', 'jobtype': 'Analysis'} 
+DEBUG 2014-12-11 12:10:02,499: 	 Encoded submit request: lfn=%2Fstore%2Fuser%2Fanayak%2FTauIdStudies%2FPhys14%2FValidation%2FQCD_11thDec2014%2F&workflow=crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1&savelogsflag=0&publishname=dd2a8b183578d40b475e38a78b4987f4&ignorelocality=0&useparent=0&nonprodsw=0&asyncdest=T2_DE_DESY&oneEventMode=0&algoargs=1&saveoutput=1&totalunits=0&cachefilename=35024a09c6f33dfab29a36b0c7ecfcf328850f18ea365da091487cf0db0c28d4.tar.gz&jobarch=slc6_amd64_gcc481&splitalgo=FileBased&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&jobsw=CMSSW_7_2_2&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fglobal%2FDBSReader&publication=0&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&inputdata=%2FQCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8%2FPhys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1%2FAODSIM&jobtype=Analysis&tfileoutfiles=pfTauIdEffNtuple2_Phys14.root
+DEBUG 2014-12-11 12:10:03,488: 	 Result: {'result': [{'RequestName': '141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1'}]}
+INFO 2014-12-11 12:10:03,491: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2014-12-11 12:10:03,491: 	 Task name: 141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 12:10:03,491: 	 Please use 'crab status' to check how the submission process proceed
+DEBUG 2014-12-11 12:10:03,491: 	 About to return
+DEBUG 2014-12-11 14:20:28,925: 	 Executing command: 'status'
+DEBUG 2014-12-11 14:20:28,925: 	 Found /afs/desy.de/user/a/anayak/.crab3 file
+DEBUG 2014-12-11 14:20:28,929: 	 Checking credentials
+DEBUG 2014-12-11 14:20:28,929: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 14:20:28,929: 	 Getting proxy life time left
+DEBUG 2014-12-11 14:20:29,331: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 78113
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:29,733: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 78113
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:29,733: 	 Proxy valid for 21:41:53 hours
+DEBUG 2014-12-11 14:20:29,856: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:29,856: 	 Checking credentials
+DEBUG 2014-12-11 14:20:29,856: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 14:20:29,856: 	 Getting proxy life time left
+DEBUG 2014-12-11 14:20:30,259: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 78112
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:30,662: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 78112
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:30,662: 	 Proxy valid for 21:41:52 hours
+DEBUG 2014-12-11 14:20:31,065: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u24014 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/dcms/Role=NULL/Capability=NULL
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:31,402: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+DEBUG 2014-12-11 14:20:31,510: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 14:20:31,510: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2014-12-11 14:20:31,510: 	 Calculating hash of /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak_cmsweb.cern.ch for credential name
+DEBUG 2014-12-11 14:20:32,114: 	 Executing : 
+ command : myproxy-info -l 6aa9ef1251dc8889108701acdba3f6f13af7eabd -s myproxy.cern.ch
+ output : username: 6aa9ef1251dc8889108701acdba3f6f13af7eabd
+owner: /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  timeleft: 717:46:35  (29.9 days)
+
+ error: 
+ retcode : 0
+DEBUG 2014-12-11 14:20:32,115: 	 Myproxy is valid: 2583995
+DEBUG 2014-12-11 14:20:32,115: 	 Command use: status
+DEBUG 2014-12-11 14:20:32,115: 	 Options use: ['QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1']
+DEBUG 2014-12-11 14:20:39,417: 	 CRABClient version: 3.3.12 Compatible
+DEBUG 2014-12-11 14:20:39,417: 	 Instance is prod
+DEBUG 2014-12-11 14:20:39,417: 	 Server base url is cmsweb.cern.ch
+DEBUG 2014-12-11 14:20:39,417: 	 Command url /crabserver/prod/workflow
+DEBUG 2014-12-11 14:20:39,417: 	 Looking up detailed status of task 141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+DEBUG 2014-12-11 14:20:39,947: 	 {'status': 'SUBMITTED', 'totalJobdefs': 0, 'jobSetID': '141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1', 'jobsPerStatus': {'finished': 83, 'transferring': 13, 'running': 7}, 'taskWarningMsg': [], 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb', 'jobList': [['finished', 24], ['finished', 25], ['finished', 26], ['finished', 27], ['running', 20], ['finished', 21], ['finished', 22], ['finished', 23], ['finished', 28], ['finished', 29], ['finished', 4], ['finished', 8], ['finished', 59], ['finished', 58], ['finished', 55], ['running', 54], ['finished', 57], ['finished', 56], ['finished', 51], ['finished', 50], ['running', 53], ['finished', 52], ['finished', 88], ['finished', 89], ['finished', 82], ['running', 83], ['finished', 80], ['finished', 81], ['finished', 86], ['finished', 87], ['finished', 84], ['finished', 85], ['finished', 3], ['finished', 7], ['finished', 102], ['finished', 103], ['finished', 100], ['finished', 101], ['finished', 39], ['finished', 38], ['finished', 33], ['transferring', 32], ['finished', 31], ['finished', 30], ['finished', 37], ['running', 36], ['transferring', 35], ['finished', 34], ['finished', 60], ['finished', 61], ['finished', 62], ['finished', 63], ['finished', 64], ['transferring', 65], ['finished', 66], ['finished', 67], ['finished', 68], ['finished', 69], ['finished', 2], ['finished', 6], ['finished', 99], ['transferring', 98], ['running', 91], ['finished', 90], ['finished', 93], ['finished', 92], ['finished', 95], ['finished', 94], ['finished', 97], ['finished', 96], ['finished', 11], ['finished', 10], ['finished', 13], ['finished', 12], ['finished', 15], ['finished', 14], ['transferring', 17], ['finished', 16], ['finished', 19], ['finished', 18], ['finished', 48], ['finished', 49], ['finished', 46], ['finished', 47], ['transferring', 44], ['finished', 45], ['transferring', 42], ['finished', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['finished', 5], ['finished', 9], ['transferring', 77], ['transferring', 76], ['finished', 75], ['transferring', 74], ['transferring', 73], ['finished', 72], ['running', 71], ['finished', 70], ['transferring', 79], ['transferring', 78]], 'jobs': {'24': {'State': 'finished'}, '25': {'State': 'finished'}, '26': {'State': 'finished'}, '27': {'State': 'finished'}, '20': {'State': 'running'}, '21': {'State': 'finished'}, '22': {'State': 'finished'}, '23': {'State': 'finished'}, '28': {'State': 'finished'}, '29': {'State': 'finished'}, '4': {'State': 'finished'}, '8': {'State': 'finished'}, '59': {'State': 'finished'}, '58': {'State': 'finished'}, '55': {'State': 'finished'}, '54': {'State': 'running'}, '57': {'State': 'finished'}, '56': {'State': 'finished'}, '51': {'State': 'finished'}, '50': {'State': 'finished'}, '53': {'State': 'running'}, '52': {'State': 'finished'}, '88': {'State': 'finished'}, '89': {'State': 'finished'}, '82': {'State': 'finished'}, '83': {'State': 'running'}, '80': {'State': 'finished'}, '81': {'State': 'finished'}, '86': {'State': 'finished'}, '87': {'State': 'finished'}, '84': {'State': 'finished'}, '85': {'State': 'finished'}, '3': {'State': 'finished'}, '7': {'State': 'finished'}, '102': {'State': 'finished'}, '103': {'State': 'finished'}, '100': {'State': 'finished'}, '101': {'State': 'finished'}, '39': {'State': 'finished'}, '38': {'State': 'finished'}, '33': {'State': 'finished'}, '32': {'State': 'transferring'}, '31': {'State': 'finished'}, '30': {'State': 'finished'}, '37': {'State': 'finished'}, '36': {'State': 'running'}, '35': {'State': 'transferring'}, '34': {'State': 'finished'}, '60': {'State': 'finished'}, '61': {'State': 'finished'}, '62': {'State': 'finished'}, '63': {'State': 'finished'}, '64': {'State': 'finished'}, '65': {'State': 'transferring'}, '66': {'State': 'finished'}, '67': {'State': 'finished'}, '68': {'State': 'finished'}, '69': {'State': 'finished'}, '2': {'State': 'finished'}, '6': {'State': 'finished'}, '99': {'State': 'finished'}, '98': {'State': 'transferring'}, '91': {'State': 'running'}, '90': {'State': 'finished'}, '93': {'State': 'finished'}, '92': {'State': 'finished'}, '95': {'State': 'finished'}, '94': {'State': 'finished'}, '97': {'State': 'finished'}, '96': {'State': 'finished'}, '11': {'State': 'finished'}, '10': {'State': 'finished'}, '13': {'State': 'finished'}, '12': {'State': 'finished'}, '15': {'State': 'finished'}, '14': {'State': 'finished'}, '17': {'State': 'transferring'}, '16': {'State': 'finished'}, '19': {'State': 'finished'}, '18': {'State': 'finished'}, '48': {'State': 'finished'}, '49': {'State': 'finished'}, '46': {'State': 'finished'}, '47': {'State': 'finished'}, '44': {'State': 'transferring'}, '45': {'State': 'finished'}, '42': {'State': 'transferring'}, '43': {'State': 'finished'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'finished'}, '9': {'State': 'finished'}, '77': {'State': 'transferring'}, '76': {'State': 'transferring'}, '75': {'State': 'finished'}, '74': {'State': 'transferring'}, '73': {'State': 'transferring'}, '72': {'State': 'finished'}, '71': {'State': 'running'}, '70': {'State': 'finished'}, '79': {'State': 'transferring'}, '78': {'State': 'transferring'}}, 'jobdefErrors': [], 'outdatasets': ['/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER'], 'pool': {}, 'publication': {}}
+INFO 2014-12-11 14:20:39,947: 	 Task name:			141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 14:20:39,947: 	 Task status:			SUBMITTED
+INFO 2014-12-11 14:20:39,947: 	 Glidemon monitoring URL:	http://glidemon.web.cern.ch/glidemon/jobs.php?taskname=141211_111003_crab3test-2%3Aanayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 14:20:39,947: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=anayak&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=141211_111003_crab3test-2%3Aanayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 14:20:39,948: 	 Details:			finished       80.6% ( 83/103)
+INFO 2014-12-11 14:20:39,948: 	 				running         6.8% (  7/103)
+INFO 2014-12-11 14:20:39,948: 	 				transferring   12.6% ( 13/103)
+INFO 2014-12-11 14:20:39,948: 	 
+ERROR 2014-12-11 14:20:39,948: 	 No publication information available yet
+DEBUG 2014-12-11 15:28:08,765: 	 Executing command: 'status'
+DEBUG 2014-12-11 15:28:08,771: 	 Found /afs/desy.de/user/a/anayak/.crab3 file
+DEBUG 2014-12-11 15:28:08,794: 	 Checking credentials
+DEBUG 2014-12-11 15:28:08,794: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 15:28:08,794: 	 Getting proxy life time left
+DEBUG 2014-12-11 15:28:10,900: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 74052
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:11,504: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 74051
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:11,505: 	 Proxy valid for 20:34:12 hours
+DEBUG 2014-12-11 15:28:11,665: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:11,665: 	 Checking credentials
+DEBUG 2014-12-11 15:28:11,665: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 15:28:11,665: 	 Getting proxy life time left
+DEBUG 2014-12-11 15:28:12,068: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 74051
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:12,671: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 74050
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:12,671: 	 Proxy valid for 20:34:11 hours
+DEBUG 2014-12-11 15:28:13,275: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u24014 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/dcms/Role=NULL/Capability=NULL
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:13,609: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+DEBUG 2014-12-11 15:28:13,716: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 15:28:13,716: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2014-12-11 15:28:13,716: 	 Calculating hash of /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak_cmsweb.cern.ch for credential name
+DEBUG 2014-12-11 15:28:15,621: 	 Executing : 
+ command : myproxy-info -l 6aa9ef1251dc8889108701acdba3f6f13af7eabd -s myproxy.cern.ch
+ output : username: 6aa9ef1251dc8889108701acdba3f6f13af7eabd
+owner: /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  timeleft: 716:38:52  (29.9 days)
+
+ error: 
+ retcode : 0
+DEBUG 2014-12-11 15:28:15,623: 	 Myproxy is valid: 2579932
+DEBUG 2014-12-11 15:28:15,623: 	 Command use: status
+DEBUG 2014-12-11 15:28:15,623: 	 Options use: ['QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1']
+DEBUG 2014-12-11 15:28:15,990: 	 CRABClient version: 3.3.12 Compatible
+DEBUG 2014-12-11 15:28:15,991: 	 Instance is prod
+DEBUG 2014-12-11 15:28:15,991: 	 Server base url is cmsweb.cern.ch
+DEBUG 2014-12-11 15:28:15,991: 	 Command url /crabserver/prod/workflow
+DEBUG 2014-12-11 15:28:15,991: 	 Looking up detailed status of task 141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+DEBUG 2014-12-11 15:28:16,586: 	 {'status': 'SUBMITTED', 'totalJobdefs': 0, 'jobSetID': '141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1', 'jobsPerStatus': {'finished': 91, 'transferring': 8, 'running': 4}, 'taskWarningMsg': [], 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb', 'jobList': [['finished', 24], ['finished', 25], ['finished', 26], ['finished', 27], ['running', 20], ['finished', 21], ['finished', 22], ['finished', 23], ['finished', 28], ['finished', 29], ['finished', 4], ['finished', 8], ['finished', 59], ['finished', 58], ['finished', 55], ['running', 54], ['finished', 57], ['finished', 56], ['finished', 51], ['finished', 50], ['finished', 53], ['finished', 52], ['finished', 88], ['finished', 89], ['finished', 82], ['running', 83], ['finished', 80], ['finished', 81], ['finished', 86], ['finished', 87], ['finished', 84], ['finished', 85], ['finished', 3], ['finished', 7], ['finished', 102], ['finished', 103], ['finished', 100], ['finished', 101], ['finished', 39], ['finished', 38], ['finished', 33], ['transferring', 32], ['finished', 31], ['finished', 30], ['finished', 37], ['finished', 36], ['finished', 35], ['finished', 34], ['finished', 60], ['finished', 61], ['finished', 62], ['finished', 63], ['finished', 64], ['transferring', 65], ['finished', 66], ['finished', 67], ['finished', 68], ['finished', 69], ['finished', 2], ['finished', 6], ['finished', 99], ['finished', 98], ['finished', 91], ['finished', 90], ['finished', 93], ['finished', 92], ['finished', 95], ['finished', 94], ['finished', 97], ['finished', 96], ['finished', 11], ['finished', 10], ['finished', 13], ['finished', 12], ['finished', 15], ['finished', 14], ['transferring', 17], ['finished', 16], ['finished', 19], ['finished', 18], ['finished', 48], ['finished', 49], ['finished', 46], ['finished', 47], ['finished', 44], ['finished', 45], ['finished', 42], ['finished', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['finished', 5], ['finished', 9], ['transferring', 77], ['finished', 76], ['finished', 75], ['transferring', 74], ['transferring', 73], ['finished', 72], ['running', 71], ['finished', 70], ['transferring', 79], ['transferring', 78]], 'jobs': {'24': {'State': 'finished'}, '25': {'State': 'finished'}, '26': {'State': 'finished'}, '27': {'State': 'finished'}, '20': {'State': 'running'}, '21': {'State': 'finished'}, '22': {'State': 'finished'}, '23': {'State': 'finished'}, '28': {'State': 'finished'}, '29': {'State': 'finished'}, '4': {'State': 'finished'}, '8': {'State': 'finished'}, '59': {'State': 'finished'}, '58': {'State': 'finished'}, '55': {'State': 'finished'}, '54': {'State': 'running'}, '57': {'State': 'finished'}, '56': {'State': 'finished'}, '51': {'State': 'finished'}, '50': {'State': 'finished'}, '53': {'State': 'finished'}, '52': {'State': 'finished'}, '88': {'State': 'finished'}, '89': {'State': 'finished'}, '82': {'State': 'finished'}, '83': {'State': 'running'}, '80': {'State': 'finished'}, '81': {'State': 'finished'}, '86': {'State': 'finished'}, '87': {'State': 'finished'}, '84': {'State': 'finished'}, '85': {'State': 'finished'}, '3': {'State': 'finished'}, '7': {'State': 'finished'}, '102': {'State': 'finished'}, '103': {'State': 'finished'}, '100': {'State': 'finished'}, '101': {'State': 'finished'}, '39': {'State': 'finished'}, '38': {'State': 'finished'}, '33': {'State': 'finished'}, '32': {'State': 'transferring'}, '31': {'State': 'finished'}, '30': {'State': 'finished'}, '37': {'State': 'finished'}, '36': {'State': 'finished'}, '35': {'State': 'finished'}, '34': {'State': 'finished'}, '60': {'State': 'finished'}, '61': {'State': 'finished'}, '62': {'State': 'finished'}, '63': {'State': 'finished'}, '64': {'State': 'finished'}, '65': {'State': 'transferring'}, '66': {'State': 'finished'}, '67': {'State': 'finished'}, '68': {'State': 'finished'}, '69': {'State': 'finished'}, '2': {'State': 'finished'}, '6': {'State': 'finished'}, '99': {'State': 'finished'}, '98': {'State': 'finished'}, '91': {'State': 'finished'}, '90': {'State': 'finished'}, '93': {'State': 'finished'}, '92': {'State': 'finished'}, '95': {'State': 'finished'}, '94': {'State': 'finished'}, '97': {'State': 'finished'}, '96': {'State': 'finished'}, '11': {'State': 'finished'}, '10': {'State': 'finished'}, '13': {'State': 'finished'}, '12': {'State': 'finished'}, '15': {'State': 'finished'}, '14': {'State': 'finished'}, '17': {'State': 'transferring'}, '16': {'State': 'finished'}, '19': {'State': 'finished'}, '18': {'State': 'finished'}, '48': {'State': 'finished'}, '49': {'State': 'finished'}, '46': {'State': 'finished'}, '47': {'State': 'finished'}, '44': {'State': 'finished'}, '45': {'State': 'finished'}, '42': {'State': 'finished'}, '43': {'State': 'finished'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'finished'}, '9': {'State': 'finished'}, '77': {'State': 'transferring'}, '76': {'State': 'finished'}, '75': {'State': 'finished'}, '74': {'State': 'transferring'}, '73': {'State': 'transferring'}, '72': {'State': 'finished'}, '71': {'State': 'running'}, '70': {'State': 'finished'}, '79': {'State': 'transferring'}, '78': {'State': 'transferring'}}, 'jobdefErrors': [], 'outdatasets': ['/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER'], 'pool': {}, 'publication': {}}
+INFO 2014-12-11 15:28:16,586: 	 Task name:			141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 15:28:16,586: 	 Task status:			SUBMITTED
+INFO 2014-12-11 15:28:16,587: 	 Glidemon monitoring URL:	http://glidemon.web.cern.ch/glidemon/jobs.php?taskname=141211_111003_crab3test-2%3Aanayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 15:28:16,587: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=anayak&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=141211_111003_crab3test-2%3Aanayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 15:28:16,587: 	 Details:			finished       88.3% ( 91/103)
+INFO 2014-12-11 15:28:16,587: 	 				running         3.9% (  4/103)
+INFO 2014-12-11 15:28:16,587: 	 				transferring    7.8% (  8/103)
+INFO 2014-12-11 15:28:16,587: 	 
+ERROR 2014-12-11 15:28:16,588: 	 No publication information available yet
+DEBUG 2014-12-11 18:14:32,447: 	 Executing command: 'status'
+DEBUG 2014-12-11 18:14:32,448: 	 Found /afs/desy.de/user/a/anayak/.crab3 file
+DEBUG 2014-12-11 18:14:32,470: 	 Checking credentials
+DEBUG 2014-12-11 18:14:32,470: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 18:14:32,470: 	 Getting proxy life time left
+DEBUG 2014-12-11 18:14:32,873: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 64070
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:33,277: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 64069
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:33,277: 	 Proxy valid for 17:47:50 hours
+DEBUG 2014-12-11 18:14:33,434: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:33,435: 	 Checking credentials
+DEBUG 2014-12-11 18:14:33,435: 	 Found proxy file /tmp/x509up_u24014
+DEBUG 2014-12-11 18:14:33,435: 	 Getting proxy life time left
+DEBUG 2014-12-11 18:14:33,838: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -timeleft
+ output : 64069
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:34,242: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u24014 -actimeleft
+ output : 64068
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:34,242: 	 Proxy valid for 17:47:49 hours
+DEBUG 2014-12-11 18:14:34,645: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u24014 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/dcms/Role=NULL/Capability=NULL
+
+ error: Picked up _JAVA_OPTIONS: -Xmx256M
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:34,953: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+DEBUG 2014-12-11 18:14:35,061: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/tmp/BUILDROOT/1b0a06ff720813198f5edc6648696789/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc481/w/slc6_amd64_gcc481/external/openssl/1.0.1j/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2014-12-11 18:14:35,061: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2014-12-11 18:14:35,062: 	 Calculating hash of /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak_cmsweb.cern.ch for credential name
+DEBUG 2014-12-11 18:14:35,866: 	 Executing : 
+ command : myproxy-info -l 6aa9ef1251dc8889108701acdba3f6f13af7eabd -s myproxy.cern.ch
+ output : username: 6aa9ef1251dc8889108701acdba3f6f13af7eabd
+owner: /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(3[136]|21|045|052|021|031).cern.ch
+  timeleft: 713:52:32  (29.7 days)
+
+ error: 
+ retcode : 0
+DEBUG 2014-12-11 18:14:35,867: 	 Myproxy is valid: 2569952
+DEBUG 2014-12-11 18:14:35,867: 	 Command use: status
+DEBUG 2014-12-11 18:14:35,867: 	 Options use: ['QCD_Pt-15to3000_Tune4C_Flat_13TeV_PU20bx25_trkalmb_PHYS14_25_V1_v1/crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1']
+DEBUG 2014-12-11 18:14:36,190: 	 CRABClient version: 3.3.12 Compatible
+DEBUG 2014-12-11 18:14:36,190: 	 Instance is prod
+DEBUG 2014-12-11 18:14:36,190: 	 Server base url is cmsweb.cern.ch
+DEBUG 2014-12-11 18:14:36,191: 	 Command url /crabserver/prod/workflow
+DEBUG 2014-12-11 18:14:36,191: 	 Looking up detailed status of task 141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+DEBUG 2014-12-11 18:14:36,717: 	 {'status': 'SUBMITTED', 'totalJobdefs': 0, 'jobSetID': '141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1', 'jobsPerStatus': {'finished': 99, 'running': 4}, 'taskWarningMsg': [], 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb', 'jobList': [['finished', 24], ['finished', 25], ['finished', 26], ['finished', 27], ['running', 20], ['finished', 21], ['finished', 22], ['finished', 23], ['finished', 28], ['finished', 29], ['finished', 4], ['finished', 8], ['finished', 59], ['finished', 58], ['finished', 55], ['running', 54], ['finished', 57], ['finished', 56], ['finished', 51], ['finished', 50], ['finished', 53], ['finished', 52], ['finished', 88], ['finished', 89], ['finished', 82], ['running', 83], ['finished', 80], ['finished', 81], ['finished', 86], ['finished', 87], ['finished', 84], ['finished', 85], ['finished', 3], ['finished', 7], ['finished', 102], ['finished', 103], ['finished', 100], ['finished', 101], ['finished', 39], ['finished', 38], ['finished', 33], ['finished', 32], ['finished', 31], ['finished', 30], ['finished', 37], ['finished', 36], ['finished', 35], ['finished', 34], ['finished', 60], ['finished', 61], ['finished', 62], ['finished', 63], ['finished', 64], ['finished', 65], ['finished', 66], ['finished', 67], ['finished', 68], ['finished', 69], ['finished', 2], ['finished', 6], ['finished', 99], ['finished', 98], ['finished', 91], ['finished', 90], ['finished', 93], ['finished', 92], ['finished', 95], ['finished', 94], ['finished', 97], ['finished', 96], ['finished', 11], ['finished', 10], ['finished', 13], ['finished', 12], ['finished', 15], ['finished', 14], ['finished', 17], ['finished', 16], ['finished', 19], ['finished', 18], ['finished', 48], ['finished', 49], ['finished', 46], ['finished', 47], ['finished', 44], ['finished', 45], ['finished', 42], ['finished', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['finished', 5], ['finished', 9], ['finished', 77], ['finished', 76], ['finished', 75], ['finished', 74], ['finished', 73], ['finished', 72], ['running', 71], ['finished', 70], ['finished', 79], ['finished', 78]], 'jobs': {'24': {'State': 'finished'}, '25': {'State': 'finished'}, '26': {'State': 'finished'}, '27': {'State': 'finished'}, '20': {'State': 'running'}, '21': {'State': 'finished'}, '22': {'State': 'finished'}, '23': {'State': 'finished'}, '28': {'State': 'finished'}, '29': {'State': 'finished'}, '4': {'State': 'finished'}, '8': {'State': 'finished'}, '59': {'State': 'finished'}, '58': {'State': 'finished'}, '55': {'State': 'finished'}, '54': {'State': 'running'}, '57': {'State': 'finished'}, '56': {'State': 'finished'}, '51': {'State': 'finished'}, '50': {'State': 'finished'}, '53': {'State': 'finished'}, '52': {'State': 'finished'}, '88': {'State': 'finished'}, '89': {'State': 'finished'}, '82': {'State': 'finished'}, '83': {'State': 'running'}, '80': {'State': 'finished'}, '81': {'State': 'finished'}, '86': {'State': 'finished'}, '87': {'State': 'finished'}, '84': {'State': 'finished'}, '85': {'State': 'finished'}, '3': {'State': 'finished'}, '7': {'State': 'finished'}, '102': {'State': 'finished'}, '103': {'State': 'finished'}, '100': {'State': 'finished'}, '101': {'State': 'finished'}, '39': {'State': 'finished'}, '38': {'State': 'finished'}, '33': {'State': 'finished'}, '32': {'State': 'finished'}, '31': {'State': 'finished'}, '30': {'State': 'finished'}, '37': {'State': 'finished'}, '36': {'State': 'finished'}, '35': {'State': 'finished'}, '34': {'State': 'finished'}, '60': {'State': 'finished'}, '61': {'State': 'finished'}, '62': {'State': 'finished'}, '63': {'State': 'finished'}, '64': {'State': 'finished'}, '65': {'State': 'finished'}, '66': {'State': 'finished'}, '67': {'State': 'finished'}, '68': {'State': 'finished'}, '69': {'State': 'finished'}, '2': {'State': 'finished'}, '6': {'State': 'finished'}, '99': {'State': 'finished'}, '98': {'State': 'finished'}, '91': {'State': 'finished'}, '90': {'State': 'finished'}, '93': {'State': 'finished'}, '92': {'State': 'finished'}, '95': {'State': 'finished'}, '94': {'State': 'finished'}, '97': {'State': 'finished'}, '96': {'State': 'finished'}, '11': {'State': 'finished'}, '10': {'State': 'finished'}, '13': {'State': 'finished'}, '12': {'State': 'finished'}, '15': {'State': 'finished'}, '14': {'State': 'finished'}, '17': {'State': 'finished'}, '16': {'State': 'finished'}, '19': {'State': 'finished'}, '18': {'State': 'finished'}, '48': {'State': 'finished'}, '49': {'State': 'finished'}, '46': {'State': 'finished'}, '47': {'State': 'finished'}, '44': {'State': 'finished'}, '45': {'State': 'finished'}, '42': {'State': 'finished'}, '43': {'State': 'finished'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'finished'}, '9': {'State': 'finished'}, '77': {'State': 'finished'}, '76': {'State': 'finished'}, '75': {'State': 'finished'}, '74': {'State': 'finished'}, '73': {'State': 'finished'}, '72': {'State': 'finished'}, '71': {'State': 'running'}, '70': {'State': 'finished'}, '79': {'State': 'finished'}, '78': {'State': 'finished'}}, 'jobdefErrors': [], 'outdatasets': ['/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER'], 'pool': {}, 'publication': {}}
+INFO 2014-12-11 18:14:36,717: 	 Task name:			141211_111003_crab3test-2:anayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 18:14:36,717: 	 Task status:			SUBMITTED
+INFO 2014-12-11 18:14:36,717: 	 Glidemon monitoring URL:	http://glidemon.web.cern.ch/glidemon/jobs.php?taskname=141211_111003_crab3test-2%3Aanayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 18:14:36,717: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=anayak&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=141211_111003_crab3test-2%3Aanayak_crab_FakeRate-Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1
+INFO 2014-12-11 18:14:36,717: 	 Details:			finished       96.1% ( 99/103)
+INFO 2014-12-11 18:14:36,718: 	 				running         3.9% (  4/103)
+INFO 2014-12-11 18:14:36,718: 	 
+ERROR 2014-12-11 18:14:36,718: 	 No publication information available yet

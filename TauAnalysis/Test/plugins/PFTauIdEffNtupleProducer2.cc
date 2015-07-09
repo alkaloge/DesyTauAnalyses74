@@ -1,0 +1,735 @@
+#include "TauAnalysis/Test/plugins/PFTauIdEffNtupleProducer2.h"
+
+#include "FWCore/Utilities/interface/Exception.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "DataFormats/JetReco/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
+#include "DataFormats/TrackReco/interface/HitPattern.h"
+#include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/Math/interface/deltaR.h"
+
+#include "TauAnalysis/CandidateTools/interface/candidateAuxFunctions.h"
+
+#include <TMath.h>
+
+int PFTauIdEffNtupleProducer2::verbosity_ = 0;
+
+PFTauIdEffNtupleProducer2::PFTauIdEffNtupleProducer2(const edm::ParameterSet& cfg) 
+  : moduleLabel_(cfg.getParameter<std::string>("@module_label")),
+    ntuple_(0)
+{
+  srcGenParticles_ = cfg.getParameter<edm::InputTag>("srcGenParticles");
+  srcGenJets_ = cfg.getParameter<edm::InputTag>("srcGenJets");
+  srcRecVetoElectrons_ = cfg.getParameter<edm::InputTag>("srcRecVetoElectrons");
+  srcRecTaus_ = cfg.getParameter<edm::InputTag>("srcRecTaus");
+  srcVertices_ = cfg.getParameter<edm::InputTag>("srcVertices");
+
+  srcWeights_ = cfg.getParameter<vInputTag>("srcWeights");
+
+  tauIdDiscriminators_.push_back("decayModeFindingNewDMs");
+  tauIdDiscriminators_.push_back("decayModeFindingOldDMs");
+  tauIdDiscriminators_.push_back("decayModeFinding");
+  tauIdDiscriminators_.push_back("byVLooseCombinedIsolationDeltaBetaCorr");
+  tauIdDiscriminators_.push_back("byLooseCombinedIsolationDeltaBetaCorr");
+  tauIdDiscriminators_.push_back("byMediumCombinedIsolationDeltaBetaCorr");
+  tauIdDiscriminators_.push_back("byTightCombinedIsolationDeltaBetaCorr");
+  tauIdDiscriminators_.push_back("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+  tauIdDiscriminators_.push_back("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+  tauIdDiscriminators_.push_back("byTightCombinedIsolationDeltaBetaCorr3Hits");
+  tauIdDiscriminators_.push_back("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+  tauIdDiscriminators_.push_back("chargedIsoPtSum");
+  tauIdDiscriminators_.push_back("neutralIsoPtSum");
+  tauIdDiscriminators_.push_back("puCorrPtSum");
+  tauIdDiscriminators_.push_back("byIsolationMVA3oldDMwoLTraw");
+  tauIdDiscriminators_.push_back("byVLooseIsolationMVA3oldDMwoLT");
+  tauIdDiscriminators_.push_back("byLooseIsolationMVA3oldDMwoLT");
+  tauIdDiscriminators_.push_back("byMediumIsolationMVA3oldDMwoLT");
+  tauIdDiscriminators_.push_back("byTightIsolationMVA3oldDMwoLT");
+  tauIdDiscriminators_.push_back("byVTightIsolationMVA3oldDMwoLT");
+  tauIdDiscriminators_.push_back("byVVTightIsolationMVA3oldDMwoLT");
+  tauIdDiscriminators_.push_back("byIsolationMVA3oldDMwLTraw");
+  tauIdDiscriminators_.push_back("byVLooseIsolationMVA3oldDMwLT");
+  tauIdDiscriminators_.push_back("byLooseIsolationMVA3oldDMwLT");
+  tauIdDiscriminators_.push_back("byMediumIsolationMVA3oldDMwLT");
+  tauIdDiscriminators_.push_back("byTightIsolationMVA3oldDMwLT");
+  tauIdDiscriminators_.push_back("byVTightIsolationMVA3oldDMwLT");
+  tauIdDiscriminators_.push_back("byVVTightIsolationMVA3oldDMwLT");
+  tauIdDiscriminators_.push_back("byIsolationMVA3newDMwoLTraw");
+  tauIdDiscriminators_.push_back("byVLooseIsolationMVA3newDMwoLT");
+  tauIdDiscriminators_.push_back("byLooseIsolationMVA3newDMwoLT");
+  tauIdDiscriminators_.push_back("byMediumIsolationMVA3newDMwoLT");
+  tauIdDiscriminators_.push_back("byTightIsolationMVA3newDMwoLT");
+  tauIdDiscriminators_.push_back("byVTightIsolationMVA3newDMwoLT");
+  tauIdDiscriminators_.push_back("byVVTightIsolationMVA3newDMwoLT");
+  tauIdDiscriminators_.push_back("byIsolationMVA3newDMwLTraw");
+  tauIdDiscriminators_.push_back("byVLooseIsolationMVA3newDMwLT");
+  tauIdDiscriminators_.push_back("byLooseIsolationMVA3newDMwLT");
+  tauIdDiscriminators_.push_back("byMediumIsolationMVA3newDMwLT");
+  tauIdDiscriminators_.push_back("byTightIsolationMVA3newDMwLT");
+  tauIdDiscriminators_.push_back("byVTightIsolationMVA3newDMwLT");
+  tauIdDiscriminators_.push_back("byVVTightIsolationMVA3newDMwLT");
+  tauIdDiscriminators_.push_back("againstElectronLoose");
+  tauIdDiscriminators_.push_back("againstElectronMedium");
+  tauIdDiscriminators_.push_back("againstElectronTight");
+  tauIdDiscriminators_.push_back("againstElectronMVA5raw");
+  tauIdDiscriminators_.push_back("againstElectronMVA5category");
+  tauIdDiscriminators_.push_back("againstElectronVLooseMVA5");
+  tauIdDiscriminators_.push_back("againstElectronLooseMVA5");
+  tauIdDiscriminators_.push_back("againstElectronMediumMVA5");
+  tauIdDiscriminators_.push_back("againstElectronTightMVA5");
+  tauIdDiscriminators_.push_back("againstElectronVTightMVA5");
+  //tauIdDiscriminators_.push_back("againstElectronMVA3raw");
+  //tauIdDiscriminators_.push_back("againstElectronMVA3category");
+  //tauIdDiscriminators_.push_back("againstElectronLooseMVA3");
+  //tauIdDiscriminators_.push_back("againstElectronMediumMVA3");
+  //tauIdDiscriminators_.push_back("againstElectronTightMVA3");
+  //tauIdDiscriminators_.push_back("againstElectronVTightMVA3");
+  //tauIdDiscriminators_.push_back("againstElectronDeadECAL");
+  tauIdDiscriminators_.push_back("againstMuonLoose");
+  tauIdDiscriminators_.push_back("againstMuonMedium");
+  tauIdDiscriminators_.push_back("againstMuonTight");
+  tauIdDiscriminators_.push_back("againstMuonLoose2");
+  tauIdDiscriminators_.push_back("againstMuonMedium2");
+  tauIdDiscriminators_.push_back("againstMuonTight2");
+  tauIdDiscriminators_.push_back("againstMuonLoose3");
+  tauIdDiscriminators_.push_back("againstMuonTight3");
+  tauIdDiscriminators_.push_back("againstMuonMVAraw");
+  tauIdDiscriminators_.push_back("againstMuonLooseMVA");
+  tauIdDiscriminators_.push_back("againstMuonMediumMVA");
+  tauIdDiscriminators_.push_back("againstMuonTightMVA");
+
+  minGenVisPt_ = 15.;
+}
+
+PFTauIdEffNtupleProducer2::~PFTauIdEffNtupleProducer2()
+{
+// nothing to be done yet...
+}
+
+void PFTauIdEffNtupleProducer2::beginJob()
+{
+//--- create TTree
+  edm::Service<TFileService> fs;
+  ntuple_ = fs->make<TTree>("pfTauIdEffNtuple", "pfTauIdEffNtuple");
+
+//--- add branches 
+  addBranchL("run");
+  addBranchL("ls");
+  addBranchL("event");
+
+  addBranch_EnPxPyPz("recTau");
+  addBranch_EnPxPyPz("recTauAlternate");
+  addBranchI("recTauDecayMode");
+  addBranch_EnPxPyPz("recJet");
+  addBranch_EnPxPyPz("leadPFCand");
+  addBranch_EnPxPyPz("leadPFChargedHadrCand");
+  addBranchF("Tau_Energy_ECAL");
+  addBranchF("Tau_Energy_HCAL");
+  addBranchF("Tau_HoP");
+  addBranchF("Tau_etaImpact_ECAL");
+  addBranchF("Tau_phiImpact_ECAL");
+  for ( vstring::const_iterator tauIdDiscriminator = tauIdDiscriminators_.begin();
+	tauIdDiscriminator != tauIdDiscriminators_.end(); ++tauIdDiscriminator ) {
+    addBranchF(*tauIdDiscriminator);
+  }
+  addBranchF("Muon_CaloCompatibility");
+  addBranchF("Muon_SegmentCompatibility");
+  addBranchI("Muon_StationMask");
+  addBranchI("Muon_NumMatches");
+  addBranchI("Muon_NumHitsDT_station0");
+  addBranchI("Muon_NumHitsDT_station1");
+  addBranchI("Muon_NumHitsDT_station2");
+  addBranchI("Muon_NumHitsDT_station3");
+  addBranchI("Muon_NumHitsCSC_station0");
+  addBranchI("Muon_NumHitsCSC_station1");
+  addBranchI("Muon_NumHitsCSC_station2");
+  addBranchI("Muon_NumHitsCSC_station3");
+  addBranchI("Muon_NumHitsRPC_station0");
+  addBranchI("Muon_NumHitsRPC_station1");
+  addBranchI("Muon_NumHitsRPC_station2");
+  addBranchI("Muon_NumHitsRPC_station3");
+  addBranchF("ElectronVetoDeltaR");
+  addBranchI("ElectronVetoMatch");
+  addBranch_EnPxPyPz("genTau");
+  addBranchI("genTauDecayMode");
+  addBranchI("genTauMatch");
+  addBranchF("genTauDeltaR");
+  addBranch_EnPxPyPz("genTauLeadChHad");
+  addBranchI("genTauLchMother");
+  addBranchF("genTauLchPhPt");
+  addBranchI("genTauNDaughters");
+  addBranchI("genTauNDaPhotons");
+  addBranch_EnPxPyPz("genElectron");
+  addBranchI("genElectronMatch");
+  addBranchF("genElectronDeltaR");
+  addBranch_EnPxPyPz("genMuon");
+  addBranchI("genMuonMatch");
+  addBranchF("genMuonDeltaR");
+  addBranch_EnPxPyPz("genQuarkOrGluon");
+  addBranchI("genQuarkOrGluonMatch");
+  addBranchF("genQuarkOrGluonDeltaR");
+  addBranchI("genQuarkOrGluonPdgId");
+  addBranchI("numVertices");
+  addBranchF("evtWeight");
+}
+
+const pat::Tau* PFTauIdEffNtupleProducer2::findMatchingRecTau(const pat::TauCollection& recTaus, const reco::Candidate::LorentzVector& genParticleP4)
+{
+  const pat::Tau* recTau_matched = 0;
+  
+  double genTauDeltaR = 9.9;
+  for ( pat::TauCollection::const_iterator recTau = recTaus.begin();
+	recTau != recTaus.end(); ++recTau ) {
+    
+    if ( recTau->pt() < 15. ) continue;
+    
+    double dR = deltaR(recTau->p4(), genParticleP4);
+    if ( dR < 0.3 && dR < genTauDeltaR ) {
+      genTauDeltaR = dR;
+      recTau_matched = &(*recTau);
+    }
+  }
+
+  return recTau_matched;
+}
+
+const pat::Electron* PFTauIdEffNtupleProducer2::findMatchingElectronVeto(const pat::Tau& recTau, const pat::ElectronCollection& recVetoElectrons)
+{
+  const pat::Electron* recElectronVeto_matched = 0;
+  
+  double EleVetoDeltaR = 9.9;
+  for ( pat::ElectronCollection::const_iterator recElectron = recVetoElectrons.begin();
+	recElectron != recVetoElectrons.end(); ++recElectron ) {
+    
+    if ( recElectron->pt() < 10. ) continue;
+    
+    double dR = deltaR(recElectron->p4(), recTau);
+    if ( dR < 0.3 && dR < EleVetoDeltaR ) {
+      EleVetoDeltaR = dR;
+      recElectronVeto_matched = &(*recElectron);
+    }
+  }
+
+  return recElectronVeto_matched;
+}
+
+namespace
+{
+  void compECALeta_and_phiImpact(const pat::Tau* recTau_matched, double& etaImpact, double& phiImpact)
+  {
+    etaImpact = -99.;
+    phiImpact = -99.;
+
+    if ( recTau_matched ) {
+      double sumEtaTimesEnergy = 0.;
+      double sumPhiTimesEnergy = 0.;
+      double sumEnergy         = 0.;
+      std::vector<reco::PFCandidatePtr> signalPFCands = recTau_matched->signalPFCands();
+      for ( std::vector<reco::PFCandidatePtr>::const_iterator signalPFCand = signalPFCands.begin();
+	    signalPFCand != signalPFCands.end(); ++signalPFCand ) {
+	double energy = (*signalPFCand)->energy();
+	sumEtaTimesEnergy += (energy*(*signalPFCand)->positionAtECALEntrance().eta());
+	sumPhiTimesEnergy += (energy*(*signalPFCand)->positionAtECALEntrance().phi());
+	sumEnergy         += energy;
+      }
+      if ( sumEnergy > 0. ) {
+	etaImpact = sumEtaTimesEnergy/sumEnergy;
+	phiImpact = sumPhiTimesEnergy/sumEnergy;
+      }
+    }
+  }
+}
+
+
+void PFTauIdEffNtupleProducer2::setRecTauValues(const pat::Tau* recTau_matched, const pat::ElectronCollection& recVetoElectrons)
+{
+  if ( recTau_matched ) {
+    setValue_EnPxPyPz("recTau", recTau_matched->p4());
+    setValue_EnPxPyPz("recTauAlternate", recTau_matched->alternatLorentzVect());
+    setValueI("recTauDecayMode", recTau_matched->decayMode());
+    setValue_EnPxPyPz("recJet", recTau_matched->pfJetRef()->p4());
+    if ( recTau_matched->leadPFCand().isNonnull() ) setValue_EnPxPyPz("leadPFCand", recTau_matched->leadPFCand()->p4());
+    else setValue_EnPxPyPz("leadPFCand", reco::Candidate::LorentzVector(0.,0.,0.,0.));
+    if ( recTau_matched->leadPFChargedHadrCand().isNonnull() ){
+      setValue_EnPxPyPz("leadPFChargedHadrCand", recTau_matched->leadPFChargedHadrCand()->p4());
+      setValueF("Tau_Energy_ECAL", recTau_matched->leadPFChargedHadrCand()->ecalEnergy());
+      setValueF("Tau_Energy_HCAL", recTau_matched->leadPFChargedHadrCand()->hcalEnergy());
+      setValueF("Tau_HoP", recTau_matched->leadPFChargedHadrCand()->hcalEnergy()/recTau_matched->leadPFChargedHadrCand()->p());
+    }
+    else setValue_EnPxPyPz("leadPFChargedHadrCand", reco::Candidate::LorentzVector(0.,0.,0.,0.));
+    double etaImpact_ECAL, phiImpact_ECAL;
+    compECALeta_and_phiImpact(recTau_matched, etaImpact_ECAL, phiImpact_ECAL);
+    setValueF("Tau_etaImpact_ECAL", etaImpact_ECAL);
+    setValueF("Tau_phiImpact_ECAL", phiImpact_ECAL);
+    for ( vstring::const_iterator tauIdDiscriminator = tauIdDiscriminators_.begin();
+	  tauIdDiscriminator != tauIdDiscriminators_.end(); ++tauIdDiscriminator ) {
+      setValueF(*tauIdDiscriminator, recTau_matched->tauID(*tauIdDiscriminator));
+    }
+    
+    double muon_CaloCompatibility    = 0.;
+    double muon_SegmentCompatibility = 0.;
+    int    muon_StationMask          = 0;
+    int    muon_NumMatches           = 0;
+    int    muon_NumHitsDT_station0   = 0;
+    int    muon_NumHitsDT_station1   = 0;
+    int    muon_NumHitsDT_station2   = 0;
+    int    muon_NumHitsDT_station3   = 0;
+    int    muon_NumHitsCSC_station0  = 0;
+    int    muon_NumHitsCSC_station1  = 0;
+    int    muon_NumHitsCSC_station2  = 0;
+    int    muon_NumHitsCSC_station3  = 0;
+    int    muon_NumHitsRPC_station0  = 0;
+    int    muon_NumHitsRPC_station1  = 0;
+    int    muon_NumHitsRPC_station2  = 0;
+    int    muon_NumHitsRPC_station3  = 0;
+    if ( recTau_matched->leadPFChargedHadrCand().isNonnull() ) {
+      reco::MuonRef muonRef = recTau_matched->leadPFChargedHadrCand()->muonRef();      
+      if ( muonRef.isNonnull() ) {
+	muon_CaloCompatibility = muonRef->caloCompatibility();
+	muon_SegmentCompatibility = muon::segmentCompatibility(*muonRef);
+	muon_StationMask = muonRef->stationMask(reco::Muon::NoArbitration);
+	muon_NumMatches = muonRef->numberOfMatches(reco::Muon::NoArbitration);
+	if ( muonRef->outerTrack().isNonnull() ) {
+	  const reco::HitPattern& muonHitPattern = muonRef->outerTrack()->hitPattern();
+	  for ( int iHit = 0; iHit < muonHitPattern.numberOfValidHits(); ++iHit ) {
+	    uint32_t hit = muonHitPattern.getHitPattern(reco::HitPattern::HitCategory::TRACK_HITS, iHit);
+	    if ( hit == 0 ) break;	    
+	    if ( muonHitPattern.muonHitFilter(hit) && muonHitPattern.getHitType(hit) == TrackingRecHit::valid ) {
+	      int muonStation = muonHitPattern.getMuonStation(hit);
+	      if ( muonHitPattern.muonDTHitFilter(hit) ) {
+		if      ( muonStation == 1 ) ++muon_NumHitsDT_station0;
+		else if ( muonStation == 2 ) ++muon_NumHitsDT_station1;
+		else if ( muonStation == 3 ) ++muon_NumHitsDT_station2;
+		else if ( muonStation == 4 ) ++muon_NumHitsDT_station3;
+	      }
+	      if ( muonHitPattern.muonCSCHitFilter(hit) ) {
+		if      ( muonStation == 1 ) ++muon_NumHitsCSC_station0;
+		else if ( muonStation == 2 ) ++muon_NumHitsCSC_station1;
+		else if ( muonStation == 3 ) ++muon_NumHitsCSC_station2;
+		else if ( muonStation == 4 ) ++muon_NumHitsCSC_station3;
+	      }
+	      if ( muonHitPattern.muonRPCHitFilter(hit) ) {
+		if      ( muonStation == 1 ) ++muon_NumHitsRPC_station0;
+		else if ( muonStation == 2 ) ++muon_NumHitsRPC_station1;
+		else if ( muonStation == 3 ) ++muon_NumHitsRPC_station2;
+		else if ( muonStation == 4 ) ++muon_NumHitsRPC_station3;
+	      }
+	    }
+	  }
+	}
+      }
+    }
+    setValueF("Muon_CaloCompatibility", muon_CaloCompatibility);
+    setValueF("Muon_SegmentCompatibility", muon_SegmentCompatibility);
+    setValueI("Muon_StationMask", muon_StationMask);
+    setValueI("Muon_NumMatches", muon_NumMatches);
+    setValueI("Muon_NumHitsDT_station0", muon_NumHitsDT_station0);
+    setValueI("Muon_NumHitsDT_station1", muon_NumHitsDT_station1);
+    setValueI("Muon_NumHitsDT_station2", muon_NumHitsDT_station2);
+    setValueI("Muon_NumHitsDT_station3", muon_NumHitsDT_station3);
+    setValueI("Muon_NumHitsCSC_station0", muon_NumHitsCSC_station0);
+    setValueI("Muon_NumHitsCSC_station1", muon_NumHitsCSC_station1);
+    setValueI("Muon_NumHitsCSC_station2", muon_NumHitsCSC_station2);
+    setValueI("Muon_NumHitsCSC_station3", muon_NumHitsCSC_station3);
+    setValueI("Muon_NumHitsRPC_station0", muon_NumHitsRPC_station0);
+    setValueI("Muon_NumHitsRPC_station1", muon_NumHitsRPC_station1);
+    setValueI("Muon_NumHitsRPC_station2", muon_NumHitsRPC_station2);
+    setValueI("Muon_NumHitsRPC_station3", muon_NumHitsRPC_station3);
+
+    const pat::Electron* ElectronVeto_matched = findMatchingElectronVeto(*recTau_matched, recVetoElectrons);
+    double ElectronVetoDeltaR = ( ElectronVeto_matched ) ? deltaR(ElectronVeto_matched->p4(), recTau_matched->p4()) : 9.9;
+    bool ElectronVetoMatch = (ElectronVetoDeltaR < 0.3);
+    setValueF("ElectronVetoDeltaR", ElectronVetoDeltaR);
+    setValueI("ElectronVetoMatch", ElectronVetoMatch);
+  } else {
+    setValue_EnPxPyPz("recTau", reco::Candidate::LorentzVector(0.,0.,0.,0.));
+    setValueI("recTauDecayMode", -1);
+    setValue_EnPxPyPz("recJet", reco::Candidate::LorentzVector(0.,0.,0.,0.));
+    setValue_EnPxPyPz("leadPFCand", reco::Candidate::LorentzVector(0.,0.,0.,0.));
+    setValue_EnPxPyPz("leadPFChargedHadrCand", reco::Candidate::LorentzVector(0.,0.,0.,0.));
+    setValueF("Tau_Energy_ECAL", 0.);
+    setValueF("Tau_Energy_HCAL", 0.);
+    setValueF("Tau_HoP", 0.);
+    setValueF("Tau_etaImpact_ECAL", 0.);
+    setValueF("Tau_phiImpact_ECAL", 0.);    
+    for ( vstring::const_iterator tauIdDiscriminator = tauIdDiscriminators_.begin();
+	  tauIdDiscriminator != tauIdDiscriminators_.end(); ++tauIdDiscriminator ) {
+      setValueF(*tauIdDiscriminator, 0.);
+    }
+    setValueF("ElectronVetoDeltaR", 0.);
+    setValueI("ElectronVetoMatch", 0.);
+  }
+}
+
+void PFTauIdEffNtupleProducer2::setGenTauMatchValues(bool genTauMatch, const reco::Candidate::LorentzVector& genTauP4, int genTauDecayMode, double genTauDeltaR, const reco::Candidate::LorentzVector& genTauLeadChHadP4)
+{
+  setValue_EnPxPyPz("genTau", genTauP4);
+  setValueI("genTauDecayMode", genTauDecayMode);
+  setValueI("genTauMatch", genTauMatch);
+  setValueF("genTauDeltaR", genTauDeltaR);
+  setValue_EnPxPyPz("genTauLeadChHad", genTauLeadChHadP4);
+}
+void PFTauIdEffNtupleProducer2::setGenTauExtraValues(int genTauLchMother, float genTauLchPhPt, int genTauNDaughters, int genTauNDaPhotons)
+{
+  setValueI("genTauLchMother", genTauLchMother);
+  setValueF("genTauLchPhPt", genTauLchPhPt);
+  setValueI("genTauNDaughters", genTauNDaughters);
+  setValueI("genTauNDaPhotons", genTauNDaPhotons);
+} 
+void PFTauIdEffNtupleProducer2::setGenElectronMatchValues(bool genElectronMatch, const reco::Candidate::LorentzVector& genElectronP4, double genElectronDeltaR)
+{
+  setValue_EnPxPyPz("genElectron", genElectronP4);
+  setValueI("genElectronMatch", genElectronMatch);
+  setValueF("genElectronDeltaR", genElectronDeltaR);
+}
+
+void PFTauIdEffNtupleProducer2::setGenMuonMatchValues(bool genMuonMatch, const reco::Candidate::LorentzVector& genMuonP4, double genMuonDeltaR)
+{
+  setValue_EnPxPyPz("genMuon", genMuonP4);
+  setValueI("genMuonMatch", genMuonMatch);
+  setValueF("genMuonDeltaR", genMuonDeltaR);
+}
+
+void PFTauIdEffNtupleProducer2::setGenQuarkOrGluonMatchValues(bool genQuarkOrGluonMatch, const reco::Candidate::LorentzVector& genQuarkOrGluonP4, double genQuarkOrGluonDeltaR, int genQuarkOrGluonPdgId)
+{
+  setValue_EnPxPyPz("genQuarkOrGluon", genQuarkOrGluonP4);
+  setValueI("genQuarkOrGluonMatch", genQuarkOrGluonMatch);
+  setValueF("genQuarkOrGluonDeltaR", genQuarkOrGluonDeltaR);
+  setValueI("genQuarkOrGluonPdgId", genQuarkOrGluonPdgId);
+}
+
+void PFTauIdEffNtupleProducer2::produce(edm::Event& evt, const edm::EventSetup& es) 
+{
+  setValueL("run" ,evt.run());
+  setValueL("ls", evt.luminosityBlock());
+  setValueL("event", evt.eventAuxiliary().event());
+  //std::cout<<" run "<<evt.run()<<" ls "<<evt.luminosityBlock()<<" event "<<evt.eventAuxiliary().event()<<std::endl;
+  
+  assert(ntuple_);
+
+  edm::Handle<reco::GenParticleCollection> genParticles;
+  evt.getByLabel(srcGenParticles_, genParticles);
+
+  std::vector<int> pdgIdsGenTau;
+  pdgIdsGenTau.push_back(-15);
+  pdgIdsGenTau.push_back(+15);
+
+  std::vector<int> pdgIdsGenElectron;
+  pdgIdsGenElectron.push_back(-11);
+  pdgIdsGenElectron.push_back(+11);
+
+  std::vector<int> pdgIdsGenMuon;
+  pdgIdsGenMuon.push_back(-13);
+  pdgIdsGenMuon.push_back(+13);
+
+  std::vector<int> pdgIdsGenQuarkOrGluon;
+  pdgIdsGenQuarkOrGluon.push_back(-21);
+  //pdgIdsGenQuarkOrGluon.push_back(-6); //not top quark
+  pdgIdsGenQuarkOrGluon.push_back(-5);
+  pdgIdsGenQuarkOrGluon.push_back(-4);
+  pdgIdsGenQuarkOrGluon.push_back(-3);
+  pdgIdsGenQuarkOrGluon.push_back(-2);
+  pdgIdsGenQuarkOrGluon.push_back(-1);
+  pdgIdsGenQuarkOrGluon.push_back(+1);
+  pdgIdsGenQuarkOrGluon.push_back(+2);
+  pdgIdsGenQuarkOrGluon.push_back(+3);
+  pdgIdsGenQuarkOrGluon.push_back(+4);
+  pdgIdsGenQuarkOrGluon.push_back(+5);
+  //pdgIdsGenQuarkOrGluon.push_back(+6);
+  pdgIdsGenQuarkOrGluon.push_back(+21);
+  
+  edm::Handle<pat::ElectronCollection> recVetoElectrons;
+  evt.getByLabel(srcRecVetoElectrons_, recVetoElectrons);
+
+  edm::Handle<pat::TauCollection> recTaus;
+  evt.getByLabel(srcRecTaus_, recTaus);
+
+  edm::Handle<reco::VertexCollection> vertices;
+  evt.getByLabel(srcVertices_, vertices);
+
+  double evtWeight = 1.0;
+  for ( vInputTag::const_iterator srcWeight = srcWeights_.begin();
+	srcWeight != srcWeights_.end(); ++srcWeight ) {
+    edm::Handle<double> weight;
+    evt.getByLabel(*srcWeight, weight);
+    evtWeight *= (*weight);
+  }
+
+  for ( reco::GenParticleCollection::const_iterator genParticle = genParticles->begin();
+	genParticle != genParticles->end(); ++genParticle ) {
+
+    if ( genParticle->pt() < minGenVisPt_ ) continue;
+
+    unsigned numHypotheses = 0;
+
+    bool isGenTau = false;
+    for ( std::vector<int>::const_iterator pdgIdGenTau = pdgIdsGenTau.begin();
+	  pdgIdGenTau != pdgIdsGenTau.end(); ++pdgIdGenTau ) {
+      if ( genParticle->status() == 2 && genParticle->pdgId() == (*pdgIdGenTau) ) isGenTau = true;
+    }
+    if ( isGenTau ) {
+      reco::Candidate::LorentzVector genTauP4 = getVisMomentum(&(*genParticle));
+      std::string genTauDecayMode_string = getGenTauDecayMode(&(*genParticle));
+      int genTauDecayMode_int = -1;
+      if      ( genTauDecayMode_string == "oneProng0Pi0"    ) genTauDecayMode_int = reco::PFTau::kOneProng0PiZero;
+      else if ( genTauDecayMode_string == "oneProng1Pi0"    ) genTauDecayMode_int = reco::PFTau::kOneProng1PiZero;
+      else if ( genTauDecayMode_string == "oneProng2Pi0"    ) genTauDecayMode_int = reco::PFTau::kOneProng2PiZero;
+      else if ( genTauDecayMode_string == "threeProng0Pi0"  ) genTauDecayMode_int = reco::PFTau::kThreeProng0PiZero;
+      else if ( genTauDecayMode_string == "threeProng1Pi0"  ) genTauDecayMode_int = reco::PFTau::kThreeProng1PiZero;
+      //else if ( genTauDecayMode_string == "oneProngOther"   ||
+      //	  genTauDecayMode_string == "threeProngOther" ||
+      //	  genTauDecayMode_string == "rare"            ) genTauDecayMode_int = reco::PFTau::kRareDecayMode;
+      if ( genTauDecayMode_int != -1 && genTauP4.pt() > minGenVisPt_ ) {
+	const pat::Tau* recTau_matched = findMatchingRecTau(*recTaus, genTauP4);
+	double genTauDeltaR = ( recTau_matched ) ? deltaR(recTau_matched->p4(), genTauP4) : 9.9;
+	bool genTauMatch = (genTauDeltaR < 0.3);
+	int genTauDecayMode = genTauDecayMode_int;
+	reco::Candidate::LorentzVector genTauLeadChHadP4 = getLeadChHadMomentum(&(*genParticle));
+	setRecTauValues(recTau_matched, *recVetoElectrons);
+	setGenTauMatchValues(genTauMatch, genTauP4, genTauDecayMode, genTauDeltaR, genTauLeadChHadP4);
+	setGenElectronMatchValues(false);
+	setGenMuonMatchValues(false);
+	
+	std::vector<const reco::GenParticle*> genTauStableDaughters;
+	findDaughters((&(*genParticle)), genTauStableDaughters, 1);
+	//std::cout << "gen Tau Vis Pt "<<genTauP4.pt()<<std::endl;
+	int nDaughters = genTauStableDaughters.size();
+	int nDPhotons = 0;
+	const reco::GenParticle* leadChParticle = 0;
+	float lchPt = 0; float lchDPhPt = 0;
+	for ( std::vector<const reco::GenParticle*>::const_iterator daughter = genTauStableDaughters.begin();
+	      daughter != genTauStableDaughters.end(); ++daughter ) {
+	  //std::cout << "daughter: pdgId = " << (*daughter)->pdgId() << ", Pt = " << (*daughter)->pt() << ","                                                                 
+	  //<< " eta = " << (*daughter)->eta() << ", phi = " << (*daughter)->phi()*180./TMath::Pi() << std::endl;
+	  if((*daughter)->pdgId() == 22){
+	    nDPhotons++;
+	    if((*daughter)->mother()->pdgId() != 111) lchDPhPt += (*daughter)->pt();
+	  }
+	  if ( (*daughter)->status() == 1 && (*daughter)->charge() != 0 ) {
+	    if((*daughter)->pt() > lchPt){
+	      lchPt = (*daughter)->pt();
+	      leadChParticle = (&(*(*daughter)));
+	    }
+	  }
+	}
+	int lchMother = 0;
+	if(leadChParticle){
+	  lchMother = leadChParticle->mother()->pdgId();
+	  //if(leadChParticle->mother()->pdgId() == leadChParticle->pdgId()){
+	  //  //std::cout<<"mother Id "<<leadChParticle->mother()->pdgId()<<" pt "<<leadChParticle->mother()->pt()<<" lch "<<leadChParticle->pdgId()<< "pt "<<leadChParticle->pt()<<std::endl;
+	  //  lchDPhPt = (leadChParticle->mother()->p4() - leadChParticle->p4()).pt();
+	  //}
+	}
+	setGenTauExtraValues(lchMother, lchDPhPt, nDaughters, nDPhotons);
+
+	++numHypotheses;
+      }
+    }
+
+    bool isGenElectron = false;
+    for ( std::vector<int>::const_iterator pdgIdGenElectron = pdgIdsGenElectron.begin();
+	  pdgIdGenElectron != pdgIdsGenElectron.end(); ++pdgIdGenElectron ) {
+      if ( genParticle->status() == 1 && genParticle->pdgId() == (*pdgIdGenElectron) ) isGenElectron = true;
+    }
+    if ( isGenElectron && genParticle->pt() > minGenVisPt_ ) {
+      reco::Candidate::LorentzVector genElectronP4 = genParticle->p4();
+      const pat::Tau* recTau_matched = findMatchingRecTau(*recTaus, genElectronP4);
+      double genElectronDeltaR = ( recTau_matched ) ? deltaR(recTau_matched->p4(), genElectronP4) : 9.9;
+      bool genElectronMatch = (genElectronDeltaR < 0.3);
+      setRecTauValues(recTau_matched, *recVetoElectrons);
+      setGenElectronMatchValues(genElectronMatch, genElectronP4, genElectronDeltaR);
+      setGenTauMatchValues(false);
+      setGenMuonMatchValues(false);
+      setGenTauExtraValues();
+      ++numHypotheses;
+    }
+  
+    bool isGenMuon = false;
+    for ( std::vector<int>::const_iterator pdgIdGenMuon = pdgIdsGenMuon.begin();
+	  pdgIdGenMuon != pdgIdsGenMuon.end(); ++pdgIdGenMuon ) {
+      if ( genParticle->status() == 1 && genParticle->pdgId() == (*pdgIdGenMuon) ) isGenMuon = true;
+    }
+    if ( isGenMuon && genParticle->pt() > minGenVisPt_ ) {
+      reco::Candidate::LorentzVector genMuonP4 = genParticle->p4();
+      const pat::Tau* recTau_matched = findMatchingRecTau(*recTaus, genMuonP4);
+      double genMuonDeltaR = ( recTau_matched ) ? deltaR(recTau_matched->p4(), genMuonP4) : 9.9;
+      bool genMuonMatch = (genMuonDeltaR < 0.3);
+      setRecTauValues(recTau_matched, *recVetoElectrons);
+      setGenMuonMatchValues(genMuonMatch, genMuonP4, genMuonDeltaR);
+      setGenTauMatchValues(false);
+      setGenElectronMatchValues(false);
+      setGenTauExtraValues();
+      ++numHypotheses;
+    }
+
+    if ( numHypotheses > 1 ) 
+      edm::LogWarning("PFTauIdEffNtupleProducer2::analyze")
+	<< " Matching between reconstructed PFTau and generator level tau-jets, electrons and is ambiguous --> skipping !!";
+    if ( numHypotheses != 1 ) continue;
+    
+    setValueI("numVertices", vertices->size());
+    setValueF("evtWeight", evtWeight);
+
+//--- fill all computed quantities into TTree
+    assert(ntuple_);
+    ntuple_->Fill();
+  }
+
+  typedef edm::View<reco::Jet> JetView;
+  edm::Handle<JetView> genJets;
+  evt.getByLabel(srcGenJets_, genJets);
+
+  for ( JetView::const_iterator genJet = genJets->begin();
+	genJet != genJets->end(); ++genJet ) {
+    
+    if ( genJet->pt() < minGenVisPt_ ) continue;
+
+    const reco::GenParticle* bestGenParticleMatch = 0;
+    for ( reco::GenParticleCollection::const_iterator genParticle = genParticles->begin();
+	  genParticle != genParticles->end(); ++genParticle ) {
+      if ( deltaR(genParticle->p4(), genJet->p4()) < 0.3 ) {
+	bool isGenQuarkOrGluon = false;
+	for ( std::vector<int>::const_iterator pdgIdGenQuarkOrGluon = pdgIdsGenQuarkOrGluon.begin();
+	      pdgIdGenQuarkOrGluon != pdgIdsGenQuarkOrGluon.end(); ++pdgIdGenQuarkOrGluon ) {
+	  if ( genParticle->pdgId() == (*pdgIdGenQuarkOrGluon) ) isGenQuarkOrGluon = true;
+	}
+	if ( isGenQuarkOrGluon && (!bestGenParticleMatch || genParticle->energy() > bestGenParticleMatch->energy()) ) bestGenParticleMatch = &(*genParticle);
+      }
+    }
+    if ( bestGenParticleMatch && genJet->pt() > minGenVisPt_ && bestGenParticleMatch->pt() > minGenVisPt_ && TMath::Abs(bestGenParticleMatch->eta()) < 3.0 ) {
+      reco::Candidate::LorentzVector genQuarkOrGluonP4 = bestGenParticleMatch->p4();
+      const pat::Tau* recTau_matched = findMatchingRecTau(*recTaus, genQuarkOrGluonP4);
+      double genQuarkOrGluonDeltaR = ( recTau_matched ) ? deltaR(recTau_matched->p4(), genQuarkOrGluonP4) : 9.9;
+      bool genQuarkOrGluonMatch = (genQuarkOrGluonDeltaR < 0.3);
+      setRecTauValues(recTau_matched, *recVetoElectrons);
+      setGenQuarkOrGluonMatchValues(genQuarkOrGluonMatch, genQuarkOrGluonP4, genQuarkOrGluonDeltaR, bestGenParticleMatch->pdgId());
+      setGenTauMatchValues(false);
+      setGenElectronMatchValues(false);
+      setGenMuonMatchValues(false);
+      setGenTauExtraValues();
+    }
+
+    setValueI("numVertices", vertices->size());
+    setValueF("evtWeight", evtWeight);
+
+//--- fill all computed quantities into TTree
+    assert(ntuple_);
+    ntuple_->Fill();
+  }
+}
+
+void PFTauIdEffNtupleProducer2::addBranchF(const std::string& name) 
+{
+  assert(branches_.count(name) == 0);
+  std::string name_and_format = name + "/F";
+  ntuple_->Branch(name.c_str(), &branches_[name].valueF_, name_and_format.c_str());
+}
+
+void PFTauIdEffNtupleProducer2::addBranchI(const std::string& name) 
+{
+  assert(branches_.count(name) == 0);
+  std::string name_and_format = name + "/I";
+  ntuple_->Branch(name.c_str(), &branches_[name].valueI_, name_and_format.c_str());
+}
+
+void PFTauIdEffNtupleProducer2::addBranchL(const std::string& name) 
+{
+  assert(branches_.count(name) == 0);
+  std::string name_and_format = name + "/L";
+  ntuple_->Branch(name.c_str(), &branches_[name].valueL_, name_and_format.c_str());
+}
+
+void PFTauIdEffNtupleProducer2::printBranches(std::ostream& stream)
+{
+  stream << "<PFTauIdEffNtupleProducer2::printBranches>:" << std::endl;
+  stream << " registered branches for module = " << moduleLabel_ << std::endl;
+  for ( branchMap::const_iterator branch = branches_.begin();
+	branch != branches_.end(); ++branch ) {
+    stream << " " << branch->first << std::endl;
+  }
+  stream << std::endl;
+}
+
+void PFTauIdEffNtupleProducer2::setValueF(const std::string& name, double value) 
+{
+  if ( verbosity_ ) std::cout << "branch = " << name << ": value = " << value << std::endl;
+  branchMap::iterator branch = branches_.find(name);
+  if ( branch != branches_.end() ) {
+    branch->second.valueF_ = value;
+  } else {
+    throw cms::Exception("InvalidParameter") 
+      << "No branch with name = " << name << " defined !!\n";
+  }
+}
+
+void PFTauIdEffNtupleProducer2::setValueI(const std::string& name, int value) 
+{
+  if ( verbosity_ ) std::cout << "branch = " << name << ": value = " << value << std::endl;
+  branchMap::iterator branch = branches_.find(name);
+  if ( branch != branches_.end() ) {
+    branch->second.valueI_ = value;
+  } else {
+    throw cms::Exception("InvalidParameter") 
+      << "No branch with name = " << name << " defined !!\n";
+  }
+}
+
+void PFTauIdEffNtupleProducer2::setValueL(const std::string& name, long value) 
+{
+  if ( verbosity_ ) std::cout << "branch = " << name << ": value = " << value << std::endl;
+  branchMap::iterator branch = branches_.find(name);
+  if ( branch != branches_.end() ) {
+    branch->second.valueL_ = value;
+  } else {
+    throw cms::Exception("InvalidParameter") 
+      << "No branch with name = " << name << " defined !!\n";
+  }
+}
+
+//
+//-------------------------------------------------------------------------------
+//
+
+void PFTauIdEffNtupleProducer2::addBranch_EnPxPyPz(const std::string& name) 
+{
+  addBranchF(std::string(name).append("En"));
+  addBranchF(std::string(name).append("P"));
+  addBranchF(std::string(name).append("Px"));
+  addBranchF(std::string(name).append("Py"));
+  addBranchF(std::string(name).append("Pz"));
+  addBranchF(std::string(name).append("M"));
+  addBranchF(std::string(name).append("Eta"));
+  addBranchF(std::string(name).append("Phi"));
+  addBranchF(std::string(name).append("Pt"));
+}
+//
+//-------------------------------------------------------------------------------
+//
+
+void PFTauIdEffNtupleProducer2::setValue_EnPxPyPz(const std::string& name, const reco::Candidate::LorentzVector& p4)
+{
+  setValueF(std::string(name).append("En"), p4.E());
+  setValueF(std::string(name).append("P"), p4.P());
+  setValueF(std::string(name).append("Px"), p4.px());
+  setValueF(std::string(name).append("Py"), p4.py());
+  setValueF(std::string(name).append("Pz"), p4.pz());
+  setValueF(std::string(name).append("M"), p4.M());
+  setValueF(std::string(name).append("Eta"), p4.eta());
+  setValueF(std::string(name).append("Phi"), p4.phi());
+  setValueF(std::string(name).append("Pt"), p4.pt());
+}
+
+#include "FWCore/Framework/interface/MakerMacros.h"
+
+DEFINE_FWK_MODULE(PFTauIdEffNtupleProducer2);

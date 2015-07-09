@@ -1,0 +1,12 @@
+<arguments>
+  <Job Lumis="1:2719,1:21755,1:39380,1:47086,1:68608,1:70525,1:79286"  SkipEvents="0"  JobID="1"  MaxEvents="-1"  InputBlocks="/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM#110c7c72-6bd9-11e4-ba18-003048f02d38"  InputFiles="/store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/00000/364C6158-1C6C-E411-8437-002590AC5082.root" >
+  </Job>
+  <Job Lumis="1:5414,1:10806,1:12789,1:37317"  SkipEvents="0"  JobID="2"  MaxEvents="-1"  InputBlocks="/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM#110c7c72-6bd9-11e4-ba18-003048f02d38"  InputFiles="/store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/00000/985F434B-0E6C-E411-8A0D-002481E0D2E8.root" >
+  </Job>
+  <Job Lumis="1:11118,1:37082,1:60645,1:91404"  SkipEvents="0"  JobID="3"  MaxEvents="-1"  InputBlocks="/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM#e278016e-6bde-11e4-a6be-003048f02c8a"  InputFiles="/store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/10000/4006F21C-F46B-E411-9793-003048F0E780.root" >
+  </Job>
+  <Job Lumis="1:11710,1:19212,1:29085,1:31173,1:39796"  SkipEvents="0"  JobID="4"  MaxEvents="-1"  InputBlocks="/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM#e278016e-6bde-11e4-a6be-003048f02c8a"  InputFiles="/store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/10000/86004EEE-216C-E411-B791-002590494CB2.root" >
+  </Job>
+  <Job Lumis="1:12239,1:26135,1:41962,1:52920,1:64650,1:84098"  SkipEvents="0"  JobID="5"  MaxEvents="-1"  InputBlocks="/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM#e278016e-6bde-11e4-a6be-003048f02c8a"  InputFiles="/store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/10000/9C5F8384-F06B-E411-A8C1-003048D373CC.root" >
+  </Job>
+</arguments>

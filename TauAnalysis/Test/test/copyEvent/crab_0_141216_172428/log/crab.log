@@ -1,0 +1,270 @@
+2014-12-16 17:24:29,579 [DEBUG] 	/afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg pickevents_crab.config
+
+2014-12-16 17:24:29,579 [INFO] 	Version 2.11.1_patch1 running on Tue Dec 16 17:24:29 2014 CET (16:24:29 UTC)
+
+crab. Working options:
+	scheduler           remoteGlidein
+	job type            CMSSW
+	server              OFF
+	working directory   /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/
+
+2014-12-16 17:24:29,579 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/allowed_releases.conf].
+2014-12-16 17:24:29,589 [DEBUG] 	/afs/desy.de/user/a/anayak/.cms_crab/0_GET_allowed_releases.conf expired, refreshing cache
+2014-12-16 17:24:29,589 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/allowed_releases.conf
+	data: {}
+2014-12-16 17:24:35,184 [DEBUG] 	Input whitelist: 
+2014-12-16 17:24:35,184 [DEBUG] 	Input blacklist: 
+2014-12-16 17:24:35,184 [DEBUG] 	Converted whitelist: 
+2014-12-16 17:24:35,184 [DEBUG] 	Converted blacklist: 
+2014-12-16 17:24:44,716 [INFO] 	Your proxy will expire in:
+	0 hours 00 minutes 00 seconds
+
+2014-12-16 17:24:50,737 [DEBUG] 	MyProxy delegation:
+eval `scram unsetenv -sh`; export GT_PROXY_MODE=rfc; myproxy-init -d -n -s myproxy.cern.ch
+2014-12-16 17:24:50,737 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/site_black_list.conf].
+2014-12-16 17:24:50,738 [DEBUG] 	/afs/desy.de/user/a/anayak/.cms_crab/0_GET_site_black_list.conf expired, refreshing cache
+2014-12-16 17:24:50,738 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/site_black_list.conf
+	data: {}
+2014-12-16 17:24:50,789 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+ 
+2014-12-16 17:24:53,681 [DEBUG] 	/afs/desy.de/user/a/anayak/.cms_sitedbcache/0_GET_people.json expired, refreshing cache
+2014-12-16 17:24:53,681 [DEBUG] 	getData: 
+	url: /sitedb/data/prod/people
+	data: {}
+2014-12-16 17:24:54,502 [DEBUG] 	Linux nafhh-cms05.desy.de 2.6.32-431.29.2.el6.x86_64 #1 SMP Tue Sep 9 13:45:55 CDT 2014 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Used properties:
+Linux nafhh-cms05.desy.de 2.6.32-431.29.2.el6.x86_64 #1 SMP Tue Sep 9 13:45:55 CDT 2014 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Used properties:
+   CMSSW.datasetpath : /DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM
+   CMSSW.lumi_mask : pickevents.json
+   CMSSW.lumis_per_job : 1
+   CMSSW.output_file : pickevents.root
+   CMSSW.pset : /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_2/src/PhysicsTools/Utilities/configuration/copyPickMerge_cfg.py
+   CMSSW.pycfg_params : eventsToProcess_load=pickevents_runEvents.txt outputFile=pickevents.root
+   CMSSW.total_number_of_lumis : -1
+   CRAB.cfg : pickevents_crab.config
+   CRAB.create : 
+   CRAB.jobtype : cmssw
+   CRAB.scheduler : remoteGlidein
+   CRAB.submit : 
+   USER.email : anayak@desy.de
+   USER.return_data : 1
+End of used properties.
+
+2014-12-16 17:24:54,503 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/site_black_list.conf].
+2014-12-16 17:24:54,503 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2014-12-16 17:24:54,503 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2014-12-16 17:24:57,868 [DEBUG] 	CMSSW::__init__
+2014-12-16 17:24:57,869 [DEBUG] 	Scram::Scram() version is 2
+2014-12-16 17:24:57,869 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc481
+2014-12-16 17:24:57,869 [DEBUG] 	Downloading file [https://cmssdt.cern.ch/SDT/cgi-bin] to [/afs/desy.de/user/a/anayak/.cms_crab/ReleasesXML?anytype=1].
+2014-12-16 17:24:57,870 [DEBUG] 	/afs/desy.de/user/a/anayak/.cms_crab/0_GET_ReleasesXML?anytype=1 expired, refreshing cache
+2014-12-16 17:24:57,870 [DEBUG] 	getData: 
+	url: /SDT/cgi-bin/ReleasesXML?anytype=1
+	data: {}
+2014-12-16 17:25:00,388 [INFO] 	Contacting Data Discovery Services ...
+2014-12-16 17:25:00,389 [INFO] 	Accessing DBS at: https://cmsweb.cern.ch/dbs/prod/global/DBSReader
+2014-12-16 17:25:08,810 [INFO] 	DBS3 lookup took  5.63 sec
+2014-12-16 17:25:08,850 [INFO] 	Datatype is mc
+2014-12-16 17:25:09,230 [DEBUG] 	Retrieve block locations with
+curl -ks --cert $X509_USER_PROXY --key $X509_USER_PROXY "https://cmsweb.cern.ch/phedex/datasvc/json/prod/BlockReplicaSummary?dataset=/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM&complete=y"
+2014-12-16 17:25:09,545 [DEBUG] 	Retrieve PNNs type with
+curl -ks --cert $X509_USER_PROXY --key $X509_USER_PROXY "https://cmsweb.cern.ch/phedex/datasvc/cjson/prod/nodes"
+2014-12-16 17:25:09,850 [INFO] 	Requested (A)DS /DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM has 2 block(s).
+2014-12-16 17:25:10,197 [DEBUG] 	Job splitting method: LumiBased
+2014-12-16 17:25:10,198 [DEBUG] 	Splitting by Lumi
+2014-12-16 17:25:18,033 [DEBUG] 	Job 1 will run on 1 files and 7 lumis 
+2014-12-16 17:25:18,033 [DEBUG] 	Job 2 will run on 1 files and 4 lumis 
+2014-12-16 17:25:18,033 [DEBUG] 	Job 3 will run on 1 files and 4 lumis 
+2014-12-16 17:25:18,034 [DEBUG] 	Job 4 will run on 1 files and 5 lumis 
+2014-12-16 17:25:18,034 [DEBUG] 	Job 5 will run on 1 files and 6 lumis 
+2014-12-16 17:25:18,034 [INFO] 	5 jobs created to run on 26 lumis
+2014-12-16 17:25:19,718 [DEBUG] 	PsetManipulator::__init__: PSet file = /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_2/src/PhysicsTools/Utilities/configuration/copyPickMerge_cfg.py
+2014-12-16 17:25:20,868 [DEBUG] 	lib /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/lib to be tarred
+2014-12-16 17:25:24,086 [DEBUG] 	data TauAnalysis/RecoTools/data to be tarred
+2014-12-16 17:25:36,878 [DEBUG] 	Creator: JobType CMSSW created
+2014-12-16 17:25:36,878 [DEBUG] 	Creator: total # of jobs = 5
+2014-12-16 17:25:36,878 [DEBUG] 	Creator constructor finished
+2014-12-16 17:25:38,655 [DEBUG] 	parseRange_ None
+2014-12-16 17:25:38,662 [DEBUG] 	Scram::Scram() version is 2
+2014-12-16 17:25:38,662 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc481
+2014-12-16 17:25:38,663 [DEBUG] 	Creator::run() called
+2014-12-16 17:25:38,693 [DEBUG] 	Scram::Scram() version is 2
+2014-12-16 17:25:38,693 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc481
+2014-12-16 17:25:38,903 [INFO] 	Creating 5 jobs, please wait...
+2014-12-16 17:25:38,903 [DEBUG] 	Creation Time: 0.240437984467
+2014-12-16 17:25:38,903 [INFO] 	Total of 5 jobs created.
+
+2014-12-16 17:25:38,904 [DEBUG] 	Submitter::run() called
+2014-12-16 17:25:38,909 [DEBUG] 	nsjobs -1
+2014-12-16 17:25:38,909 [DEBUG] 	Total jobs 5
+2014-12-16 17:25:38,915 [DEBUG] 	nj_list [1, 2, 3, 4, 5]
+2014-12-16 17:25:39,419 [DEBUG] 	GRIDNAME: /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak 
+2014-12-16 17:25:40,438 [DEBUG] 	Submission DashBoard Pre-Submission report: {'ApplicationVersion': 'CMSSW_7_2_2', 'taskId': 'anayak_crab_0_141216_172428_8t13mn', 'resubmitter': 'user', 'tool': 'crab2', 'vo': 'cms', 'tool_ui': 'nafhh-cms05.desy.de', 'JSToolVersion': '2.11.1_patch1', 'user': 'anayak', 'scheduler': 'GLIDEIN', 'taskType': 'analysis', 'CMSUser': 'anayak', 'jobId': 'TaskMeta', 'datasetFull': '/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/AODSIM', 'exe': 'cmsRun', 'GridName': '/C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak', 'SubmissionType': 'direct'}
+2014-12-16 17:25:40,439 [INFO] 	Checking available resources...
+2014-12-16 17:25:40,450 [INFO] 	Found  compatible site(s) for job 1
+2014-12-16 17:25:40,451 [INFO] 	1 blocks of jobs will be submitted
+2014-12-16 17:25:40,452 [DEBUG] 	Delegating proxy 
+2014-12-16 17:25:40,452 [DEBUG] 	Submitting jobs [1, 2, 3, 4, 5]
+2014-12-16 17:25:40,477 [DEBUG] 	Calling ServerConfig default
+2014-12-16 17:25:40,478 [DEBUG] 	getting serverlist from web
+2014-12-16 17:25:40,478 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/AvailableServerList].
+2014-12-16 17:25:40,479 [DEBUG] 	/afs/desy.de/user/a/anayak/.cms_crab/0_GET_AvailableServerList expired, refreshing cache
+2014-12-16 17:25:40,479 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/AvailableServerList
+	data: {}
+2014-12-16 17:25:40,564 [DEBUG] 	All avaialble servers: [['cern_vocms83', '2.8.4-', 'remoteGlidein'], ['unl_hcc-crabserver', '2.8.4-', 'remoteGlidein']]
+2014-12-16 17:25:40,564 [DEBUG] 	All avaialble servers compatible with 2.11.1_patch1: ['cern_vocms83', 'unl_hcc-crabserver']
+2014-12-16 17:25:40,564 [DEBUG] 	Avaialble servers: ['cern_vocms83', 'unl_hcc-crabserver'] choosen: unl_hcc-crabserver
+2014-12-16 17:25:40,564 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/server_unl_hcc-crabserver.conf].
+2014-12-16 17:25:40,565 [DEBUG] 	/afs/desy.de/user/a/anayak/.cms_crab/0_GET_server_unl_hcc-crabserver.conf expired, refreshing cache
+2014-12-16 17:25:40,565 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/server_unl_hcc-crabserver.conf
+	data: {}
+2014-12-16 17:25:40,631 [INFO] 	remotehost from Avail.List = hcc-crabserver.unl.edu
+2014-12-16 17:25:40,648 [INFO] 	list of PSN's for submission: T2_DE_DESY,T1_UK_RAL,T2_FR_IPHC
+2014-12-16 17:25:40,649 [DEBUG] 	Scram::Scram() version is 2
+2014-12-16 17:25:40,649 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc481
+2014-12-16 17:25:41,508 [INFO] 	contacting remote host hcc-crabserver.unl.edu
+2014-12-16 17:25:42,436 [DEBUG] 	Execute command :
+eval `scram unsetenv -sh`;  gsissh  -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no hcc-crabserver.unl.edu  "sleep 3600"
+2014-12-16 17:25:42,440 [INFO] 	Establishing gsissh ControlPath. Wait 2 sec ...
+2014-12-16 17:25:44,443 [INFO] 	Establishing gsissh ControlPath. Wait 2 sec ...
+2014-12-16 17:25:46,448 [INFO] 	COPY FILES TO REMOTE HOST
+2014-12-16 17:25:46,448 [DEBUG] 	Execute command :
+eval `scram unsetenv -sh`;  gsissh -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no hcc-crabserver.unl.edu  mkdir -p anayak_crab_0_141216_172428_8t13mn
+2014-12-16 17:25:46,897 [DEBUG] 	Status,output= 0,
+2014-12-16 17:25:46,897 [DEBUG] 	Execute command :
+gsiscp -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/share/default.tgz /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/share/arguments.xml /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/job/CMSSW.sh /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/share//anayak_crab_0_141216_172428_8t13mn_job5.jdl /tmp/x509up_u24014 hcc-crabserver.unl.edu:anayak_crab_0_141216_172428_8t13mn
+2014-12-16 17:25:50,211 [DEBUG] 	Status,output= 0,
+2014-12-16 17:25:50,212 [INFO] 	SUBMIT TO REMOTE GLIDEIN FRONTEND
+2014-12-16 17:25:50,212 [DEBUG] 	Execute command :
+eval `scram unsetenv -sh`;  gsissh -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no hcc-crabserver.unl.edu "cd anayak_crab_0_141216_172428_8t13mn;  condor_submit  anayak_crab_0_141216_172428_8t13mn_job5.jdl; echo 'CONDOR_SUBMIT-EXIT-STATUS IS' \$?"
+2014-12-16 17:25:50,827 [DEBUG] 	Status,output= 0,Submitting job(s).....
+5 job(s) submitted to cluster 228891.
+CONDOR_SUBMIT-EXIT-STATUS IS 0
+2014-12-16 17:25:50,829 [DEBUG] 	Returning {u'anayak_crab_0_141216_172428_8t13mn_job5': 'hcc-crabserver.unl.edu//141216//228891.4', u'anayak_crab_0_141216_172428_8t13mn_job4': 'hcc-crabserver.unl.edu//141216//228891.3', u'anayak_crab_0_141216_172428_8t13mn_job3': 'hcc-crabserver.unl.edu//141216//228891.2', u'anayak_crab_0_141216_172428_8t13mn_job2': 'hcc-crabserver.unl.edu//141216//228891.1', u'anayak_crab_0_141216_172428_8t13mn_job1': 'hcc-crabserver.unl.edu//141216//228891.0'}
+anayak_crab_0_141216_172428_8t13mn
+nafhh-cms05.desy.de
+2014-12-16 17:25:50,842 [DEBUG] 	WMS : nafhh-cms05.desy.de
+Collection ID : anayak_crab_0_141216_172428_8t13mn
+2014-12-16 17:25:50,850 [DEBUG] 	Submitted job # 1
+2014-12-16 17:25:50,850 [DEBUG] 	Submitted job # 2
+2014-12-16 17:25:50,850 [DEBUG] 	Submitted job # 3
+2014-12-16 17:25:50,851 [DEBUG] 	Submitted job # 4
+2014-12-16 17:25:50,851 [DEBUG] 	Submitted job # 5
+2014-12-16 17:25:50,894 [DEBUG] 	Updating [[1, 2, 3, 4, 5]] state SubSuccess
+2014-12-16 17:25:51,406 [DEBUG] 	GRIDNAME: /C=DE/O=GermanGrid/OU=DESY/CN=Aruna Kumar Nayak 
+2014-12-16 17:25:52,413 [DEBUG] 	Submission Time: 13.5096189976
+2014-12-16 17:25:52,414 [INFO] 	Total of 5 jobs submitted.
+2014-12-16 17:47:44,035 [DEBUG] 	/afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -status -c crab_0_141216_172428
+
+2014-12-16 17:47:44,035 [INFO] 	Version 2.11.1_patch1 running on Tue Dec 16 17:47:44 2014 CET (16:47:44 UTC)
+
+crab. Working options:
+	scheduler           remoteGlidein
+	job type            CMSSW
+	server              OFF
+	working directory   /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/
+
+2014-12-16 17:47:44,035 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/allowed_releases.conf].
+2014-12-16 17:47:44,095 [DEBUG] 	Input whitelist: 
+2014-12-16 17:47:44,095 [DEBUG] 	Input blacklist: 
+2014-12-16 17:47:44,095 [DEBUG] 	Converted whitelist: 
+2014-12-16 17:47:44,096 [DEBUG] 	Converted blacklist: 
+2014-12-16 17:47:47,614 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/site_black_list.conf].
+2014-12-16 17:47:47,615 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+ 
+2014-12-16 17:47:51,596 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/site_black_list.conf].
+2014-12-16 17:47:51,597 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2014-12-16 17:47:51,597 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2014-12-16 17:47:51,747 [DEBUG] 	Status::run() called
+2014-12-16 17:47:51,747 [INFO] 	Checking the status of all jobs: please wait
+2014-12-16 17:47:51,988 [INFO] 	contacting remote host hcc-crabserver.unl.edu
+2014-12-16 17:47:52,975 [DEBUG] 	Execute command :
+gsiscp -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no /tmp/x509up_u24014 hcc-crabserver.unl.edu:anayak_crab_0_141216_172428_8t13mn
+2014-12-16 17:47:53,745 [DEBUG] 	Status,output= 0,
+2014-12-16 17:47:53,745 [DEBUG] 	Execute command :
+eval `scram unsetenv -sh`;  gsissh -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no hcc-crabserver.unl.edu  "condor_history -userlog anayak_crab_0_141216_172428_8t13mn/condor.log -xml"
+2014-12-16 17:47:54,368 [DEBUG] 	Execute command :
+eval `scram unsetenv -sh`;  gsissh -o ControlMaster=auto -o ControlPath=/tmp/anayak/.ssh/ssh-link--270914041-hcc-crabserver.unl.edu -o BatchMode=yes -o StrictHostKeyChecking=no -o ForwardX11=no hcc-crabserver.unl.edu "cd anayak_crab_0_141216_172428_8t13mn; egrep -H WrapperExitCode\|ExeExitCode crab_fjr_*xml|tr '_.\t\"' ' '|awk '{print \$3\" \"\$7\" \"\$9}'"
+2014-12-16 17:47:54,809 [DEBUG] 	Status,output= 0
+1 0 WrapperExitCode
+1 0 ExeExitCode
+2 0 WrapperExitCode
+2 0 ExeExitCode
+3 0 WrapperExitCode
+3 0 ExeExitCode
+4 0 WrapperExitCode
+4 0 ExeExitCode
+5 0 WrapperExitCode
+5 0 ExeExitCode
+2014-12-16 17:47:54,919 [INFO] 	
+ID    END STATUS            ACTION       ExeExitCode JobExitCode E_HOST
+----- --- ----------------- ------------  ---------- ----------- ---------
+1     N   Done              Terminated    0          0           grid-cr5.desy.de
+2     N   Done              Terminated    0          0           arc-ce03.gridpp.rl.ac.uk
+3     N   Done              Terminated    0          0           arc-ce02.gridpp.rl.ac.uk
+4     N   Done              Terminated    0          0           arc-ce03.gridpp.rl.ac.uk
+5     N   Done              Terminated    0          0           arc-ce04.gridpp.rl.ac.uk
+
+2014-12-16 17:47:54,932 [INFO] 	ExitCodes Summary
+ >>>>>>>>> 5 Jobs with Wrapper Exit Code : 0 
+	 List of jobs: 1-5 
+	See https://twiki.cern.ch/twiki/bin/view/CMSPublic/JobExitCodes for Exit Code meaning
+
+2014-12-16 17:47:54,932 [INFO] 	 5 Total Jobs 
+
+2014-12-16 17:47:54,937 [INFO] 	You can also follow the status of this task on :
+	CMS Dashboard: http://dashb-cms-job-task.cern.ch/taskmon.html#task=anayak_crab_0_141216_172428_8t13mn
+	Your task name is: anayak_crab_0_141216_172428_8t13mn 
+
+2014-12-16 17:47:54,938 [DEBUG] 	Status Time: 3.19068622589
+2014-12-16 17:53:28,296 [DEBUG] 	/afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -get -c crab_0_141216_172428
+
+2014-12-16 17:53:28,297 [INFO] 	Version 2.11.1_patch1 running on Tue Dec 16 17:53:28 2014 CET (16:53:28 UTC)
+
+crab. Working options:
+	scheduler           remoteGlidein
+	job type            CMSSW
+	server              OFF
+	working directory   /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/
+
+2014-12-16 17:53:28,297 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/allowed_releases.conf].
+2014-12-16 17:53:28,348 [DEBUG] 	Input whitelist: 
+2014-12-16 17:53:28,348 [DEBUG] 	Input blacklist: 
+2014-12-16 17:53:28,349 [DEBUG] 	Converted whitelist: 
+2014-12-16 17:53:28,349 [DEBUG] 	Converted blacklist: 
+2014-12-16 17:53:30,216 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/site_black_list.conf].
+2014-12-16 17:53:30,217 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+ 
+2014-12-16 17:53:32,473 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/afs/desy.de/user/a/anayak/.cms_crab/site_black_list.conf].
+2014-12-16 17:53:32,473 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2014-12-16 17:53:32,473 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2014-12-16 17:53:32,654 [DEBUG] 	GetOutput::run() called
+2014-12-16 17:53:32,789 [DEBUG] 	fs: Invalid argument; it is possible that /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/ is not in AFS.
+Volume Name                    Quota       Used %Used   Partition
+ while checking AFS quota. Treat as check OK
+2014-12-16 17:53:32,797 [DEBUG] 	fs: Invalid argument; it is possible that /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/ is not in AFS.
+Volume Name                  kbytes      used     avail %used
+ while checking partition. Treat as check OK
+2014-12-16 17:53:33,927 [INFO] 	contacting remote host hcc-crabserver.unl.edu
+2014-12-16 17:53:34,881 [INFO] 	Preparing to rsync 2 files
+2014-12-16 17:53:39,183 [INFO] 	Results of Jobs # 1 are in /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/
+2014-12-16 17:53:39,369 [DEBUG] 	fs: Invalid argument; it is possible that /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/ is not in AFS.
+Volume Name                    Quota       Used %Used   Partition
+ while checking AFS quota. Treat as check OK
+2014-12-16 17:53:39,378 [DEBUG] 	fs: Invalid argument; it is possible that /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/ is not in AFS.
+Volume Name                  kbytes      used     avail %used
+ while checking partition. Treat as check OK
+2014-12-16 17:53:40,406 [INFO] 	contacting remote host hcc-crabserver.unl.edu
+2014-12-16 17:53:41,353 [INFO] 	Preparing to rsync 8 files
+2014-12-16 17:53:47,104 [INFO] 	Results of Jobs # 2 are in /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/
+2014-12-16 17:53:47,302 [INFO] 	Results of Jobs # 3 are in /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/
+2014-12-16 17:53:47,498 [INFO] 	Results of Jobs # 4 are in /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/
+2014-12-16 17:53:47,713 [INFO] 	Results of Jobs # 5 are in /nfs/dust/cms/user/anayak/CMS/OnSLC6/CMSSW_7_2_2_tauCSA14/src/TauAnalysis/Test/test/copyEvent/crab_0_141216_172428/res/
+2014-12-16 17:53:47,793 [DEBUG] 	GetOutput Time: 15.1388998032

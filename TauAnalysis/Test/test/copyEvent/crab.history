@@ -1,0 +1,3 @@
+141216_172428: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg pickevents_crab.config
+141216_174743: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -status -c crab_0_141216_172428
+141216_175328: /afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python/crab.py -get -c crab_0_141216_172428

@@ -1,0 +1,48 @@
+small 831.76
+tt2 831.76
+QCD_MuEnriched 381304
+WJets  61526.7
+TTJets 831.76
+DYJets 4746
+Stau 102.77 
+QCD_Pt-1000to1400_Tune4C_13TeV_pythia8 8.195
+QCD_Pt-120to170_Tune4C_13TeV_pythia8 486200
+QCD_Pt-1400to1800_Tune4C_13TeV_pythia8 0.7346
+QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8 1
+QCD_Pt-15to30_Tune4C_13TeV_pythia8  2237000000 
+QCD_Pt-170to300_Tune4C_13TeV_pythia8  120300 
+QCD_Pt-1800to2400_Tune4C_13TeV_pythia8  0.102 
+QCD_Pt-20toInf_MuEnrichedPt15_13TeV_pythia8  866600000 0.00044 
+QCD_Pt-2400to3200_Tune4C_13TeV_pythia8  0.00644 
+QCD_Pt-300to470_Tune4C_13TeV_pythia8 7475
+QCD_Pt-30to50_Tune4C_13TeV_pythia8  161500000 
+QCD_Pt-470to600_Tune4C_13TeV_pythia8  587 
+QCD_Pt-50to80_Tune4C_13TeV_pythia8  22110000 
+QCD_Pt-600to800_Tune4C_13TeV_pythia8  167 
+QCD_Pt-800to1000_Tune4C_13TeV_pythia8  28.25 
+QCD_Pt-80to120_Tune4C_13TeV_pythia8  3000114 
+VBF_HToTauTau_M-125_13TeV-powheg 43.92 0.0632
+GluGluToHToTauTau_M-125_13TeV-powheg 3.748 0.0632
+ZJetsToNuNu_HT-100to200_13TeV-madgraph 372.6
+ZJetsToNuNu_HT-200to400_13TeV-madgraph 100.8
+ZJetsToNuNu_HT-400to600_13TeV-madgraph 11.9
+ZJetsToNuNu_HT-600toInf_13TeV-madgraph 4.113
+DYJetsToLL_100to200 246.8
+DYJetsToLL_200to400 66.34
+DYJetsToLL_400to600 8.313
+DYJetsToLL_600toInf 2.767
+TTToLeptons_s-channel 7.20 0.108 3
+TTToLeptons_t-channel 136.05 0.108 3
+TBarToLeptons_s-channel  80.97 0.108 3
+TBarToLeptons_t-channel  4.16 0.108 3 
+T_tW-channel 35.6
+Tbar_tW-channel 35.6 
+TTbarH  0.509
+TTWJets 1.152
+TTZJets 2.232
+WJetsToLNu_HT-100to200 1817.0 1.23
+WJetsToLNu_HT-200to400 471.6 1.23
+WJetsToLNu_HT-400to600 55.61 1.23 
+WJetsToLNu_HT-600toInf 18.81 1.23
+ZZTo4L 1.218
+WZJets3LNu 66.1
