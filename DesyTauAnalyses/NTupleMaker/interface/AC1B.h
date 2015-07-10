@@ -213,6 +213,15 @@ public :
    Float_t         tau_chargedIsoPtSum[100];   //[tau_count]
    Float_t         tau_neutralIsoPtSum[100];   //[tau_count]
    Float_t         tau_puCorrPtSum[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_px[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_py[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_pz[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_mass[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_id[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_dxy[100];   //[tau_count]
+   Float_t         tau_leadchargedhadrcand_dz[100];   //[tau_count]
+ 
+ 
    Float_t         tau_againstMuonLoose3[100];   //[tau_count]
    Float_t         tau_againstMuonTight3[100];   //[tau_count]
    Float_t         tau_againstElectronVLooseMVA5[100];   //[tau_count]
@@ -504,6 +513,13 @@ public :
    TBranch        *b_tau_chargedIsoPtSum;   //!
    TBranch        *b_tau_neutralIsoPtSum;   //!
    TBranch        *b_tau_puCorrPtSum;   //!
+   TBranch        *b_tau_leadchargedhadrcand_px;   //[tau_count]
+   TBranch        *b_tau_leadchargedhadrcand_py;   //[tau_count]
+   TBranch        *b_tau_leadchargedhadrcand_pz;   //[tau_count]
+   TBranch        *b_tau_leadchargedhadrcand_mass;   //[tau_count]
+   TBranch        *b_tau_leadchargedhadrcand_id;   //[tau_count]
+   TBranch        *b_tau_leadchargedhadrcand_dxy;   //[tau_count]
+   TBranch        *b_tau_leadchargedhadrcand_dz;   //[tau_count]
    TBranch        *b_tau_againstMuonLoose3;   //!
    TBranch        *b_tau_againstMuonTight3;   //!
    TBranch        *b_tau_againstElectronVLooseMVA5;   //!
@@ -884,6 +900,14 @@ void AC1B::Init(TTree *tree)
    fChain->SetBranchAddress("tau_chargedIsoPtSum", tau_chargedIsoPtSum, &b_tau_chargedIsoPtSum);
    fChain->SetBranchAddress("tau_neutralIsoPtSum", tau_neutralIsoPtSum, &b_tau_neutralIsoPtSum);
    fChain->SetBranchAddress("tau_puCorrPtSum", tau_puCorrPtSum, &b_tau_puCorrPtSum);
+   
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_px", tau_leadchargedhadrcand_px, &b_tau_leadchargedhadrcand_px);
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_py", tau_leadchargedhadrcand_py, &b_tau_leadchargedhadrcand_py);
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_pz", tau_leadchargedhadrcand_pz, &b_tau_leadchargedhadrcand_pz);
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_mass", tau_leadchargedhadrcand_mass, &b_tau_leadchargedhadrcand_mass);
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_id", tau_leadchargedhadrcand_id, &b_tau_leadchargedhadrcand_id);
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_dxy", tau_leadchargedhadrcand_dxy, &b_tau_leadchargedhadrcand_dxy);
+   fChain->SetBranchAddress("tau_leadchargedhadrcand_dz", tau_leadchargedhadrcand_dz, &b_tau_leadchargedhadrcand_dz);
    fChain->SetBranchAddress("tau_againstMuonLoose3", tau_againstMuonLoose3, &b_tau_againstMuonLoose3);
    fChain->SetBranchAddress("tau_againstMuonTight3", tau_againstMuonTight3, &b_tau_againstMuonTight3);
    fChain->SetBranchAddress("tau_againstElectronVLooseMVA5", tau_againstElectronVLooseMVA5, &b_tau_againstElectronVLooseMVA5);

@@ -28,9 +28,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V7C', '')
 
-#process.GlobalTag.globaltag = cms.string('MCRUN2_74_V9::Al')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
+
+#process.GlobalTag.globaltag = cms.string('MCRUN2_74_V9', '')
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(100)
