@@ -127,8 +127,8 @@ NTupleMaker::NTupleMaker(const edm::ParameterSet& iConfig) :
   //  propagatorWithMaterial = NULL;
   if(cYear != 2011 && cYear != 2012 && cYear != 2015)
     throw cms::Exception("NTupleMaker") << "Invalid Year, only 2011, 2012 and 2015  are allowed!";
-  if(cPeriod != "Summer11" && cPeriod != "Fall11" && cPeriod != "Summer12" && cPeriod != "PHYS14" && cPeriod != "Spring15")
-    throw cms::Exception("NTupleMaker") << "Invalid period, only Summer11, Fall11 and Summer12 and PHYS14 are allowed!";
+  if(cPeriod != "Summer11" && cPeriod != "Fall11" && cPeriod != "Summer12" && cPeriod != "PHYS14" && cPeriod != "Spring15" && cPeriod != "Run2015B")
+    throw cms::Exception("NTupleMaker") << "Invalid period, only Summer11, Fall11, Summer12, PHYS14, Spring15 and Run2015B are allowed!";
   
   double barrelRadius = 129.;  //p81, p50, ECAL TDR
   double endcapZ      = 320.5; // fig 3.26, p81, ECAL TDR
@@ -502,6 +502,14 @@ void NTupleMaker::beginJob(){
     tree->Branch("tau_chargedIsoPtSum", tau_chargedIsoPtSum, "tau_chargedIsoPtSum[tau_count]/F");
     tree->Branch("tau_neutralIsoPtSum", tau_neutralIsoPtSum, "tau_neutralIsoPtSum[tau_count]/F");
     tree->Branch("tau_puCorrPtSum", tau_puCorrPtSum, "tau_puCorrPtSum[tau_count]/F");
+
+    tree->Branch("tau_leadchargedhadrcand_px",  tau_leadchargedhadrcand_px,  "tau_leadchargedhadrcand_px[tau_count]/F");
+    tree->Branch("tau_leadchargedhadrcand_py",  tau_leadchargedhadrcand_py,  "tau_leadchargedhadrcand_py[tau_count]/F");
+    tree->Branch("tau_leadchargedhadrcand_pz",  tau_leadchargedhadrcand_pz,  "tau_leadchargedhadrcand_pz[tau_count]/F");
+    tree->Branch("tau_leadchargedhadrcand_mass",tau_leadchargedhadrcand_mass,"tau_leadchargedhadrcand_mass[tau_count]/F");
+    tree->Branch("tau_leadchargedhadrcand_id",  tau_leadchargedhadrcand_id,  "tau_leadchargedhadrcand_id[tau_count]/I");
+    tree->Branch("tau_leadchargedhadrcand_dxy", tau_leadchargedhadrcand_dxy, "tau_leadchargedhadrcand_dxy[tau_count]/F");
+    tree->Branch("tau_leadchargedhadrcand_dz",  tau_leadchargedhadrcand_dz,  "tau_leadchargedhadrcand_dz[tau_count]/F");
 
     tree->Branch("tau_againstMuonLoose3", tau_againstMuonLoose3, "tau_againstMuonLoose3[tau_count]/F");
     tree->Branch("tau_againstMuonTight3", tau_againstMuonTight3, "tau_againstMuonTight3[tau_count]/F");
@@ -1010,6 +1018,8 @@ void NTupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   event_timemicrosec = iEvent.time().microsecondOffset();
   event_luminosityblock = iEvent.getLuminosityBlock().luminosityBlock();
 
+  //  cout << "NTupleMaker.cc : run = " << event_run << "  event = " << event_nr << std::endl;
+
   // L1TriggerBits
   // https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h?v=CMSSW_6_2_0_SLHC2#04
   edm::Handle<L1GlobalTriggerReadoutRecord> L1trigger;
@@ -1057,9 +1067,9 @@ void NTupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 	    hltriggerprescales_->insert(std::pair<string, int>(trigName, HLTConfiguration.prescaleValue(iEvent,iSetup,trigName)));
   	    hltriggerresults_->insert(std::pair<string, int>(trigName, HLTrigger->accept(i)));
 	    TString TriggerName(trigName);
-	    //	 std::cout << trigName << " : " 
-	    //   << HLTrigger->accept(i) << " ; prescale : " 
-	    //   << HLTConfiguration.prescaleValue(iEvent,iSetup,trigName) << std::endl;
+	    //	    std::cout << trigName << " : " 
+	    //		      << HLTrigger->accept(i) << " ; prescale : " 
+	    //		      << HLTConfiguration.prescaleValue(iEvent,iSetup,trigName) << std::endl;
   	    if(HLTrigger->accept(i)) hltriggerresultsV_.push_back(trigName);
   	  }
   	}
@@ -1103,8 +1113,6 @@ void NTupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 	}
     }
   
-
-
   if(crecprimvertex)
     {
       edm::Handle<VertexCollection> Vertex;
@@ -1258,7 +1266,7 @@ void NTupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
   // rho neutral
   edm::Handle<double> rho;
-  iEvent.getByLabel(edm::InputTag("fixedGridRhoFastjetCentralNeutral"), rho);
+  iEvent.getByLabel(edm::InputTag("fixedGridRhoFastjetAll"), rho);
   assert(rho.isValid());
   rhoNeutral = *rho;
 
@@ -1281,6 +1289,7 @@ void NTupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       if(HEPMC.isValid())
 	{
 	  genweight = HEPMC->weight();
+	  //	  cout << "Event weight from HEPMC : " << genweight << endl;
 	  genid1 = HEPMC->pdf()->id.first;
 	  genx1 = HEPMC->pdf()->x.second;
 	  genid2 = HEPMC->pdf()->id.first;
@@ -2176,6 +2185,7 @@ unsigned int NTupleMaker::AddTaus(const edm::Event& iEvent, const edm::EventSetu
 
 	  SignedImpactParameter3D signed_ip3D;
 
+
 	  if((*Taus)[i].leadChargedHadrCand().isNonnull())
 	    {
 	      tau_leadchargedhadrcand_px[tau_count]   = (*Taus)[i].leadChargedHadrCand()->px();
@@ -2184,8 +2194,15 @@ unsigned int NTupleMaker::AddTaus(const edm::Event& iEvent, const edm::EventSetu
 	      tau_leadchargedhadrcand_mass[tau_count] = (*Taus)[i].leadChargedHadrCand()->mass();
 	      tau_leadchargedhadrcand_id[tau_count]   = (*Taus)[i].leadChargedHadrCand()->pdgId();
 
-	      // std::cout << "leading charged hadron : dxy = " << (*Taus)[i].leadChargedHadrCand()->dxy() 
-	      // 		<< "   dz = " << (*Taus)[i].leadChargedHadrCand()->dz() << std::endl;
+	      //	      std::cout << "leading charged hadron : dxy = " << (*Taus)[i].leadChargedHadrCand()->dxy() 
+	      //       		<< "   dz = " << (*Taus)[i].leadChargedHadrCand()->dz() << std::endl;
+	      pat::PackedCandidate const* packedLeadTauCand = dynamic_cast<pat::PackedCandidate const*>((*Taus)[i].leadChargedHadrCand().get());
+	      //	      std::cout << "leading charged hadron : dxy = " << packedLeadTauCand->dxy()
+	      //			<< "   dz = " << packedLeadTauCand->dz() << std::endl;
+
+	      tau_leadchargedhadrcand_dxy[tau_count]   = packedLeadTauCand->dxy();
+	      tau_leadchargedhadrcand_dz[tau_count]   = packedLeadTauCand->dz();
+
 
 	    }
 	  else
@@ -2195,6 +2212,9 @@ unsigned int NTupleMaker::AddTaus(const edm::Event& iEvent, const edm::EventSetu
 	      tau_leadchargedhadrcand_pz[tau_count]   = -999;
 	      tau_leadchargedhadrcand_mass[tau_count] = -999;
 	      tau_leadchargedhadrcand_id[tau_count]   = -999;
+	      tau_leadchargedhadrcand_dxy[tau_count]  = -999;
+	      tau_leadchargedhadrcand_dz[tau_count]   = -999;
+
 	    }
 	  
 	  // TrackRef track = (*Taus)[i].leadTrack();
@@ -2487,14 +2507,17 @@ unsigned int NTupleMaker::AddPFJets(const edm::Event& iEvent, const edm::EventSe
 	  
 	  //get MVA Id
           //for(reco::PFJetCollection::const_iterator iak4jets = ak4jets->begin(); iak4jets != ak4jets->end(); iak4jets++){
-          for(size_t ij = 0; ij < ak4jets->size(); ij++){
-	    reco::PFJetRef jetRef (ak4jets, ij);
-            if(deltaR((*pfjets)[i].p4(), jetRef->p4()) < 0.3){
-              //std::cout<<"original jet pt "<<(*pfjets)[i].pt()<<" re-recoed jet pt "<<jetRef->pt()<<" pu mva value "<<(*puJetIdMVAFull)[jetRef]<<std::endl;
-              pfjet_pu_jet_full_mva[pfjet_count] = (*puJetIdMVAFull)[jetRef];
-            }
-          }
-	  
+	  pfjet_pu_jet_full_mva[pfjet_count] = -9999;
+	  if (puJetIdMVAFull.isValid()&&ak4jets.isValid()) {
+	    for(size_t ij = 0; ij < ak4jets->size(); ij++){
+	      reco::PFJetRef jetRef (ak4jets, ij);
+	      if(deltaR((*pfjets)[i].p4(), jetRef->p4()) < 0.3){
+		//std::cout<<"original jet pt "<<(*pfjets)[i].pt()<<" re-recoed jet pt "<<jetRef->pt()<<" pu mva value "<<(*puJetIdMVAFull)[jetRef]<<std::endl;
+		pfjet_pu_jet_full_mva[pfjet_count] = (*puJetIdMVAFull)[jetRef];
+	      }
+	    }
+	  }	  
+
 	  pfjet_flavour[pfjet_count] = (*pfjets)[i].partonFlavour();
 		
 	  for(unsigned n = 0 ; n < cBtagDiscriminators.size() ; n++)
