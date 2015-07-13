@@ -252,6 +252,9 @@ int main(int argc, char * argv[]) {
   const float zVertexCut     = cfg.get<float>("ZVertexCut");
   const float dVertexCut     = cfg.get<float>("DVertexCut");
 
+  // Run range
+  const unsigned int RunRangeMin = cfg.get<unsigned int>("RunRangeMin");
+  const unsigned int RunRangeMax = cfg.get<unsigned int>("RunRangeMax");
 
   // **** end of configuration
 
@@ -350,6 +353,9 @@ int main(int argc, char * argv[]) {
 	cout << "      processed " << nEvents << " events" << endl; 
 
       float weight = 1;
+
+      if (analysisTree.event_run<RunRangeMin) continue;
+      if (analysisTree.event_run>RunRangeMax) continue;
 
       if (analysisTree.event_run<RunMin)
 	RunMin = analysisTree.event_run;
