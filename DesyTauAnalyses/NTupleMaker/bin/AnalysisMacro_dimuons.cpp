@@ -199,6 +199,10 @@ bool electronMvaIdTight(float eta, float mva) {
 
 }
 
+struct myclass {
+  bool operator() (int i,int j) { return (i<j);}
+} myobject;
+
 const float electronMass = 0;
 const float muonMass = 0.10565837;
 const float pionMass = 0.1396;
@@ -277,6 +281,8 @@ int main(int argc, char * argv[]) {
   unsigned int RunMin = 9999999;
   unsigned int RunMax = 0;
 
+  std::vector<unsigned int> allRuns; allRuns.clear();
+
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -324,6 +330,21 @@ int main(int argc, char * argv[]) {
       
       if (analysisTree.event_run>RunMax)
 	RunMax = analysisTree.event_run;
+
+      //      std::cout << " Run : " << analysisTree.event_run << std::endl;
+
+      bool isNewRun = true;
+      if (allRuns.size()>0) {
+	for (unsigned int iR=0; iR<allRuns.size(); ++iR) {
+	  if (analysisTree.event_run==allRuns.at(iR)) {
+	    isNewRun = false;
+	    break;
+	  }
+	}
+      }
+
+      if (isNewRun) 
+	allRuns.push_back(analysisTree.event_run);
 
       // vertex cuts
 
@@ -488,8 +509,13 @@ int main(int argc, char * argv[]) {
   std::cout << "Total number of selected events (id muon pairs)  = " << selEventsIdMuons << std::endl;
   std::cout << "Total number of selected events (iso muon pairs) = " << selEventsIsoMuons << std::endl;
   std::cout << std::endl;
-  std::cout << "RunMax = " << RunMax << std::endl;
   std::cout << "RunMin = " << RunMin << std::endl;
+  std::cout << "RunMax = " << RunMax << std::endl;
+  // using object as comp
+  std::sort (allRuns.begin(), allRuns.end(), myobject);
+  std::cout << "Runs : ";
+  for (unsigned int iR=0; iR<allRuns.size(); ++iR)
+    std::cout << " " << allRuns.at(iR);
   std::cout << std::endl;
 
   file->cd("");
