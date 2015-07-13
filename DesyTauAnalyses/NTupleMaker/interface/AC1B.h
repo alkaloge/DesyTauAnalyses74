@@ -220,8 +220,7 @@ public :
    Float_t         tau_leadchargedhadrcand_id[100];   //[tau_count]
    Float_t         tau_leadchargedhadrcand_dxy[100];   //[tau_count]
    Float_t         tau_leadchargedhadrcand_dz[100];   //[tau_count]
- 
- 
+   
    Float_t         tau_againstMuonLoose3[100];   //[tau_count]
    Float_t         tau_againstMuonTight3[100];   //[tau_count]
    Float_t         tau_againstElectronVLooseMVA5[100];   //[tau_count]
@@ -318,12 +317,13 @@ public :
    std::vector<std::string>  *run_floattaudiscriminators;
    std::vector<std::string>  *run_binarytaudiscriminators;
    std::vector<std::string>  *run_btagdiscriminators;
-   Int_t           hltriggerresults_;
-   std::string          hltriggerresults_first[kMaxhltriggerresults];
-   Int_t           hltriggerresults_second[kMaxhltriggerresults];   //[hltriggerresults_]
-   Int_t           hltriggerprescales_;
-   std::string          hltriggerprescales_first[kMaxhltriggerprescales];
-   Int_t           hltriggerprescales_second[kMaxhltriggerprescales];   //[hltriggerprescales_]
+
+   std::map<std::string, int>* hltriggerresults = new std::map<std::string, int>() ;
+   std::vector<std::string>  hltriggerresults_first;
+   std::vector<int>          hltriggerresults_second;   //[hltriggerresults_]
+   std::map<std::string, int>* hltriggerprescales = new std::map<std::string, int>();
+   std::vector<std::string>  hltriggerprescales_first;
+   std::vector<int>          hltriggerprescales_second;   //[hltriggerprescales_]
    std::vector<std::string>  *hltriggerresultsV;
 
    // List of branches
@@ -665,7 +665,26 @@ Int_t AC1B::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
-   return fChain->GetEntry(entry);
+   Int_t entryX = fChain->GetEntry(entry);
+   
+   if (entry>0) {
+       hltriggerresults_first.clear();
+       hltriggerresults_second.clear();
+       //       unsigned int ntrig = hltriggerresults->size();
+       for (std::map<std::string,int>::iterator it=hltriggerresults->begin(); it!=hltriggerresults->end(); ++it) {
+	 hltriggerresults_first.push_back(it->first);
+	 hltriggerresults_second.push_back(it->second);
+       } 
+       hltriggerprescales_first.clear();
+       hltriggerprescales_second.clear(); 
+       //       unsigned int nprescales = hltriggerprescales->size();
+       for (std::map<std::string,int>::iterator it=hltriggerprescales->begin(); it!=hltriggerprescales->end(); ++it) {
+	 hltriggerprescales_first.push_back(it->first);
+	 hltriggerprescales_second.push_back(it->second);
+       }
+   }
+   return entryX;
+
 }
 Long64_t AC1B::GetEntries()
 {
@@ -900,7 +919,7 @@ void AC1B::Init(TTree *tree)
    fChain->SetBranchAddress("tau_chargedIsoPtSum", tau_chargedIsoPtSum, &b_tau_chargedIsoPtSum);
    fChain->SetBranchAddress("tau_neutralIsoPtSum", tau_neutralIsoPtSum, &b_tau_neutralIsoPtSum);
    fChain->SetBranchAddress("tau_puCorrPtSum", tau_puCorrPtSum, &b_tau_puCorrPtSum);
-   
+  
    fChain->SetBranchAddress("tau_leadchargedhadrcand_px", tau_leadchargedhadrcand_px, &b_tau_leadchargedhadrcand_px);
    fChain->SetBranchAddress("tau_leadchargedhadrcand_py", tau_leadchargedhadrcand_py, &b_tau_leadchargedhadrcand_py);
    fChain->SetBranchAddress("tau_leadchargedhadrcand_pz", tau_leadchargedhadrcand_pz, &b_tau_leadchargedhadrcand_pz);
@@ -908,6 +927,7 @@ void AC1B::Init(TTree *tree)
    fChain->SetBranchAddress("tau_leadchargedhadrcand_id", tau_leadchargedhadrcand_id, &b_tau_leadchargedhadrcand_id);
    fChain->SetBranchAddress("tau_leadchargedhadrcand_dxy", tau_leadchargedhadrcand_dxy, &b_tau_leadchargedhadrcand_dxy);
    fChain->SetBranchAddress("tau_leadchargedhadrcand_dz", tau_leadchargedhadrcand_dz, &b_tau_leadchargedhadrcand_dz);
+  
    fChain->SetBranchAddress("tau_againstMuonLoose3", tau_againstMuonLoose3, &b_tau_againstMuonLoose3);
    fChain->SetBranchAddress("tau_againstMuonTight3", tau_againstMuonTight3, &b_tau_againstMuonTight3);
    fChain->SetBranchAddress("tau_againstElectronVLooseMVA5", tau_againstElectronVLooseMVA5, &b_tau_againstElectronVLooseMVA5);
@@ -1004,12 +1024,12 @@ void AC1B::Init(TTree *tree)
    fChain->SetBranchAddress("run_floattaudiscriminators", &run_floattaudiscriminators, &b_run_floattaudiscriminators);
    fChain->SetBranchAddress("run_binarytaudiscriminators", &run_binarytaudiscriminators, &b_run_binarytaudiscriminators);
    fChain->SetBranchAddress("run_btagdiscriminators", &run_btagdiscriminators, &b_run_btagdiscriminators);
-   fChain->SetBranchAddress("hltriggerresults", &hltriggerresults_, &b_hltriggerresults_);
-   fChain->SetBranchAddress("hltriggerresults.first", hltriggerresults_first, &b_hltriggerresults_first);
-   fChain->SetBranchAddress("hltriggerresults.second", hltriggerresults_second, &b_hltriggerresults_second);
-   fChain->SetBranchAddress("hltriggerprescales", &hltriggerprescales_, &b_hltriggerprescales_);
-   fChain->SetBranchAddress("hltriggerprescales.first", hltriggerprescales_first, &b_hltriggerprescales_first);
-   fChain->SetBranchAddress("hltriggerprescales.second", hltriggerprescales_second, &b_hltriggerprescales_second);
+   fChain->SetBranchAddress("hltriggerresults", &hltriggerresults, &b_hltriggerresults_);
+   //   fChain->SetBranchAddress("hltriggerresults.first", hltriggerresults_first, &b_hltriggerresults_first);
+   //   fChain->SetBranchAddress("hltriggerresults.second", hltriggerresults_second, &b_hltriggerresults_second);
+   fChain->SetBranchAddress("hltriggerprescales", &hltriggerprescales, &b_hltriggerprescales_);
+   //   fChain->SetBranchAddress("hltriggerprescales.first", hltriggerprescales_first, &b_hltriggerprescales_first);
+   //   fChain->SetBranchAddress("hltriggerprescales.second", hltriggerprescales_second, &b_hltriggerprescales_second);
    fChain->SetBranchAddress("hltriggerresultsV", &hltriggerresultsV, &b_hltriggerresultsV);
    Notify();
 }
