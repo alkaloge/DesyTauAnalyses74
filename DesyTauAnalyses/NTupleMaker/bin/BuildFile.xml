@@ -44,6 +44,17 @@
  <use name="DesyTauAnalyses/NTupleMaker"/>
 </bin>
 
+<bin name="SynchNTupleProducer_em" file="SynchNTupleProducer_em.cpp">
+ <use name="PhysicsTools/Utilities"/>
+ <use name="rootgraphics"/>
+ <use name="root"/>
+ <use name="rootmath"/>
+ <use name="roottmva"/>
+ <use name="boost" />
+ <use name="boost_program_options"/>
+ <use name="DesyTauAnalyses/NTupleMaker"/>
+</bin>
+
 <bin name="SUSYmuel" file="AnalysisMacroSUSYmuel.cpp">
  <use name="PhysicsTools/Utilities"/>
  <use name="rootgraphics"/>
@@ -77,7 +88,6 @@
  <use name="DesyTauAnalyses/NTupleMaker"/>
 </bin>
 
-
 <bin name="SUSYtautau" file="AnalysisMacroSUSYtautau.cpp">
  <use name="PhysicsTools/Utilities"/>
  <use name="rootgraphics"/>
@@ -89,9 +99,6 @@
  <use name="DesyTauAnalyses/NTupleMaker"/>
 </bin>
 
-
-
-
 <bin   file="preAnalyzerTauTau_Summer15.cc"  name="preAnalyzerTauTau">
   <use   name="DataFormats/FWLite"/>
   <use   name="FWCore/FWLite"/>
@@ -101,7 +108,6 @@
   <use   name="TauAnalysis/CandidateTools"/>
   <use   name="PhysicsTools/FWLite"/>
   <use   name="PhysicsTools/Utilities"/>
-  <use   name="TauAnalysis/SVfitStandalone"/>
   <use   name="roofit"/>
   <use   name="root"/>
   <use   name="rootgraphics"/>
