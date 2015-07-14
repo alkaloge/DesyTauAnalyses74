@@ -1,8 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
-#isData = False
+isData = False
 #skim = 0
-#year = 2015
+year = 2015
 #period = 'Spring15'
 #sampleName = 'MonteCarlo'
 # sampleName = 'TTJets', "QCD", "DYJetsToLL_M50"
@@ -39,7 +39,10 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
                 #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/alkaloge/ACD/NAFtools-RunOnProcessed/CMSSW_7_2_3/src/Submit/miniAOD/Output/WJetsToLNu_mlv_400toInf/stau_stau500_LSP400_run18983_unweighted_events_MiniAOD_chunk11.root')
                 #fileNames = cms.untracked.vstring('file:/nfs/dust/cms/user/alkaloge/TauAnalysis/new/CMSSW_7_4_6/src/DesyTauAnalyses/NTupleMaker/test/miniAOD.root')
-                fileNames = cms.untracked.vstring('/store/mc/RunIISpring15DR74/ZZ_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/0A03D5CB-1609-E511-9D94-0025904CF710.root')
+#                fileNames = cms.untracked.vstring('/store/mc/RunIISpring15DR74/ZZ_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/0A03D5CB-1609-E511-9D94-0025904CF710.root')
+		fileNames = cms.untracked.vstring('/store/mc/RunIISpring15DR74/SUSYGluGluToBBHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/50000/1A81092B-1A11-E511-B683-002618943849.root')	    
+#		fileNames = cms.untracked.vstring('/store/mc/RunIISpring15DR74/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/00C75F30-0E13-E511-B02F-008CFA002EE0.root')	    
+# 18610.0/30872741
 # WJetsToLNu
 ##    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 ##    inputCommands=cms.untracked.vstring(
@@ -464,10 +467,12 @@ process.puJetIdSequence += process.makePatJets
 '''
 ##################################################
 # Main
+
+#process.patJets.addBTagInfo = cms.bool(True)
 process.makeroottree = cms.EDAnalyzer("NTupleMaker",
 # data, year, period, skim
-IsData = cms.untracked.bool(False),
-Year = cms.untracked.uint32(2015),
+IsData = cms.untracked.bool(isData),
+Year = cms.untracked.uint32(year),
 Period = cms.untracked.string("Spring15"),
 Skim = cms.untracked.uint32(0),
 # switches of collections
@@ -500,14 +505,17 @@ HLTriggerPaths = cms.untracked.vstring(
 'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
 'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
 'HLT_IsoMu24_eta2p1_v',
-'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v', 
 'HLT_IsoMu27_v',
+'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v',
 'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v',
+'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v',
+'HLT_Ele22_eta2p1_WP75_Gsf_v',
+'HLT_Ele27_eta2p1_WP75_Gsf_v',
 'HLT_Ele32_eta2p1_WP75_Gsf_v',
+'HLT_Ele22_eta2p1_WPLoose_Gsf_v',
+'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+'HLT_Ele32_eta2p1_WPLoose_Gsf_v',
 'HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v'
-'HLT_Mu8_TrkIsoVVL_Ele23_Gsf_CaloId_TrackId_Iso_MediumWP_v',
-'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120_v',
-'HLT_PFMET170_NoiseCleaned_v'
 ),
 TriggerProcess = cms.untracked.string("HLT"),
 # tracks
@@ -515,16 +523,15 @@ RecTrackPtMin = cms.untracked.double(0.5),
 RecTrackEtaMax = cms.untracked.double(2.4),
 RecTrackNum = cms.untracked.int32(0),
 # muons
-RecMuonPtMin = cms.untracked.double(10.),
-RecMuonEtaMax = cms.untracked.double(2.4),
+RecMuonPtMin = cms.untracked.double(8.),
+RecMuonEtaMax = cms.untracked.double(2.5),
 RecMuonHLTriggerMatching = cms.untracked.vstring(
-'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v.*hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23',
-'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v.*hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8', 
-'HLT_IsoMu24_eta2p1_v.*hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09', 
-'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v.*hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09,hltOverlapFilterIsoMu17LooseIsoPFTau20',
-'HLT_IsoMu24_eta2p1_v.*hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09',
-'HLT_IsoMu27_v.*hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09' 
-	
+'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v.*:hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8', 
+'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v.*:hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23',
+'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v.*:hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09',
+'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v.*:hltOverlapFilterIsoMu17LooseIsoPFTau20',
+'HLT_IsoMu24_eta2p1_v.*:hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09', 
+'HLT_IsoMu27_v.*:hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09' 
 ),
 RecMuonNum = cms.untracked.int32(0),
 # photons
@@ -536,21 +543,28 @@ RecPhotonNum = cms.untracked.int32(0),
 RecElectronPtMin = cms.untracked.double(8.),
 RecElectronEtaMax = cms.untracked.double(2.6),
 RecElectronHLTriggerMatching = cms.untracked.vstring(
-'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v.*hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter', 
-'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v1  hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter', 
-'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v.*hltEle22WP75L1IsoEG20erTau20erGsfTrackIsoFilter,hltOverlapFilterIsoEle22WP75GsfLooseIsoPFTau20', 
-'HLT_Ele32_eta2p1_WP75_Gsf_v.*hltEle32WP75GsfTrackIsoFilter'
-		
+'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v.*:hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter', 
+'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v.*:hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter', 
+'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v.*:hltEle22WP75L1IsoEG20erTau20erGsfTrackIsoFilter',
+'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v.*:hltOverlapFilterIsoEle22WP75GsfLooseIsoPFTau20',
+'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v.*:hltSingleEle22WPLooseGsfTrackIsoFilter',
+'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v.*:hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20',
+'HLT_Ele32_eta2p1_WP75_Gsf_v.*:hltEle32WP75GsfTrackIsoFilter',
+'HLT_Ele27_eta2p1_WPLoose_Gsf_v.*:hltEle27WPLooseGsfTrackIsoFilter',
+'HLT_Ele32_eta2p1_WPLoose_Gsf_v.*:hltEle32WPLooseGsfTrackIsoFilter'
 ),
 RecElectronNum = cms.untracked.int32(0),
 # taus
-RecTauPtMin = cms.untracked.double(20),
-RecTauEtaMax = cms.untracked.double(2.3),                                      
+RecTauPtMin = cms.untracked.double(18),
+RecTauEtaMax = cms.untracked.double(2.4),                                      
 RecTauHLTriggerMatching = cms.untracked.vstring(
-'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v.*hltPFTau20TrackLooseIso,hltOverlapFilterIsoEle22WP75GsfLooseIsoPFTau20', 
-'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v.*hltPFTau20TrackLooseIsoAgainstMuon,hltOverlapFilterIsoMu17LooseIsoPFTau20',
-'HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v.*hltDoublePFTau40TrackPt1MediumIsolationDz02Reg' 
-
+'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v.*:hltPFTau20TrackLooseIso',
+'HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v.*:hltOverlapFilterIsoEle22WP75GsfLooseIsoPFTau20', 
+'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v.*:hltPFTau20TrackLooseIso',
+'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v.*:hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20',
+'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v.*:hltPFTau20TrackLooseIsoAgainstMuon',
+'HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v.*:hltOverlapFilterIsoMu17LooseIsoPFTau20',
+'HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v.*:hltDoublePFTau40TrackPt1MediumIsolationDz02Reg'
 ),
 RecTauFloatDiscriminators = cms.untracked.vstring(
 #'againstElectronLoose',
@@ -616,8 +630,8 @@ RecTauFloatDiscriminators = cms.untracked.vstring(
 RecTauBinaryDiscriminators = cms.untracked.vstring(),
 RecTauNum = cms.untracked.int32(0),
 # jets
-RecJetPtMin = cms.untracked.double(30.),
-RecJetEtaMax = cms.untracked.double(5.0),
+RecJetPtMin = cms.untracked.double(18.),
+RecJetEtaMax = cms.untracked.double(5.2),
 RecJetHLTriggerMatching = cms.untracked.vstring(),
 RecJetBtagDiscriminators = cms.untracked.vstring(
 'jetBProbabilityBJetTags',
@@ -634,8 +648,6 @@ RecJetNum = cms.untracked.int32(0),
 SampleName = cms.untracked.string("MC") 
 )
 
-#process.patJets.addBTagInfo = cms.bool(True)
-
 
 process.p = cms.Path(
 #                     process.particleFlowPtrs +
@@ -648,8 +660,8 @@ process.p = cms.Path(
 #                     process.mvaTrigV025nsCSA14 * 
 #                     process.mvaNonTrigV025nsCSA14 * 
     #process.ak4PFJets*
-    process.mvaMetSequence*
-    process.puJetIdSequence*
+#    process.mvaMetSequence*
+#    process.puJetIdSequence*
     process.makeroottree
     )
 
