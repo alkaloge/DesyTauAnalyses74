@@ -243,6 +243,7 @@ int main(int argc, char * argv[]) {
   const float dxyElectronCut     = cfg.get<float>("dxyElectronCut");
   const float dzElectronCut      = cfg.get<float>("dzElectronCut");
   const float isoElectronCut     = cfg.get<float>("isoElectronCut");
+  const float isoElectronTightCut = cfg.get<float>("isoElectronTightCut");
 
   // topological cuts
   const float dRleptonsCut   = cfg.get<float>("dRleptonsCut");
@@ -294,6 +295,8 @@ int main(int argc, char * argv[]) {
   TH1F * ZMassIdTightElectronsDRCutH = new TH1F("ZMassIdTightElectronsDRCutH","",60,60,120);
   TH1F * ZMassIsoElectronsH = new TH1F("ZMassIsoElectronsH","",60,60,120);
   TH1F * ZMassIsoElectronsDRCutH = new TH1F("ZMassIsoElectronsDRCutH","",60,60,120);
+  TH1F * ZMassIsoTightElectronsH = new TH1F("ZMassIsoTightElectronsH","",60,60,120);
+  TH1F * ZMassIsoTightElectronsDRCutH = new TH1F("ZMassIsoTightElectronsDRCutH","",60,60,120);
 
   int nFiles = 0;
   int nEvents = 0;
@@ -301,6 +304,7 @@ int main(int argc, char * argv[]) {
   int selEventsIdLooseElectrons = 0;
   int selEventsIdTightElectrons = 0;
   int selEventsIsoElectrons = 0;
+  int selEventsIsoTightElectrons = 0;
 
   int nTotalFiles = 0;
   std::string dummy;
@@ -384,13 +388,11 @@ int main(int argc, char * argv[]) {
 
       
       // electron selection
-
-      // electron selection
-
       vector<unsigned int> allElectrons; allElectrons.clear();
       vector<unsigned int> idTightElectrons; idTightElectrons.clear();
       vector<unsigned int> idLooseElectrons; idLooseElectrons.clear();
       vector<unsigned int> isoElectrons; isoElectrons.clear();
+      vector<unsigned int> isoTightElectrons; isoTightElectrons.clear();
       for (unsigned int im = 0; im<analysisTree.electron_count; ++im) {
 	allElectrons.push_back(im);
 	if (analysisTree.electron_pt[im]<ptElectronLowCut) continue;
@@ -411,6 +413,15 @@ int main(int argc, char * argv[]) {
 	float relIso = absIso/analysisTree.electron_pt[im];
 	if (relIso>isoElectronCut) continue;
 	isoElectrons.push_back(im);
+	float neutralIso = 
+	  analysisTree.electron_neutralHadIso[im] + 
+	  analysisTree.electron_photonIso[im] - 
+	  0.5*analysisTree.electron_puIso[im];
+	neutralIso = TMath::Max(float(0),neutralIso); 
+	absIso += neutralIso;
+	relIso = absIso/analysisTree.electron_pt[im];
+	if (relIso>isoElectronTightCut) continue;
+	isoTightElectrons.push_back(im);
       }
 
       // std::cout << "allElectrons : " << allElectrons.size() << std::endl;
@@ -566,10 +577,43 @@ int main(int argc, char * argv[]) {
 	}
       }
 
+      bool isIsoTightElectronsPair = false;
+      if (isoTightElectrons.size()>1) {
+	for (unsigned int im1=0; im1<isoTightElectrons.size()-1; ++im1) {
+	  for (unsigned int im2=im1+1; im2<isoTightElectrons.size(); ++im2) {
+	    unsigned int index1 = isoTightElectrons[im1];
+	    unsigned int index2 = isoTightElectrons[im2];
+	    float q1 = analysisTree.electron_charge[index1];
+	    float q2 = analysisTree.electron_charge[index2];
+	    if (q1*q2<0) {
+	      isIsoTightElectronsPair = true;
+	      TLorentzVector electron1; electron1.SetXYZM(analysisTree.electron_px[index1],
+						  analysisTree.electron_py[index1],
+						  analysisTree.electron_pz[index1],
+						  electronMass);
+	      TLorentzVector electron2; electron2.SetXYZM(analysisTree.electron_px[index2],
+						  analysisTree.electron_py[index2],
+						  analysisTree.electron_pz[index2],
+						  electronMass);
+	      TLorentzVector dielectron = electron1 + electron2;
+	      float mass = dielectron.M();
+	      ZMassIsoTightElectronsH->Fill(mass,weight);
+	      float dR = deltaR(analysisTree.electron_eta[index1],analysisTree.electron_phi[index1],
+				analysisTree.electron_eta[index2],analysisTree.electron_phi[index2]);
+	      if (dR>dRleptonsCut) {
+		ZMassIsoTightElectronsDRCutH->Fill(mass,weight);
+	      }
+
+	    }
+	  }
+	}
+      }
+
       if (isAllElectronsPair) selEventsAllElectrons++;
       if (isIdLooseElectronsPair)  selEventsIdLooseElectrons++;
       if (isIdTightElectronsPair)  selEventsIdTightElectrons++;
       if (isIsoElectronsPair) selEventsIsoElectrons++;
+      if (isIsoTightElectronsPair) selEventsIsoTightElectrons++;
       
     } // end of file processing (loop over events in one file)
     nFiles++;
@@ -585,6 +629,7 @@ int main(int argc, char * argv[]) {
   std::cout << "Total number of selected events (idLoose electron pairs)  = " << selEventsIdLooseElectrons << std::endl;
   std::cout << "Total number of selected events (idTight electron pairs)  = " << selEventsIdTightElectrons << std::endl;
   std::cout << "Total number of selected events (iso electron pairs)      = " << selEventsIsoElectrons << std::endl;
+  std::cout << "Total number of selected events (iso tight electron pairs)= " << selEventsIsoTightElectrons << std::endl;
   std::cout << std::endl;
   std::cout << "RunMin = " << RunMin << std::endl;
   std::cout << "RunMax = " << RunMax << std::endl;
