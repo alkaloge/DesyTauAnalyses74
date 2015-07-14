@@ -15,6 +15,7 @@
 //#include "DataFormats/METReco/interface/PFMEtSignCovMatrix.h"
 //#include "DataFormats/JetReco/interface/PileupJetIdentifier.h"
 #include "RecoBTag/BTagTools/interface/SignedImpactParameter3D.h"
+
 #include "TrackingTools/PatternTools/interface/TwoTrackMinimumDistance.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
@@ -2432,7 +2433,9 @@ unsigned int NTupleMaker::AddPFJets(const edm::Event& iEvent, const edm::EventSe
 
   edm::Handle<reco::PFJetCollection> ak4jets;
   //iEvent.getByLabel(edm::InputTag("calibratedAK4PFJetsForPFMVAMEt"), ak4jets);
-  iEvent.getByLabel(edm::InputTag("ak4PFJets"), ak4jets);
+  //iEvent.getByLabel(edm::InputTag("ak4PFJets"), ak4jets);
+  //iEvent.getByLabel(edm::InputTag("AK4PFCHS"), ak4jets);
+  iEvent.getByLabel(edm::InputTag("slimmedJets"), ak4jets);
   
   //	edm::Handle<edm::ValueMap<int> > puJetIdFlagFull;
   //	iEvent.getByLabel(edm::InputTag("pileupJetIdProducer","fullId"), puJetIdFlagFull);
@@ -2525,7 +2528,7 @@ unsigned int NTupleMaker::AddPFJets(const edm::Event& iEvent, const edm::EventSe
 	    {
 	      pfjet_btag[pfjet_count][n] = -1000;
 	      if(cBtagDiscriminators[n] != "F"){
-		//		std::cout << " " << cBtagDiscriminators.at(n) << "  : " <<  (*pfjets)[i].bDiscriminator(cBtagDiscriminators[n]) << std::endl;
+	//			std::cout << " " << cBtagDiscriminators.at(n) << "  : " <<  (*pfjets)[i].bDiscriminator(cBtagDiscriminators[n]) << std::endl;
 		pfjet_btag[pfjet_count][n] = (*pfjets)[i].bDiscriminator(cBtagDiscriminators[n]) ;
 	      }
 	    }
