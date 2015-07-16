@@ -35,7 +35,7 @@ int main(int argc, char * argv[]) {
 
   // **** configuration
   Config cfg(argv[1]);
-  string SelectionSign="mutau";
+  string SelectionSign="eltau";
 
   // kinematic cuts on electrons
   const Float_t ptElectronLowCut   = cfg.get<Float_t>("ptElectronLowCut");
