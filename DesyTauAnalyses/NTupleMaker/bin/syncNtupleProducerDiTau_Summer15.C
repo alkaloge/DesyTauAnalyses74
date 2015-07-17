@@ -200,7 +200,7 @@ void synchNtuple(string sample = "GGFH125", string stream = "MuTau", bool incl=f
    //TFile *file = new TFile(("./batch/nTuple"+sample+"_Open_"+stream+"Stream.root").c_str(),"READ");
    //TTree *tree_orig = (TTree*)file->Get("outTreePtOrd")->Clone("tree");
    TChain *tree = new TChain("outTree");
-   tree->Add(("/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/ntuples/nTuple"+sample+".root").c_str());
+   tree->Add(("/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/ntuples74/nTuple"+sample+".root").c_str());
 
    //TCut sbinPair("etaL1<999.");
    //if( stream.find("TauTau")!=string::npos)
@@ -529,7 +529,7 @@ void synchNtuple(string sample = "GGFH125", string stream = "MuTau", bool incl=f
 
      //number of jets passing jet id ( pt > 30 )
      lNJets      = iNJets;
-     lNJets20    = iNJets20;
+     lNJetsPt20    = iNJets20;
 
      /*
        luPerp    = iuPerp;
@@ -560,6 +560,7 @@ void synchNtuple(string sample = "GGFH125", string stream = "MuTau", bool incl=f
 void synchNtupleAll()
 {
   //synchNtuple("GGFH125_TauTau_nominal", "TauTau", false);
-  synchNtuple("VBFH125_TauTau_nominal", "TauTau", false);
+  //synchNtuple("VBFH125_TauTau_nominal", "TauTau", false);
+  synchNtuple("SUSYGGH160_TauTau_nominal", "TauTau", false); 
 }
 
