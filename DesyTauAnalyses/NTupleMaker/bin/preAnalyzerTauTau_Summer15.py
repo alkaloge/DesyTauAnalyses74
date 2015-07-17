@@ -6,8 +6,9 @@ import shlex
 import string
 import subprocess
 
-WorkdirLoc = '/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/Sync2015/'
-OutDir     = '/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/ntuples/'
+#WorkdirLoc = '/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/Sync2015/'
+WorkdirLoc = '/nfs/dust/cms/user/rasp/ntuples/'
+OutDir     = '/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/ntuples74/'
 
 options = {
         ###mu+tau samples
@@ -30,38 +31,39 @@ options = {
 #    'skimEff'        : 1.0 * 0.317439 * 2474447./9669034,
 #    'iJson'          : -1
 #    } ,
-    ##Higgs MC
-    'GGFH125' : {
-    'inputFilePath'  : WorkdirLoc+'HiggsSM/GluGluToHToTauTau_M-125_MC_TauTau_v2',
-    'outputFileName' : OutDir+'nTupleGGFH125_TauTau.root',
-    'sample'         : 'GGFH125',
-    'xSection'       : 36.80 ,
-    'skimEff'        : 1.0,
-    'iJson'          : -1,
-    'iDiv'           : 0,                                                      
-    'nDiv'           : 1
-    },
-    'VBFH125' : {
-    'inputFilePath'  : WorkdirLoc+'HiggsSM/VBFHToTauTau_M-125_MC_TauTau_v2',
-    'outputFileName' : OutDir+'nTupleVBFH125_TauTau.root',
-    'sample'         : 'VBFH125',
-    'xSection'       : 36.80 ,
+#    ##Higgs MC
+#    'GGFH125' : {
+#    'inputFilePath'  : WorkdirLoc+'HiggsSM/GluGluToHToTauTau_M-125_MC_TauTau_v2',
+#    'outputFileName' : OutDir+'nTupleGGFH125_TauTau.root',
+#    'sample'         : 'GGFH125',
+#    'xSection'       : 36.80 ,
+#    'skimEff'        : 1.0,
+#    'iJson'          : -1,
+#    'iDiv'           : 0,                                                      
+#    'nDiv'           : 1
+#    },
+#    'VBFH125' : {
+#        'inputFilePath'  : WorkdirLoc+'HiggsSM/VBFHToTauTau_M-125_MC_TauTau_v4',
+#        #'inputFilePath'  : WorkdirLoc+'VBF_HToTauTau_M-125_13TeV-powheg-pythia6',
+#        'outputFileName' : OutDir+'nTupleVBFH125_TauTau.root',
+#        'sample'         : 'VBFH125',
+#        'xSection'       : 36.80 ,
+#        'skimEff'        : 1.0,
+#        'iJson'          : -1,
+#        'iDiv'           : 0,
+#        'nDiv'           : 1
+#        },
+    ######MSSM
+    'SUSYGGH160' : {
+    'inputFilePath'  : WorkdirLoc+'MC_Spring15_v1/SUSYGluGluToHToTauTau_M-160_PY8_25ns/',
+    'outputFileName' : OutDir+'nTupleSUSYGGH160_TauTau.root',
+    'sample'         : 'SUSYGGH160',
+    'xSection'       : 1.0,
     'skimEff'        : 1.0,
     'iJson'          : -1,
     'iDiv'           : 0,
     'nDiv'           : 1
     },
-#    ######MSSM
-#    'SUSYGGH130' : {
-#    'inputFilePath'  : WorkdirLoc+'HiggsMSSM/SUSYGluGluToHToTauTau_M-130_MC_v4_C/',
-#    'outputFileName' : OutDir+'nTupleSUSYGGH130_TauTau.root',
-#    'sample'         : 'SUSYGGH130',
-#    'xSection'       : 1.0,
-#    'skimEff'        : 1.0,
-#    'iJson'          : -1,
-#    'iDiv'           : 0,
-#    'nDiv'           : 1
-#    },
     
 }
 
