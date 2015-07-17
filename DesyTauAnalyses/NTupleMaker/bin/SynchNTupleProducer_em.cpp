@@ -713,7 +713,7 @@ int main(int argc, char * argv[]) {
       unsigned int nfilters = analysisTree.run_hltfilters->size();
       //      std::cout << "nfiltres = " << nfilters << std::endl;
       for (unsigned int i=0; i<nfilters; ++i) {
-	//	std::cout << "HLT Filter : " << analysisTree.run_hltfilters->at(i) << std::endl;
+	//	std::cout << "HLT Filter : " << i << " = " << analysisTree.run_hltfilters->at(i) << std::endl;
 	TString HLTFilter(analysisTree.run_hltfilters->at(i));
 	if (HLTFilter==LowPtLegElectron) {
 	  nLowPtLegElectron = i;
@@ -748,10 +748,10 @@ int main(int argc, char * argv[]) {
 	std::cout << "HLT filter " << HighPtLegMuon << " not found" << std::endl;
 	return(-1);
       }
-      //      std::cout << LowPtLegElectron << " : " << nLowPtLegElectron << std::endl;
-      //      std::cout << HighPtLegElectron << " : " << nHighPtLegElectron << std::endl;
-      //      std::cout << LowPtLegMuon << " : " << nLowPtLegMuon << std::endl;
-      //      std::cout << HighPtLegMuon << " : " << nHighPtLegMuon << std::endl;
+      //      std::cout << "LowPtE  : " << LowPtLegElectron << " : " << nLowPtLegElectron << std::endl;
+      //      std::cout << "HighPtE : " << HighPtLegElectron << " : " << nHighPtLegElectron << std::endl;
+      //      std::cout << "LowPtM  : " << LowPtLegMuon << " : " << nLowPtLegMuon << std::endl;
+      //      std::cout << "HighPtM : " << HighPtLegMuon << " : " << nHighPtLegMuon << std::endl;
       //      std::cout << std::endl;
       //      continue;
 
@@ -840,6 +840,9 @@ int main(int argc, char * argv[]) {
 
 	if ((!isMu23) && (!isMu8)) continue;
 
+
+
+
 	for (unsigned int ie=0; ie<electrons.size(); ++ie) {
 
 	  unsigned int eIndex = electrons.at(ie);
@@ -873,6 +876,7 @@ int main(int argc, char * argv[]) {
 	  }
 
 	  bool trigMatch = (isMu23&&isEle12) || (isMu8&&isEle23);
+	  //	  std::cout << "Trigger match = " << trigMatch << std::endl;
 
 	  if (!trigMatch) continue;
 	  

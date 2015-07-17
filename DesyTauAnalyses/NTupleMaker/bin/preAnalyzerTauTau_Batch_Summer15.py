@@ -48,7 +48,7 @@ def preAnalyze( ana, sample, runInSeries=False):
         f.write('#$ -S /bin/zsh\n')
         f.write('#\n')
         f.write('#(the cpu time for this job)\n')
-        f.write('#$ -l h_cpu=2:29:00\n')
+        f.write('#$ -l h_cpu=02:29:00\n')
         f.write('#\n')
         f.write('#(the maximum memory usage of this job)\n')
         f.write('#$ -l h_vmem=2000M\n')
@@ -84,8 +84,8 @@ os.system('python preAnalyzerTauTau_Summer15.py')
 ###########################################
 ###########################################
 ##Data
-preAnalyze("nominal","GGFH125",False)
-preAnalyze("nominal","VBFH125",False)
-#preAnalyze("nominal","SUSYGGH130",False)
+#preAnalyze("nominal","GGFH125",False)
+#preAnalyze("nominal","VBFH125",False)
+preAnalyze("nominal","SUSYGGH160",True)
 
 #  LocalWords:  cfg configFileName
