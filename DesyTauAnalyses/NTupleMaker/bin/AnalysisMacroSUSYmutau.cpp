@@ -112,8 +112,8 @@ int main(int argc, char * argv[]) {
 
 
   const Float_t Lumi   = cfg.get<Float_t>("Lumi");
-  const Float_t bTag 	     = cfg.get<Float_t>("bTag");
-  const Float_t metcut         = cfg.get<Float_t>("metcut");
+  const Float_t bTag   = cfg.get<Float_t>("bTag");
+  const Float_t metcut = cfg.get<Float_t>("metcut");
  
   CutList.clear();
   CutList.push_back("No cut");
@@ -160,24 +160,30 @@ int main(int argc, char * argv[]) {
   if (XSec<0) {cout<<" Something probably wrong with the xsecs...please check  - the input was "<<argv[2]<<endl;return 0;}
 
 
-
 	
   bool doThirdLeptVeto=true;
   bool doMuVeto=true;
 
   //CutList[CutNumb]=CutListt[CutNumb];
+	char ff[100];
+
+	
+	sprintf(ff,"%s/%s",argv[3],argv[2]);
 
   // file name and tree name
   std::string rootFileName(argv[2]);
-  std::ifstream fileList(argv[2]);
-  std::ifstream fileList0(argv[2]);
+  //std::ifstream fileList(argv[2]);
+  std::ifstream fileList(ff);
+  //std::ifstream fileList0(argv[2]);
+  std::ifstream fileList0(ff);
   std::string ntupleName("makeroottree/AC1B");
-
+  
+  TString era=argv[3];
   TString TStrName(rootFileName);
   std::cout <<TStrName <<std::endl;  
 
   // output fileName with histograms
-  TFile * file = new TFile(TStrName+TString(".root"),"update");
+  TFile * file = new TFile(era+"/"+TStrName+TString(".root"),"update");
   file->mkdir(SelectionSign.c_str());
   file->cd(SelectionSign.c_str());
 
@@ -201,7 +207,7 @@ int main(int argc, char * argv[]) {
   while (fileList0 >> dummy) nTotalFiles++;
  
   SetupHists(CutNumb); 
- // if (nTotalFiles>400) nTotalFiles=250;
+  //if (nTotalFiles>50) nTotalFiles=50;
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -496,7 +502,6 @@ int main(int argc, char * argv[]) {
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
-
       unsigned int tau_index=-1;
       float isoTauMin = 1e+10;
       bool tau_iso = false;
@@ -612,8 +617,9 @@ int main(int argc, char * argv[]) {
 				}
 			}
 		}
-		}
+		
 	
+     	if ((!isMu24) && (!isMu27) && (!isMuTau_MuLegA || !isMuTau_MuLegB) ) continue;
 
 
 	bool isMuTau_TauLegA = false;
@@ -641,13 +647,13 @@ int main(int argc, char * argv[]) {
 	}
 
 
-
-     	if ((isMu24) || (isMu27)) trigAccept=true;
-     	if ( (isMuTau_MuLegA && isMuTau_MuLegB) && (isMuTau_TauLegA && isMuTau_TauLegB)) trigAccept=true;
+     	if (     ( (isMu24) || (isMu27) )  || ( (isMuTau_MuLegA && isMuTau_MuLegB) && (isMuTau_TauLegA && isMuTau_TauLegB) ) ) trigAccept=true;
 	
+//cout<<" mu_index "<<mu_index<<"  "<<isMu24<<"  "<<isMu27<<"  "<<isMuTau_MuLegA<<"  "<<isMuTau_MuLegB<<"  "<<isMuTau_TauLegA<<"  "<<isMuTau_TauLegB<<endl;
+	}//muons 
 
         if (!trigAccept) continue;
-
+	
 
 
       //Trigger
@@ -662,12 +668,6 @@ int main(int argc, char * argv[]) {
 
 
 
-
-
-
-
-
-
 	//Set this flag if there is an opposite-charge muon pair in the event with muons separated by DR>0.15 and both passing the loose selection: 
 	
 
@@ -675,7 +675,7 @@ int main(int argc, char * argv[]) {
       bool MuVeto=false;
 
       if (doMuVeto){
-     	if (analysisTree.muon_count>1){
+     	if (muons.size()>1){
 	  for (unsigned int imv = 0; imv<analysisTree.muon_count; ++imv) {
        if ( imv != mu_index ){
 
@@ -790,10 +790,12 @@ int main(int argc, char * argv[]) {
 
       bool btagged= false;
       for (unsigned int ib = 0; ib <analysisTree.pfjet_count;ib++){
-	if (analysisTree.pfjet_btag[ib][8]  > bTag) btagged = true;
+	if (analysisTree.pfjet_pt[ib] > 30 && analysisTree.pfjet_btag[ib][8]  > bTag) btagged = true;
 	//cout<<" pfjet_b "<<ib<<"  "<<analysisTree.pfjet_btag[ib][6]<<endl;
       }
-      if (btagged ||  JetsMV.size() >3) continue;
+         bool JetsPt30C =false;
+      if (analysisTree.pfjet_pt[0] < 30 || analysisTree.pfjet_pt[1] < 30 ||  analysisTree.pfjet_pt[2] < 30) JetsPt30C = true; 
+      if (JetsPt30C || btagged ||  JetsMV.size() >3) continue;
 
       // Jets
       FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
