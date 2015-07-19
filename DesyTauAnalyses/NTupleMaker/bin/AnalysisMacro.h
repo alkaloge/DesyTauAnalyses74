@@ -18,11 +18,11 @@ Float_t xs,fact,fact2;
 vector<string> CutList;
 
 //TH1D * histWeights = new TH1D("histWeights","",1,-0.5,0.5);
-TH1D * histWeights = new TH1D("histWeights","",0,0,0);
+TH1D * histWeights = new TH1D("histWeights","",1,0,0);
 
 TH1D *hHT[CutN];
-TH1D *hST[CutN];
-TH1D *h0JetpT[CutN];
+//TH1D *hST[CutN];
+//TH1D *h0JetpT[CutN];
 TH1D *hnJet[CutN];
 TH1D *hnBJet[CutN];
 
@@ -57,7 +57,7 @@ TH1D *hTaueta[CutN];
 
 
 TH1D *hMET[CutN];
-TH1D *hnOver[CutN];
+//TH1D *hnOver[CutN];
 TH1D *hdPhiMETLep[CutN];
 TH1D *hdPhiJMET[CutN];
 
@@ -102,7 +102,7 @@ TH2D *hMT_dPhitau[CutN];
   TH1D *CutFlow= new TH1D("CutFlow","Cut Flow",CutN,0.5,CutN+0.5);
 
   TH1D * inputEventsH = new TH1D("inputEventsH","",1,-0.5,0.5);
-  TH1D * hxsec = new TH1D("xsec","",1,0,10e+06);
+  TH1D * hxsec = new TH1D("xsec","",1,0,10e+20);
 
   TH1D * muonPtAllH = new TH1D("muonPtAllH","",40,0,200);
   TH1D * electronPtAllH = new TH1D("electronPtAllH","",40,0,200);
@@ -458,8 +458,8 @@ void SetupHists(int CutNer){
         hHT[cj]->Sumw2();
 
 
-        h0JetpT[cj] = new TH1D ("0JetpT_"+nCut,"0JetpT "+cutName,200,0.0,2000.0);
-        h0JetpT[cj]->Sumw2();
+        //h0JetpT[cj] = new TH1D ("0JetpT_"+nCut,"0JetpT "+cutName,200,0.0,2000.0);
+        //h0JetpT[cj]->Sumw2();
         hnJet[cj] = new TH1D ("nJet_"+nCut,"nJet "+cutName,20,0,20);
         hnJet[cj]->Sumw2();
         hnBJet[cj] = new TH1D ("nBJet_"+nCut,"nBJet "+cutName,20,0,20);
@@ -476,8 +476,8 @@ void SetupHists(int CutNer){
         hLeppt[cj]->Sumw2();
         hLepeta[cj] = new TH1D ("Lepeta_"+nCut,"Lep eta "+cutName,100,-4,4);
         hLepeta[cj]->Sumw2();
-	hST[cj] = new TH1D ("ST_"+nCut,"ST "+cutName,400,0.0,4000.0);
-        hST[cj]->Sumw2();
+	//hST[cj] = new TH1D ("ST_"+nCut,"ST "+cutName,400,0.0,4000.0);
+        //hST[cj]->Sumw2();
         
 	//Muons
 	//
@@ -499,7 +499,7 @@ void SetupHists(int CutNer){
         hTaueta[cj] = new TH1D ("Taueta_"+nCut,"Tau eta "+cutName,100,-4,4);
         hTaueta[cj]->Sumw2();
 	
-	hnOver[cj] = new TH1D ("nOver_"+nCut,"nOver "+cutName,2,0,2);
+	//hnOver[cj] = new TH1D ("nOver_"+nCut,"nOver "+cutName,2,0,2);
         //Electrons
 	//
 	//

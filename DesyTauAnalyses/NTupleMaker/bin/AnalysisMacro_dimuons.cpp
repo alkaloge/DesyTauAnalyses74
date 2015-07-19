@@ -14,7 +14,7 @@
 #include "TLorentzVector.h"
 #include "TVector3.h"
 #include "TRFIOFile.h"
-#include "TH1F.h"
+#include "TH1D.h"
 #include "TH1D.h"
 #include "TChain.h"
 #include "TMath.h"
@@ -240,36 +240,51 @@ int main(int argc, char * argv[]) {
   // **** end of configuration
 
   // file name and tree name
-  std::string rootFileName(argv[2]);
-  std::ifstream fileList(argv[2]);
-  std::ifstream fileList0(argv[2]);
-  std::string ntupleName("makeroottree/AC1B");
+	char ff[100];
 
+	sprintf(ff,"%s/%s",argv[3],argv[2]);
+
+  // file name and tree name
+  std::string rootFileName(argv[2]);
+  //std::ifstream fileList(argv[2]);
+  std::ifstream fileList(ff);
+  //std::ifstream fileList0(argv[2]);
+  std::ifstream fileList0(ff);
+  std::string ntupleName("makeroottree/AC1B");
+  string SelectionSign="mumu";
+
+  TString era=argv[3];
   TString TStrName(rootFileName);
   std::cout <<TStrName <<std::endl;  
 
   // output fileName with histograms
-  TFile * file = new TFile(TStrName+TString(".root"),"recreate");
-  file->cd("");
-  TH1F * inputEventsH = new TH1F("inputEventsH","",1,-0.5,0.5);
+  //TFile * file = new TFile(TStrName+TString(".root"),"recreate");
+  TFile * file = new TFile(era+"/"+TStrName+TString(".root"),"update");
+  file->mkdir(SelectionSign.c_str());
+  file->cd(SelectionSign.c_str());
+  TH1D * hxsec = new TH1D("xsec","",1,0,0);
+  TH1D * histWeights = new TH1D("histWeights","",1,0,0);
+  TH1D * inputEventsH = new TH1D("inputEventsH","",1,-0.5,0.5);
 
-  TH1F * JPsiMassAllMuonsH = new TH1F("JPsiMassAllMuonsH","",200,2,4);
-  TH1F * JPsiMassAllMuonsDRCutH = new TH1F("JPsiMassAllMuonsDRCutH","",200,2,4);
-  TH1F * JPsiMassIdMuonsH = new TH1F("JPsiMassIdMuonsH","",200,2,4);
-  TH1F * JPsiMassIdMuonsDRCutH = new TH1F("JPsiMassIdMuonsDRCutH","",200,2,4);
+  TH1D * JPsiMassAllMuonsH = new TH1D("JPsiMassAllMuonsH","",200,2,4);
+  TH1D * JPsiMassAllMuonsDRCutH = new TH1D("JPsiMassAllMuonsDRCutH","",200,2,4);
+  TH1D * JPsiMassIdMuonsH = new TH1D("JPsiMassIdMuonsH","",200,2,4);
+  TH1D * JPsiMassIdMuonsDRCutH = new TH1D("JPsiMassIdMuonsDRCutH","",200,2,4);
 
-  TH1F * YpsilonMassAllMuonsH = new TH1F("YpsilonMassAllMuonsH","",400,8,12);
-  TH1F * YpsilonMassAllMuonsDRCutH = new TH1F("YpsilonMassAllMuonsDRCutH","",400,8,12);
-  TH1F * YpsilonMassIdMuonsH = new TH1F("YpsilonMassIdMuonsH","",400,8,12);
-  TH1F * YpsilonMassIdMuonsDRCutH = new TH1F("YpsilonMassIdMuonsDRCutH","",400,8,12);
+  TH1D * YpsilonMassAllMuonsH = new TH1D("YpsilonMassAllMuonsH","",400,8,12);
+  TH1D * YpsilonMassAllMuonsDRCutH = new TH1D("YpsilonMassAllMuonsDRCutH","",400,8,12);
+  TH1D * YpsilonMassIdMuonsH = new TH1D("YpsilonMassIdMuonsH","",400,8,12);
+  TH1D * YpsilonMassIdMuonsDRCutH = new TH1D("YpsilonMassIdMuonsDRCutH","",400,8,12);
 
-  TH1F * ZMassAllMuonsH = new TH1F("ZMassAllMuonsH","",60,60,120);
-  TH1F * ZMassAllMuonsDRCutH = new TH1F("ZMassAllMuonsDRCutH","",400,60,120);
-  TH1F * ZMassIdMuonsH = new TH1F("ZMassIdMuonsH","",60,60,120);
-  TH1F * ZMassIdMuonsDRCutH = new TH1F("ZMassIdMuonsDRCutH","",60,60,120);
-  TH1F * ZMassIsoMuonsH = new TH1F("ZMassIsoMuonsH","",60,60,120);
-  TH1F * ZMassIsoMuonsDRCutH = new TH1F("ZMassIsoMuonsDRCutH","",60,60,120);
+  TH1D * ZMassAllMuonsH = new TH1D("ZMassAllMuonsH","",60,60,120);
+  TH1D * ZMassAllMuonsDRCutH = new TH1D("ZMassAllMuonsDRCutH","",400,60,120);
+  TH1D * ZMassIdMuonsH = new TH1D("ZMassIdMuonsH","",60,60,120);
+  TH1D * ZMassIdMuonsDRCutH = new TH1D("ZMassIdMuonsDRCutH","",60,60,120);
+  TH1D * ZMassIsoMuonsH = new TH1D("ZMassIsoMuonsH","",60,60,120);
+  TH1D * ZMassIsoMuonsDRCutH = new TH1D("ZMassIsoMuonsDRCutH","",60,60,120);
 
+  Float_t XSec=-1;
+  Float_t xs,fact,fact2;
   int nFiles = 0;
   int nEvents = 0;
   int selEventsAllMuons = 0;
@@ -283,6 +298,33 @@ int main(int argc, char * argv[]) {
 
   unsigned int RunMin = 9999999;
   unsigned int RunMax = 0;
+ 
+  ifstream ifs("xsecs");
+  string line;
+
+  while(std::getline(ifs, line)) // read one line from ifs
+    {
+		
+      fact=fact2=1;
+      istringstream iss(line); // access line as a stream
+
+      // we only need the first two columns
+      string dt;
+      iss >> dt >> xs >> fact >> fact2;
+      //ifs >> dt >> xs; // no need to read further
+      //cout<< " "<<dt<<"  "<<endl;
+      //cout<< "For sample ========================"<<dt<<" xsecs is "<<xs<<" XSec "<<XSec<<"  "<<fact<<"  "<<fact2<<endl;
+      //if (dt==argv[2]) {
+      //if (std::string::npos != dt.find(argv[2])) {
+      if (  dt == argv[2]) {
+	XSec= xs*fact*fact2;
+	cout<<" Found the correct cross section "<<xs<<" for Dataset "<<dt<<" XSec "<<XSec<<endl;
+      }
+        
+    }
+
+  if (XSec<0) {cout<<" Something probably wrong with the xsecs...please check  - the input was "<<argv[2]<<endl;return 0;}
+
 
   std::vector<unsigned int> allRuns; allRuns.clear();
 
@@ -317,17 +359,35 @@ int main(int argc, char * argv[]) {
     Long64_t numberOfEntries = analysisTree.GetEntries();
     
     std::cout << "      number of entries in Tree = " << numberOfEntries << std::endl;
-    
+  //  numberOfEntries=100;
+
+ //251168': [[1, 287], [295, 341]], '251244': [[85, 86], [88, 93], [96, 156], [158, 442]], '251252': [[1, 554]], '251251
+     
+      //if (analysisTree1.event_run != 251251 || analysisTree1.event_run != 251168 || analysisTree1.event_run !=251244 || analysisTree1.event_run !=251252) continue;
+
+
     for (Long64_t iEntry=0; iEntry<numberOfEntries; iEntry++) { 
     
       analysisTree.GetEntry(iEntry);
       nEvents++;
-      
+
+      if( analysisTree.genweight)
+     histWeights->Fill(1,analysisTree.genweight);   
+      else histWeights->Fill(1,1); 
+
       if (nEvents%10000==0) 
 	cout << "      processed " << nEvents << " events" << endl; 
 
       float weight = 1;
 
+      bool isData= false;
+	
+     if (XSec == 1) isData = true;
+      //if (analysisTree.event_run != 251251) continue;
+
+//if (nEvents%1000==0) cout<<" run "<<analysisTree.event_run<<"  "<<analysisTree.event_luminosityblock<<endl;
+
+if (isData){
       if (analysisTree.event_run<RunRangeMin) continue;
       if (analysisTree.event_run>RunRangeMax) continue;
       
@@ -352,7 +412,7 @@ int main(int argc, char * argv[]) {
 
       if (isNewRun) 
 	allRuns.push_back(analysisTree.event_run);
-
+}
       // vertex cuts
 
       if (fabs(analysisTree.primvertex_z)>zVertexCut) continue;
@@ -362,7 +422,6 @@ int main(int argc, char * argv[]) {
       if (dVertex>dVertexCut) continue;
 
       
-      // electron selection
 
       // muon selection
 
@@ -382,11 +441,11 @@ int main(int argc, char * argv[]) {
 	if (relIso>isoMuonCut) continue;
 	isoMuons.push_back(im);
       }
-
-      // std::cout << "allMuons : " << allMuons.size() << std::endl;
-      // std::cout << "idMuons  : " << idMuons.size() << std::endl;
-      // std::cout << "isoMuons : " << isoMuons.size() << std::endl;
-
+/*
+       std::cout << "allMuons : " << allMuons.size() << std::endl;
+       std::cout << "idMuons  : " << idMuons.size() << std::endl;
+       std::cout << "isoMuons : " << isoMuons.size() << std::endl;
+*/
       //      continue;
 
       bool isAllMuonsPair = false;
@@ -449,7 +508,7 @@ int main(int argc, char * argv[]) {
 						  muonMass);
 	      TLorentzVector dimuon = muon1 + muon2;
 	      float mass = dimuon.M();
-	      //	      std::cout << "Mass = " << mass << std::endl;
+	      	  //    std::cout << "Mass = " << mass << std::endl;
 	      JPsiMassIdMuonsH->Fill(mass,weight);
 	      YpsilonMassIdMuonsH->Fill(mass,weight);
 	      ZMassIdMuonsH->Fill(mass,weight);
@@ -525,7 +584,10 @@ int main(int argc, char * argv[]) {
     std::cout << " " << allRuns.at(iR);
   std::cout << std::endl;
 
-  file->cd("");
+  file->cd(SelectionSign.c_str());
+  hxsec->Fill(XSec);
+  hxsec->Write();
+  histWeights->Write();
   file->Write();
   file->Close();
   delete file;
