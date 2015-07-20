@@ -25,7 +25,7 @@
 
 #include "DesyTauAnalyses/NTupleMaker/interface/Config.h"
 #include "DesyTauAnalyses/NTupleMaker/interface/AC1B.h"
-
+#include "DesyTauAnalyses/NTupleMaker/interface/json.h"
 const float MuMass = 0.105658367;
 
 int binNumber(float x, int nbins, float * bins) {
@@ -264,6 +264,7 @@ int main(int argc, char * argv[]) {
   file->cd(SelectionSign.c_str());
   TH1D * hxsec = new TH1D("xsec","",1,0,0);
   TH1D * histWeights = new TH1D("histWeights","",1,0,0);
+  TH1D * histWeights2 = new TH1D("histWeights2","",2,0,0);
   TH1D * inputEventsH = new TH1D("inputEventsH","",1,-0.5,0.5);
 
   TH1D * JPsiMassAllMuonsH = new TH1D("JPsiMassAllMuonsH","",200,2,4);
@@ -327,7 +328,7 @@ int main(int argc, char * argv[]) {
 
 
   std::vector<unsigned int> allRuns; allRuns.clear();
-
+	//nTotalFiles=50;
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -359,35 +360,37 @@ int main(int argc, char * argv[]) {
     Long64_t numberOfEntries = analysisTree.GetEntries();
     
     std::cout << "      number of entries in Tree = " << numberOfEntries << std::endl;
-  //  numberOfEntries=100;
 
- //251168': [[1, 287], [295, 341]], '251244': [[85, 86], [88, 93], [96, 156], [158, 442]], '251252': [[1, 554]], '251251
-     
-      //if (analysisTree1.event_run != 251251 || analysisTree1.event_run != 251168 || analysisTree1.event_run !=251244 || analysisTree1.event_run !=251252) continue;
 
 
     for (Long64_t iEntry=0; iEntry<numberOfEntries; iEntry++) { 
     
       analysisTree.GetEntry(iEntry);
       nEvents++;
+      Float_t weight = 1;
+      
+	bool isData= false;
+    	bool lumi=false;
 
-      if( analysisTree.genweight)
-     histWeights->Fill(1,analysisTree.genweight);   
-      else histWeights->Fill(1,1); 
+      if (XSec == 1)  isData = true;
+      if (!isData && XSec !=1 )  { weight *=analysisTree.genweight;   lumi=true;} 
+   
+      if( !isData && analysisTree.genweight){
+     histWeights->Fill(1,weight); 
+     histWeights2->Fill(weight); 
+      }  
+      else histWeights->Fill(1); 
 
       if (nEvents%10000==0) 
 	cout << "      processed " << nEvents << " events" << endl; 
 
-      float weight = 1;
-
-      bool isData= false;
 	
-     if (XSec == 1) isData = true;
       //if (analysisTree.event_run != 251251) continue;
 
 //if (nEvents%1000==0) cout<<" run "<<analysisTree.event_run<<"  "<<analysisTree.event_luminosityblock<<endl;
 
-if (isData){
+    
+      if (isData){
       if (analysisTree.event_run<RunRangeMin) continue;
       if (analysisTree.event_run>RunRangeMax) continue;
       
@@ -398,7 +401,7 @@ if (isData){
       if (analysisTree.event_run>RunMax)
 	RunMax = analysisTree.event_run;
 
-      //      std::cout << " Run : " << analysisTree.event_run << std::endl;
+            //std::cout << " Run : " << analysisTree.event_run << std::endl;
 
       bool isNewRun = true;
       if (allRuns.size()>0) {
@@ -412,7 +415,49 @@ if (isData){
 
       if (isNewRun) 
 	allRuns.push_back(analysisTree.event_run);
+
+   
+   std::vector<Period> periods;
+    
+    std::fstream inputFileStream("temp", std::ios::in);
+    for(std::string s; std::getline(inputFileStream, s); )
+    {
+        periods.push_back(Period());
+        std::stringstream ss(s);
+        ss >> periods.back();
+    }
+	int n=analysisTree.event_run;
+	int lum = analysisTree.event_luminosityblock;
+
+    std::string num = std::to_string(n);
+    std::string lnum = std::to_string(lum);
+    for(const auto& a : periods)
+    {
+        
+         if ( num.c_str() ==  a.name ) {
+        //std::cout<< " Eureka "<<num<<"  "<<a.name<<" ";
+       //     std::cout <<"min "<< last->lower << "- max last " << last->bigger << std::endl;
+
+         for(auto b = a.ranges.begin(); b != std::prev(a.ranges.end()); ++b) {
+
+	//	cout<<b->lower<<"  "<<b->bigger<<endl;
+		if (lum  >= b->lower && lum <= b->bigger ) lumi = true;
+	}
+        auto last = std::prev(a.ranges.end());
+        //    std::cout <<"min "<< last->lower << "- max last " << last->bigger << std::endl;
+   	if (  (lum >=last->lower && lum <= last->bigger )) lumi=true;
+
+
+	 }
+	
 }
+    
+}
+//	if (lumi ) cout<<"  =============  Found good run"<<"  "<<n<<"  "<<lum<<endl;
+    //std::remove("myinputfile");
+	if (!lumi) continue;
+
+
       // vertex cuts
 
       if (fabs(analysisTree.primvertex_z)>zVertexCut) continue;
@@ -588,6 +633,7 @@ if (isData){
   hxsec->Fill(XSec);
   hxsec->Write();
   histWeights->Write();
+  histWeights2->Write();
   file->Write();
   file->Close();
   delete file;
