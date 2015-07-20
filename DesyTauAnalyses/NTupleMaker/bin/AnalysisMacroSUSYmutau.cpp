@@ -22,6 +22,9 @@
 #include "TRandom.h"
 
 #include "AnalysisMacro.h"
+#include "DesyTauAnalyses/NTupleMaker/interface/Config.h"
+#include "DesyTauAnalyses/NTupleMaker/interface/AC1B.h"
+#include "DesyTauAnalyses/NTupleMaker/interface/json.h"
 
 int main(int argc, char * argv[]) {
 
@@ -101,6 +104,8 @@ int main(int argc, char * argv[]) {
   const Float_t   byCombinedIsolationDeltaBetaCorrRaw3Hits = cfg.get<Float_t>("byCombinedIsolationDeltaBetaCorrRaw3Hits");
   
 
+  const unsigned int RunRangeMin = cfg.get<unsigned int>("RunRangeMin");
+  const unsigned int RunRangeMax = cfg.get<unsigned int>("RunRangeMax");
   
   TString Muon24Leg(Mu24Leg);
   TString Muon27Leg(Mu27Leg);
@@ -132,6 +137,8 @@ int main(int argc, char * argv[]) {
   int CutNumb = int(CutList.size());
   xs=1;fact=1;fact2=1;
  
+  unsigned int RunMin = 9999999;
+  unsigned int RunMax = 0;
         
   ifstream ifs("xsecs");
   string line;
@@ -159,6 +166,7 @@ int main(int argc, char * argv[]) {
 
   if (XSec<0) {cout<<" Something probably wrong with the xsecs...please check  - the input was "<<argv[2]<<endl;return 0;}
 
+  std::vector<unsigned int> allRuns; allRuns.clear();
 
 	
   bool doThirdLeptVeto=true;
@@ -208,6 +216,7 @@ int main(int argc, char * argv[]) {
  
   SetupHists(CutNumb); 
   //if (nTotalFiles>50) nTotalFiles=50;
+ // nTotalFiles = 5;
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -249,55 +258,136 @@ int main(int argc, char * argv[]) {
      
       analysisTree.GetEntry(iEntry);
       nEvents++;
-     histWeights->Fill(1,analysisTree.genweight);
+    
+     
+      iCut = 0;
+      
+      
+      Float_t weight = 1;
+	bool isData= false;
+    	bool lumi=false;
+
+      if (XSec == 1)  isData = true;
+      if (!isData && XSec !=1 )  { weight *=analysisTree.genweight;   lumi=true;} 
+   
+      if( !isData && analysisTree.genweight){
+     histWeights->Fill(1,weight); 
+     histWeights2->Fill(weight); 
+      }  
+      else histWeights->Fill(1); 
+
+     
+     if (nEvents%10000==0) 
+	cout << "      processed " << nEvents << " events" << endl; 
+     
+      histWeights->Fill(1,analysisTree.genweight);
          
+      if (isData){
+      if (analysisTree.event_run<RunRangeMin) continue;
+      if (analysisTree.event_run>RunRangeMax) continue;
+      
+
+      if (analysisTree.event_run<RunMin)
+	RunMin = analysisTree.event_run;
+      
+      if (analysisTree.event_run>RunMax)
+	RunMax = analysisTree.event_run;
+
+            //std::cout << " Run : " << analysisTree.event_run << std::endl;
+
+      bool isNewRun = true;
+      if (allRuns.size()>0) {
+	for (unsigned int iR=0; iR<allRuns.size(); ++iR) {
+	  if (analysisTree.event_run==allRuns.at(iR)) {
+	    isNewRun = false;
+	    break;
+	  }
+	}
+      }
+
+      if (isNewRun) 
+	allRuns.push_back(analysisTree.event_run);
+
+   
+   std::vector<Period> periods;
+    
+    std::fstream inputFileStream("temp", std::ios::in);
+    for(std::string s; std::getline(inputFileStream, s); )
+    {
+        periods.push_back(Period());
+        std::stringstream ss(s);
+        ss >> periods.back();
+    }
+	int n=analysisTree.event_run;
+	int lum = analysisTree.event_luminosityblock;
+
+    std::string num = std::to_string(n);
+    std::string lnum = std::to_string(lum);
+    for(const auto& a : periods)
+    {
+        
+         if ( num.c_str() ==  a.name ) {
+        //std::cout<< " Eureka "<<num<<"  "<<a.name<<" ";
+       //     std::cout <<"min "<< last->lower << "- max last " << last->bigger << std::endl;
+
+         for(auto b = a.ranges.begin(); b != std::prev(a.ranges.end()); ++b) {
+
+	//	cout<<b->lower<<"  "<<b->bigger<<endl;
+		if (lum  >= b->lower && lum <= b->bigger ) lumi = true;
+	}
+        auto last = std::prev(a.ranges.end());
+        //    std::cout <<"min "<< last->lower << "- max last " << last->bigger << std::endl;
+   	if (  (lum >=last->lower && lum <= last->bigger )) lumi=true;
+
+
+	 }
+	
+}
+    
+}
+	if (!lumi) continue;
       JetsMV.clear();
       ElMV.clear();
       TauMV.clear();
       MuMV.clear();
       LeptMV.clear();
-
+	mu_index=-1;
+	tau_index=-1;
+	el_index=-1;
       Float_t MET = sqrt ( analysisTree.pfmet_ex*analysisTree.pfmet_ex + analysisTree.pfmet_ey*analysisTree.pfmet_ey);
       
       METV.SetPx(analysisTree.pfmet_ex);	      
       METV.SetPy(analysisTree.pfmet_ey);
  
-     if (nEvents%10000==0) 
-	cout << "      processed " << nEvents << " events" << endl; 
  
-
-      for (unsigned int ij = 0; ij<analysisTree.pfjet_count; ++ij) {
-	JetsV.SetPxPyPzE(analysisTree.pfjet_px[ij], analysisTree.pfjet_py[ij], analysisTree.pfjet_pz[ij], analysisTree.pfjet_e[ij]);
+      for (unsigned int ijj = 0; ijj<analysisTree.pfjet_count; ++ijj) {
+	JetsV.SetPxPyPzE(analysisTree.pfjet_px[ijj], analysisTree.pfjet_py[ijj], analysisTree.pfjet_pz[ijj], analysisTree.pfjet_e[ijj]);
 	JetsMV.push_back(JetsV);
       } 
 
 
-
-      for (unsigned int im = 0; im<analysisTree.muon_count; ++im) {
-	MuV.SetPtEtaPhiM(analysisTree.muon_pt[im], analysisTree.muon_eta[im], analysisTree.muon_phi[im], muonMass);
+      for (unsigned int imm = 0; imm<analysisTree.muon_count; ++imm) {
+	MuV.SetPtEtaPhiM(analysisTree.muon_pt[imm], analysisTree.muon_eta[imm], analysisTree.muon_phi[imm], muonMass);
 	MuMV.push_back(MuV);
-
+	mu_index=0;
       }
 
       for (unsigned int ie = 0; ie<analysisTree.electron_count; ++ie) {
 	ElV.SetPtEtaPhiM(analysisTree.electron_pt[ie], analysisTree.electron_eta[ie], analysisTree.electron_phi[ie], electronMass);
 	ElMV.push_back(ElV);
+	el_index=0;
       }
    
-      for (unsigned int it = 0; it<analysisTree.tau_count; ++it) {
-	TauV.SetPtEtaPhiM(analysisTree.tau_pt[it], analysisTree.tau_eta[it], analysisTree.tau_phi[it], tauMass);
+      for (unsigned int itt = 0; itt<analysisTree.tau_count; ++itt) {
+	TauV.SetPtEtaPhiM(analysisTree.tau_pt[itt], analysisTree.tau_eta[itt], analysisTree.tau_phi[itt], tauMass);
 	TauMV.push_back(TauV);
+	tau_index=0;
       }
 
 
-      Float_t weight = 1;
-      iCut = 0;
       
-      Double_t EvWeight = 1.0;
-      EvWeight *= weight ;
-      
-      vector <string> ss; ss.push_back(SelectionSign.c_str());
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+     // vector <string> ss; ss.push_back(SelectionSign.c_str());
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -453,8 +543,9 @@ int main(int argc, char * argv[]) {
       MuMV.clear();
       ElMV.clear();
       TauMV.clear();
-      unsigned int mu_index=-1;
-      float isoMuMin = 1e+10;
+      LeptMV.clear();
+
+      Float_t isoMuMin = 9999;
       bool mu_iso=false;
       vector<int> muons; muons.clear();
       for (unsigned int im = 0; im<analysisTree.muon_count; ++im) {
@@ -480,36 +571,36 @@ int main(int argc, char * argv[]) {
 	      isoMuMin  = relIso;
 	      mu_index = im;
 	      mu_iso=true;
+	      muons.push_back(im);
+	      LeptMV.push_back(MuV);
+	      MuV.SetPtEtaPhiM(analysisTree.muon_pt[im], analysisTree.muon_eta[im], analysisTree.muon_phi[im], muonMass);
+              MuMV.push_back(MuV);
 	    }
 
 	    if (relIso!=0 && relIso==isoMuMin && im != mu_index) {
              analysisTree.muon_pt[im] > analysisTree.muon_pt[mu_index] ? mu_index = im : mu_index = mu_index;
 	    cout<<" found a pair  " <<relIso <<"  "<<mu_index<<"  "<<im<<endl;
 	  }
-
-	muons.push_back(im);
-	MuV.SetPtEtaPhiM(analysisTree.muon_pt[im], analysisTree.muon_eta[im], analysisTree.muon_phi[im], muonMass);
-        MuMV.push_back(MuV);
-	LeptMV.push_back(MuV);
-        //hmu_miniISO[1]->Fill(analysisTree.muon_miniISO[im],weight);
+   
       }
+      if (muons.size()==0 || !mu_iso) continue;
+
       sort(LeptMV.begin(), LeptMV.end(),ComparePt); 
       if (LeptMV.size() == 0 ) continue; 
       
       //mu_index=muons[0];
-      if (muons.size()==0 || !mu_iso) continue;
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
-      unsigned int tau_index=-1;
-      float isoTauMin = 1e+10;
+
+      Float_t isoTauMin = 999;
       bool tau_iso = false;
       vector<int> tau; tau.clear();
-      for (unsigned int it = 0; it<analysisTree.tau_count; ++it) {
+      for (unsigned  int it = 0; it<analysisTree.tau_count; ++it) {
+
 	tauPtAllH->Fill(analysisTree.tau_pt[it],weight);
 	tauEtaAllH->Fill(analysisTree.tau_eta[it],weight);
-
 	if (analysisTree.tau_pt[it] < 20 || fabs(analysisTree.tau_eta[it])> 2.3) continue;
 	if (analysisTree.tau_decayModeFinding[it]<decayModeFinding && analysisTree.tau_decayModeFindingNewDMs[it]<decayModeFindingNewDMs) continue;
 	if (analysisTree.tau_decayModeFindingNewDMs[it]<decayModeFindingNewDMs) continue;
@@ -519,42 +610,46 @@ int main(int argc, char * argv[]) {
 	if (analysisTree.tau_againstMuonTight3[it]<againstMuonTight3) continue;
 	//phys14 if ( fabs(analysisTree.tau_vertexz[it] - analysisTree.primvertex_z ) > vertexz ) continue;
 	if (analysisTree.tau_byCombinedIsolationDeltaBetaCorrRaw3Hits[it] > byCombinedIsolationDeltaBetaCorrRaw3Hits ) continue;
+	
 
 	Float_t  tauIso = analysisTree.tau_byCombinedIsolationDeltaBetaCorrRaw3Hits[it];
 
-	    if (tauIso<isoTauMin) {
+	    if (tauIso<isoTauMin ) {
+	//      cout<<"  there was a chenge  "<<tauIso<<"  "<<isoTauMin<<" it "<<it<<" tau_index "<<tau_index<<"  "<<analysisTree.tau_count<<endl;
 	      isoTauMin  = tauIso;
-	      tau_index = it;
 	      tau_iso=true;
-	    //cout<<" RelIso " <<relIso <<"  "<<el_index<<endl;
+	  //   it > 0 ? tau_index= it -1: 
+	      tau_index = it;
+	      tau.push_back(it);
+	      TauV.SetPtEtaPhiM(analysisTree.tau_pt[it], analysisTree.tau_eta[it], analysisTree.tau_phi[it], tauMass);
+	      TauMV.push_back(TauV);
+
 	    }
 
 	    if (tauIso!=0 && tauIso==isoTauMin && it != tau_index) {
              analysisTree.tau_pt[it] > analysisTree.tau_pt[tau_index] ? tau_index = it : tau_index = tau_index;
-	    cout<<" found a pair  " <<tauIso <<"  "<<tau_index<<"  "<<it<<endl;
+	      cout<<" found a pair  " <<tauIso <<"  "<<tau_index<<"  "<<it<<endl;
 	  }
-
-	TauV.SetPtEtaPhiM(analysisTree.tau_pt[it], analysisTree.tau_eta[it], analysisTree.tau_phi[it], tauMass);
-	TauMV.push_back(TauV);
-	tau.push_back(it);
-
-
       }
-      //tau_index=tau[0];
-	
       if (tau.size()==0 || !tau_iso) continue;
 
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+
+	//cout<< " Lets check  "<<mu_index <<"  "<<tau_index <<"  "<<endl;
+	//cout<<"  "<<endl;
+
+      //tau_index=tau[0];
+      //if ( !tau_iso) continue;
+
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
 
-      float dR = deltaR(analysisTree.tau_eta[tau[0]],analysisTree.tau_phi[tau[0]],
-			    analysisTree.muon_eta[muons[0]],analysisTree.muon_phi[muons[0]]);
+      float dR = deltaR(analysisTree.tau_eta[tau_index],analysisTree.tau_phi[tau_index],
+			    analysisTree.muon_eta[mu_index],analysisTree.muon_phi[mu_index]);
 
       if (dR<dRleptonsCut) continue;
-    
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -564,7 +659,6 @@ int main(int argc, char * argv[]) {
 	bool isMu27 = false;
 	bool isMuTau_MuLegA = false;
 	bool isMuTau_MuLegB = false;
- 
         for (unsigned int im=0; im<muons.size(); ++im) {
         unsigned int mIndex  = muons.at(im);
 
@@ -624,7 +718,6 @@ int main(int argc, char * argv[]) {
 
 	bool isMuTau_TauLegA = false;
 	bool isMuTau_TauLegB = false;
-
         for (unsigned int it=0; it<tau.size(); ++it) {
         unsigned int tIndex  = tau.at(it);
 	for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
@@ -646,19 +739,17 @@ int main(int argc, char * argv[]) {
 	  }
 	}
 
-
      	if (     ( (isMu24) || (isMu27) )  || ( (isMuTau_MuLegA && isMuTau_MuLegB) && (isMuTau_TauLegA && isMuTau_TauLegB) ) ) trigAccept=true;
 	
 //cout<<" mu_index "<<mu_index<<"  "<<isMu24<<"  "<<isMu27<<"  "<<isMuTau_MuLegA<<"  "<<isMuTau_MuLegB<<"  "<<isMuTau_TauLegA<<"  "<<isMuTau_TauLegB<<endl;
 	}//muons 
-
         if (!trigAccept) continue;
 	
 
 
       //Trigger
-      //FillMainHists(iCut, EvWeight, ElMV, MuMV, JetsMV,METV,analysisTree, SelectionSign);
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      //FillMainHists(iCut, weight, ElMV, MuMV, JetsMV,METV,analysisTree, SelectionSign, mu_index,el_index,tau_index);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -676,7 +767,7 @@ int main(int argc, char * argv[]) {
 
       if (doMuVeto){
      	if (muons.size()>1){
-	  for (unsigned int imv = 0; imv<analysisTree.muon_count; ++imv) {
+	  for (unsigned  int imv = 0; imv<analysisTree.muon_count; ++imv) {
        if ( imv != mu_index ){
 
 	    Float_t neutralIso = 
@@ -701,7 +792,7 @@ int main(int argc, char * argv[]) {
 }
       if (MuVeto) continue;
 
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -749,7 +840,7 @@ int main(int argc, char * argv[]) {
     	if (ThirdLeptVeto) continue;
 
 
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -798,7 +889,7 @@ int main(int argc, char * argv[]) {
       if (JetsPt30C || btagged ||  JetsMV.size() >3) continue;
 
       // Jets
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -825,13 +916,13 @@ int main(int argc, char * argv[]) {
       // MtH->Fill(MT,weight);
       
       if (ETmiss < metcut) continue;
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
        
       if (ETmiss < 2*metcut) continue;
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -840,7 +931,7 @@ int main(int argc, char * argv[]) {
       //if (DZeta<dZetaCut) continue;
       if (dPhi>1) continue; 
        
-      FillMainHists(iCut, EvWeight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign);
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
@@ -860,7 +951,7 @@ int main(int argc, char * argv[]) {
 cout<< " " <<histWeights->GetSumOfWeights()<<"  "<<inputEventsH->GetSum()<<endl;
 
 for (int i=0;i<CutNumb;++i){
-    CFCounter[i] *= Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));
+ if (!isData)   CFCounter[i] *= Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));
     if (iCFCounter[i] <0.2) statUnc[i] =0;
     else statUnc[i] = CFCounter[i]/sqrt(iCFCounter[i]);
   }
