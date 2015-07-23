@@ -199,6 +199,7 @@ int main(int argc, char * argv[]) {
   int nEvents = 0;
   int selEvents = 0;
 
+  Float_t Weight=0;
   int nTotalFiles = 0;
   int iCut=0;
   double CFCounter[CutNumb];
@@ -216,7 +217,7 @@ int main(int argc, char * argv[]) {
  
   SetupHists(CutNumb); 
   //if (nTotalFiles>50) nTotalFiles=50;
-  //nTotalFiles = 5;
+  //nTotalFiles = 20;
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -236,7 +237,12 @@ int main(int argc, char * argv[]) {
     TH1D * histoInputEvents = NULL;
    
     histoInputEvents = (TH1D*)file_->Get("makeroottree/nEvents");
-
+    //if ((TH1D*)file_->Get("histoWeights")) 
+     histWeights2= (TH1D*)file_->Get("makeroottree/histoWeights");
+     //histWeights= (TH1D*)file_->Get("makeroottree/histoWeights");
+     Weight =  histWeights2->GetSumOfWeights();
+     //histWeights->Fill(histWeights2->GetBinContent(1));
+     //if (histWeights2 ==NULL) continue;
     if (histoInputEvents==NULL) continue;
     
     int NE = int(histoInputEvents->GetEntries());
@@ -252,14 +258,13 @@ int main(int argc, char * argv[]) {
     Long64_t numberOfEntries = analysisTree.GetEntries();
     //numberOfEntries = 1000;
     
-    std::cout << "      number of entries in Tree = " << numberOfEntries << std::endl;
+    std::cout << "      number of entries in Tree = " << numberOfEntries <<" Weight  "<<Weight<< std::endl;
     //numberOfEntries = 10000;
     for (Long64_t iEntry=0; iEntry<numberOfEntries; iEntry++) { 
      
       analysisTree.GetEntry(iEntry);
       nEvents++;
     
-     
       iCut = 0;
       
       
@@ -268,18 +273,30 @@ int main(int argc, char * argv[]) {
       bool lumi=false;
 
       if (XSec == 1)  isData = true;
-      if (!isData && XSec !=1 )  { weight *=analysisTree.genweight;   lumi=true;} 
+      if (!isData && XSec !=1 )  { 
+	      weight *=analysisTree.genweight; 
+	      //weight *= histWeights2->GetBinContent(1); 
+	      lumi=true;
+      //histWeights2->Fill(1,weight);
+      //histWeights->Fill(histWeights2->GetSumOfWeights());
+      		} 
+
+    // cout<<"  "<<histWeights->GetBinContent(1)<<"  "<<histWeights2->GetSumOfWeights()<<"  "<<weight<<endl; //(TH1D*)file_->Get("makeroottree/histoWeights");
    	
       //cout<<"weight  "<<weight<<" ana.genweigh "<<analysisTree.genweight<<endl;
+/*
+      if( !isData && analysisTree.genweight && histWeights2 != NULL ){
 
-      if( !isData && analysisTree.genweight){
-     histWeights->Fill(1,weight); 
-     histWeights2->Fill(weight); 
+//	 cout<<" There is no good histweights histo "<<endl;
+     //histWeights->Fill(weight); 
+      //cout<<"  "<<weight<<"  "<<histWeights2->GetSumOfWeights()<<endl;
+      
       }  
-      else histWeights->Fill(1); 
+      */
+      //else histWeights->Fill(1); 
 
      
-     if (nEvents%10000==0) 
+     if (nEvents%50000==0) 
 	cout << "      processed " << nEvents << " events" << endl; 
      
          
@@ -962,19 +979,27 @@ int main(int argc, char * argv[]) {
       //      std::cout << std::endl;
       
       selEvents++;
-      
+      //histWeights->SetBinContent(1,Weight+ histWeights->GetBinContent(1));  
     } // end of file processing (loop over events in one file)
+	//histWeights->Fill(Weight);
+  
+      histWeights->Fill(1,Weight);  
+    cout<< " Weight  "<<Weight<<  "   histWeigh Sum " <<histWeights->GetBinContent(1)<<"  "<<histWeights2->GetSumOfWeights()<<"   "<<" Events "<<inputEventsH->GetSum()<<"  "<<inputEventsH->GetSumOfWeights()<<endl;
     nFiles++;
     delete _tree;
     file_->Close();
     delete file_;
   }
-
-
-
-cout<< " histWeigh Sum " <<histWeights->GetSumOfWeights()<<"   "<<histWeights->GetSum()<<" Events "<<inputEventsH->GetSum()<<"  "<<inputEventsH->GetSumOfWeights()<<endl;
+cout<<"done"<<endl;
 	
-cout<<" Will use weight  "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;
+cout<<" Will use weight  "<<histWeights->GetSumOfWeights()<<" Norm Factor "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;
+/*
+ for (int i=0;i<CutNumb;++i){
+    CFCounter[i] *= Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));
+    if (iCFCounter[i] <0.2) statUnc[i] =0;
+    else statUnc[i] = CFCounter[i]/sqrt(iCFCounter[i]);
+  }
+*/
 
 for (int i=0;i<CutNumb;++i){
  if (!isData) { cout << " i "<<i<<" "<<iCFCounter[i]<<"  "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;  
@@ -1024,6 +1049,7 @@ for (int i=0;i<CutNumb;++i){
   hxsec->Write();
   inputEventsH->Write();
   histWeights->Write();
+  //histWeights2->Write();
   
   CutFlow->Write();
 
