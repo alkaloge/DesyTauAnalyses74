@@ -259,18 +259,32 @@ int main(int argc, char * argv[]) {
 
   // **** end of configuration
 
+
+  // file name and tree name
+	char ff[100];
+
+	sprintf(ff,"%s/%s",argv[3],argv[2]);
+
   // file name and tree name
   std::string rootFileName(argv[2]);
-  std::ifstream fileList(argv[2]);
-  std::ifstream fileList0(argv[2]);
+  //std::ifstream fileList(argv[2]);
+  std::ifstream fileList(ff);
+  //std::ifstream fileList0(argv[2]);
+  std::ifstream fileList0(ff);
   std::string ntupleName("makeroottree/AC1B");
+  string SelectionSign="elel";
 
+  TString era=argv[3];
   TString TStrName(rootFileName);
   std::cout <<TStrName <<std::endl;  
 
+
   // output fileName with histograms
-  TFile * file = new TFile(TStrName+TString(".root"),"recreate");
-  file->cd("");
+  TFile * file = new TFile(era+"/"+TStrName+TString(".root"),"update");
+  file->mkdir(SelectionSign.c_str());
+  file->cd(SelectionSign.c_str());
+  TH1D * hxsec = new TH1D("xsec","",1,0,0);
+  TH1D * histWeights = new TH1D("histWeights","",1,0,0);
   TH1F * inputEventsH = new TH1F("inputEventsH","",1,-0.5,0.5);
 
   TH1F * JPsiMassAllElectronsH = new TH1F("JPsiMassAllElectronsH","",200,2,4);
@@ -298,6 +312,8 @@ int main(int argc, char * argv[]) {
   TH1F * ZMassIsoTightElectronsH = new TH1F("ZMassIsoTightElectronsH","",60,60,120);
   TH1F * ZMassIsoTightElectronsDRCutH = new TH1F("ZMassIsoTightElectronsDRCutH","",60,60,120);
 
+  Float_t XSec=-1;
+  Float_t xs,fact,fact2;
   int nFiles = 0;
   int nEvents = 0;
   int selEventsAllElectrons = 0;
@@ -313,6 +329,33 @@ int main(int argc, char * argv[]) {
 
   unsigned int RunMin = 9999999;
   unsigned int RunMax = 0;
+
+ 
+  ifstream ifs("xsecs");
+  string line;
+
+  while(std::getline(ifs, line)) // read one line from ifs
+    {
+		
+      fact=fact2=1;
+      istringstream iss(line); // access line as a stream
+
+      // we only need the first two columns
+      string dt;
+      iss >> dt >> xs >> fact >> fact2;
+      //ifs >> dt >> xs; // no need to read further
+      //cout<< " "<<dt<<"  "<<endl;
+      //cout<< "For sample ========================"<<dt<<" xsecs is "<<xs<<" XSec "<<XSec<<"  "<<fact<<"  "<<fact2<<endl;
+      //if (dt==argv[2]) {
+      //if (std::string::npos != dt.find(argv[2])) {
+      if (  dt == argv[2]) {
+	XSec= xs*fact*fact2;
+	cout<<" Found the correct cross section "<<xs<<" for Dataset "<<dt<<" XSec "<<XSec<<endl;
+      }
+        
+    }
+
+  if (XSec<0) {cout<<" Something probably wrong with the xsecs...please check  - the input was "<<argv[2]<<endl;return 0;}
 
   std::vector<unsigned int> allRuns; allRuns.clear();
 
@@ -357,7 +400,11 @@ int main(int argc, char * argv[]) {
 	cout << "      processed " << nEvents << " events" << endl; 
 
       float weight = 1;
-
+	bool isData = false;
+     
+	if (XSec == 1) isData = true;
+	
+	if (isData){
       if (analysisTree.event_run<RunRangeMin) continue;
       if (analysisTree.event_run>RunRangeMax) continue;
 
@@ -377,7 +424,7 @@ int main(int argc, char * argv[]) {
 
       if (isNewRun) 
 	allRuns.push_back(analysisTree.event_run);
-
+	}
       // vertex cuts
 
       if (fabs(analysisTree.primvertex_z)>zVertexCut) continue;
@@ -639,11 +686,15 @@ int main(int argc, char * argv[]) {
   for (unsigned int iR=0; iR<allRuns.size(); ++iR)
     std::cout << " " << allRuns.at(iR);
   std::cout << std::endl;
-
-  file->cd("");
+ 
+  file->cd(SelectionSign.c_str());
+  hxsec->Fill(XSec);
+  hxsec->Write();
+  histWeights->Write();
   file->Write();
   file->Close();
   delete file;
+  
   
 }
 

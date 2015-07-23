@@ -308,6 +308,12 @@ public :
    Float_t         trigobject_eta[100];   //[trigobject_count]
    Float_t         trigobject_phi[100];   //[trigobject_count]
    Bool_t          trigobject_filters[100][50];   //[trigobject_count]
+   Bool_t          trigobject_isMuon[100];   //[trigobject_count]
+   Bool_t          trigobject_isElectron[100];   //[trigobject_count]
+   Bool_t          trigobject_isTau[100];   //[trigobject_count]
+   Bool_t          trigobject_isJet[100];   //[trigobject_count]
+   Bool_t          trigobject_isMET[100];   //[trigobject_count]
+
    std::vector<std::string>  *run_hltnames = new std::vector<std::string>();
    std::vector<std::string>  *run_hltfilters = new std::vector<std::string>();
    std::vector<std::string>  *run_hltmufilters = new std::vector<std::string>();
@@ -609,6 +615,11 @@ public :
    TBranch        *b_trigobject_eta;   //!
    TBranch        *b_trigobject_phi;   //!
    TBranch        *b_trigobject_filters;   //!
+   TBranch        *b_trigobject_isMuon;   //!
+   TBranch        *b_trigobject_isElectron;   //!
+   TBranch        *b_trigobject_isTau;   //!
+   TBranch        *b_trigobject_isJet;   //!
+   TBranch        *b_trigobject_isMET;   //!
    TBranch        *b_run_hltnames;   //!
    TBranch        *b_run_hltfilters;   //!
    TBranch        *b_run_hltmufilters;   //!
@@ -1017,6 +1028,11 @@ void AC1B::Init(TTree *tree)
    fChain->SetBranchAddress("trigobject_eta", trigobject_eta, &b_trigobject_eta);
    fChain->SetBranchAddress("trigobject_phi", trigobject_phi, &b_trigobject_phi);
    fChain->SetBranchAddress("trigobject_filters", trigobject_filters, &b_trigobject_filters);
+   fChain->SetBranchAddress("trigobject_isMuon", trigobject_isMuon, &b_trigobject_isMuon);
+   fChain->SetBranchAddress("trigobject_isElectron", trigobject_isElectron, &b_trigobject_isElectron);
+   fChain->SetBranchAddress("trigobject_isTau", trigobject_isTau, &b_trigobject_isTau);
+   fChain->SetBranchAddress("trigobject_isJet", trigobject_isJet, &b_trigobject_isJet);
+   fChain->SetBranchAddress("trigobject_isMET", trigobject_isMET, &b_trigobject_isMET);
    fChain->SetBranchAddress("run_hltnames", &run_hltnames, &b_run_hltnames);
    fChain->SetBranchAddress("run_hltfilters", &run_hltfilters, &b_run_hltfilters);
    fChain->SetBranchAddress("run_hltmufilters", &run_hltmufilters, &b_run_hltmufilters);
