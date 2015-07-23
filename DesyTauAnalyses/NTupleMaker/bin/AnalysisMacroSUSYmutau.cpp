@@ -124,7 +124,7 @@ int main(int argc, char * argv[]) {
   CutList.push_back("No cut");
   CutList.push_back("$mu$");
   CutList.push_back("$tau_h$");
-  CutList.push_back("$DeltaR<0.3$");
+  CutList.push_back("$DeltaR<0.5$");
   CutList.push_back("Trigger");
   CutList.push_back("2nd lept-Veto");
   CutList.push_back("3rd lept-Veto");
@@ -216,7 +216,7 @@ int main(int argc, char * argv[]) {
  
   SetupHists(CutNumb); 
   //if (nTotalFiles>50) nTotalFiles=50;
- // nTotalFiles = 5;
+  //nTotalFiles = 5;
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -264,12 +264,14 @@ int main(int argc, char * argv[]) {
       
       
       Float_t weight = 1;
-	bool isData= false;
-    	bool lumi=false;
+      isData= false;
+      bool lumi=false;
 
       if (XSec == 1)  isData = true;
       if (!isData && XSec !=1 )  { weight *=analysisTree.genweight;   lumi=true;} 
-   
+   	
+      //cout<<"weight  "<<weight<<" ana.genweigh "<<analysisTree.genweight<<endl;
+
       if( !isData && analysisTree.genweight){
      histWeights->Fill(1,weight); 
      histWeights2->Fill(weight); 
@@ -280,7 +282,6 @@ int main(int argc, char * argv[]) {
      if (nEvents%10000==0) 
 	cout << "      processed " << nEvents << " events" << endl; 
      
-      histWeights->Fill(1,analysisTree.genweight);
          
       if (isData){
       if (analysisTree.event_run<RunRangeMin) continue;
@@ -653,8 +654,30 @@ int main(int argc, char * argv[]) {
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
       iCut++;
+/*
+      Float_t DRmax=0.4;
+      vector<int> jets; jets.clear();
+      TLorentzVector leptonsV, muonJ, jetsLV;
+      
+      
+      //JetsV.SetPxPyPzE(analysisTree.pfjet_px[ij], analysisTree.pfjet_py[ij], analysisTree.pfjet_pz[ij], analysisTree.pfjet_e[ij]);
+      for (unsigned int il = 0; il<LeptMV.size(); ++il) {
+      
+	 for (unsigned int ij = 0; ij<JetsMV.size(); ++ij) {
+        
+		 if(fabs(JetsMV.at(ij).Eta())>etaJetCut) continue;
+                 if(fabs(JetsMV.at(ij).Pt())<ptJetCut) continue;
+      
+       Float_t Dr= deltaR(LeptMV.at(il).Eta(), LeptMV.at(il).Phi(),JetsMV.at(ij).Eta(),JetsMV.at(ij).Phi());
 
-
+     if (  Dr  < DRmax) {
+	     
+	     JetsMV.erase (JetsMV.begin()+ij);
+    		 }	
+		       
+	 }
+      }
+*/
 	bool isMu24 = false;
 	bool isMu27 = false;
 	bool isMuTau_MuLegA = false;
@@ -948,12 +971,17 @@ int main(int argc, char * argv[]) {
   }
 
 
-cout<< " " <<histWeights->GetSumOfWeights()<<"  "<<inputEventsH->GetSum()<<endl;
+
+cout<< " histWeigh Sum " <<histWeights->GetSumOfWeights()<<"   "<<histWeights->GetSum()<<" Events "<<inputEventsH->GetSum()<<"  "<<inputEventsH->GetSumOfWeights()<<endl;
+	
+cout<<" Will use weight  "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;
 
 for (int i=0;i<CutNumb;++i){
- if (!isData)   CFCounter[i] *= Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));
+ if (!isData) { cout << " i "<<i<<" "<<iCFCounter[i]<<"  "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;  
+	 CFCounter[i] = iCFCounter[i]*Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));}
     if (iCFCounter[i] <0.2) statUnc[i] =0;
-    else statUnc[i] = CFCounter[i]/sqrt(iCFCounter[i]);
+    //else statUnc[i] = CFCounter[i]/sqrt(iCFCounter[i]);
+    else statUnc[i] = sqrt(CFCounter[i]);
   }
 
 
@@ -961,7 +989,7 @@ for (int i=0;i<CutNumb;++i){
   ofstream tfile;
   // TString outname = argv[argc-1];
   TString outname=argv[2];
-  TString textfilename = "cutflow_"+outname+"_"+SelectionSign+".txt";
+  TString textfilename = "cutflow_"+outname+"_"+SelectionSign+"_"+argv[3]+".txt";
   tfile.open(textfilename);
   tfile << "########################################" << endl;
   //tfile << "Cut efficiency numbers:" << endl;

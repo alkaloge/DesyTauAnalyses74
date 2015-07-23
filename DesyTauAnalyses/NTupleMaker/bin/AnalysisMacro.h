@@ -20,6 +20,8 @@ unsigned int tau_index=-1;
 unsigned int mu_index=-1;
 unsigned int el_index=-1;
 
+bool isData = false;
+
 Float_t XSec=-1;
 Float_t xs,fact,fact2;
    //string CutList[10];
@@ -27,7 +29,7 @@ vector<string> CutList;
 
 //TH1D * histWeights = new TH1D("histWeights","",1,-0.5,0.5);
 TH1D * histWeights = new TH1D("histWeights","",1,0,0);
-TH1D * histWeights2 = new TH1D("histWeights2","",2,0,0);
+TH1D * histWeights2 = new TH1D("histWeights2","",1,0,0);
 
 
 TH1D *hHT[CutN];
