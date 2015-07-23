@@ -152,9 +152,9 @@ void synchNtuple(string sample = "GGFH125", string stream = "MuTau", bool incl=f
    float lJCsv2      = 0; lOTree->Branch("jcsv_2"     ,&lJCsv2         ,"lJCsv2/F"     );//CSV discriminator
 
    //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)
-   float lBTagPt     = 0; lOTree->Branch("bjpt_1"        ,&lBTagPt        ,"lBTagPt/F"   );//Corrected BTag Pt
-   float lBTagEta    = 0; lOTree->Branch("bjeta_1"       ,&lBTagEta       ,"lBTagEta/F"  );//Btag Eta
-   float lBTagPhi    = 0; lOTree->Branch("bjphi_1"       ,&lBTagPhi       ,"lBTagPhi/F"  );//Btag Phi
+   float lBTagPt     = 0; lOTree->Branch("bpt_1"        ,&lBTagPt        ,"lBTagPt/F"   );//Corrected BTag Pt
+   float lBTagEta    = 0; lOTree->Branch("beta_1"       ,&lBTagEta       ,"lBTagEta/F"  );//Btag Eta
+   float lBTagPhi    = 0; lOTree->Branch("bphi_1"       ,&lBTagPhi       ,"lBTagPhi/F"  );//Btag Phi
  
    //Di Jet kinematic variables for VBF selection ==> Two leading pT Jets 
    float lMJJ        = 0; lOTree->Branch("mjj"        ,&lMJJ           ,"lMJJ/F"      );//Mass Di Jet system  
