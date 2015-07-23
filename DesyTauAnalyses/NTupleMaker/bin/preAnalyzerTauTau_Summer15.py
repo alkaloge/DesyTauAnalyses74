@@ -7,7 +7,8 @@ import string
 import subprocess
 
 #WorkdirLoc = '/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/Sync2015/'
-WorkdirLoc = '/nfs/dust/cms/user/rasp/ntuples/'
+#WorkdirLoc = '/nfs/dust/cms/user/rasp/ntuples/'
+WorkdirLoc = '/nfs/dust/cms/group/susy-desy/Run2/MC/Stau/MC_Spring15_25ns_v1/'
 OutDir     = '/nfs/dust/cms/user/anayak/CMS/Ntuple_HttAnalysis/ntuples74/'
 
 options = {
@@ -55,7 +56,8 @@ options = {
 #        },
     ######MSSM
     'SUSYGGH160' : {
-    'inputFilePath'  : WorkdirLoc+'MC_Spring15_v1/SUSYGluGluToHToTauTau_M-160_PY8_25ns/',
+    #'inputFilePath'  : WorkdirLoc+'MC_Spring15_v1/SUSYGluGluToHToTauTau_M-160_PY8_25ns/',
+    'inputFilePath'  : WorkdirLoc+'SUSYGluGluToHToTauTau_M-160/',    
     'outputFileName' : OutDir+'nTupleSUSYGGH160_TauTau.root',
     'sample'         : 'SUSYGGH160',
     'xSection'       : 1.0,

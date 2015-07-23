@@ -246,6 +246,18 @@ Int_t GetTauDiscriminator(string disname, string disnamelist, ULong64_t dishps)
   if((dishps & ((ULong64_t)1<<(ULong64_t)pos)) != 0) return(1);
   return(0);
 }
+Float_t GetBTagDiscriminator(string disname, std::vector<string> disnamelist, float *bDiscrValues)
+{
+  Int_t pos = -1;
+  for(UInt_t i = 0 ; i < disnamelist.size() ; i++){
+    if(disname == disnamelist[i]){
+      pos = i;
+      break;
+    }
+  }
+  if(pos == -1) return(-99.);
+  else return bDiscrValues[pos];
+}
 /* //old code
 Int_t GetTriggerMatch(string pathName_, string triglist, ULong64_t trigResult_)
 {
@@ -392,7 +404,6 @@ void fillTrees_TauTauStream(TChain* currentTree,
 			   float xsec_ = 0., 
 			   float skimEff_ = 0., 
 			   int iJson_=-1,
-			   bool doLepVeto=true,
 			   int iDiv = 0,
 			   int nDiv = 1
 			   )
@@ -464,10 +475,11 @@ void fillTrees_TauTauStream(TChain* currentTree,
   float pfjet_e[100], pfjet_px[100], pfjet_py[100], pfjet_pz[100],
     pfjet_neutralhadronicenergy[100], pfjet_chargedhadronicenergy[100],
     pfjet_neutralemenergy[100], pfjet_chargedemenergy[100],
-    pfjet_btag[100][9], pfjet_energycorr[100];
+    pfjet_btag[100][10], pfjet_energycorr[100];
   UInt_t pfjet_neutralmulti[100], pfjet_chargedmulti[100], pfjet_chargedhadronmulti[100];
   float pfjet_pu_jet_full_mva[100];
   int pfjet_flavour[100];
+  std::vector<std::string> *run_btagdiscriminators = new std::vector<std::string> ();
   
   //MET
   float pfmet_ex, pfmet_ey, pfmet_sigxx, pfmet_sigxy, pfmet_sigyx, pfmet_sigyy;
@@ -602,6 +614,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchStatus("pfjet_energycorr"     ,1);
   currentTree->SetBranchStatus("pfjet_flavour"        ,1);
   currentTree->SetBranchStatus("pfjet_pu_jet_full_mva"        ,1);
+  currentTree->SetBranchStatus("run_btagdiscriminators"        ,1);
   currentTree->SetBranchStatus("pfmet_ex",            1);
   currentTree->SetBranchStatus("pfmet_ey",            1);
   currentTree->SetBranchStatus("pfmet_sigxx",        1);
@@ -752,6 +765,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchAddress("pfjet_energycorr"     ,pfjet_energycorr);
   currentTree->SetBranchAddress("pfjet_pu_jet_full_mva"        ,pfjet_pu_jet_full_mva);
   currentTree->SetBranchAddress("pfjet_flavour"        ,pfjet_flavour);
+  currentTree->SetBranchAddress("run_btagdiscriminators"        ,&run_btagdiscriminators);
   currentTree->SetBranchAddress("pfmet_ex",          &pfmet_ex);
   currentTree->SetBranchAddress("pfmet_ey",          &pfmet_ey);
   currentTree->SetBranchAddress("pfmet_sigxx",        &pfmet_sigxx);
@@ -1175,6 +1189,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
       //if(tau_byCombinedIsolationDeltaBetaCorrRaw3Hits[it] > 1.0) continue;
       //if(tau_againstElectronVLooseMVA5[it] < 0.5) continue;
       //if(tau_againstMuonLoose3[it] < 0.5) continue;
+      if(TMath::Abs(tau_charge[it]) != 1) continue;
 
       //HLT match
       bool HLTmatchLeg1_ = false;
@@ -1201,6 +1216,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
 	//if(tau_byCombinedIsolationDeltaBetaCorrRaw3Hits[jt] > 1.0) continue;
 	//if(tau_againstElectronVLooseMVA5[jt] < 0.5) continue;
 	//if(tau_againstMuonLoose3[jt] < 0.5) continue;
+	if(TMath::Abs(tau_charge[jt]) != 1) continue;
 
 	//HLT match
 	bool HLTmatchLeg2_ = false;
@@ -1349,7 +1365,9 @@ void fillTrees_TauTauStream(TChain* currentTree,
 	if(TMath::Abs(JetP4_.eta()) < 2.4){
 	  //int jetFlavour = pfjet_flavour[ijet]; //get it from tree
 	  //bool isBtag = btsf->isbtagged(JetP4_.Pt(), JetP4_.Eta(), pfjet_btag[ijet][2], jetFlavour, isData ,kNo, kNo, true); //use CSV Medium WP
-	  bool isBtag = (pfjet_btag[ijet][6] > 0.814); //combinedInclusiveSecondaryVertexV2BJetTags
+	  float BDiscr = GetBTagDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags", (*run_btagdiscriminators), pfjet_btag[ijet]);
+	  bool isBtag = (BDiscr > 0.814); //pfCombinedInclusiveSecondaryVertexV2BJetTags
+	  //bool isBtag = (pfjet_btag[ijet][8] > 0.814); //pfCombinedInclusiveSecondaryVertexV2BJetTags
 
 	  if(isBtag){
 	    nJets20BTagged++;
@@ -1360,7 +1378,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
 	    }
 	  }
 
-	  if(pfjet_btag[ijet][2] > 0.244){ //Loose WP
+	  if(pfjet_btag[ijet][8] > 0.244){ //Loose WP
 	    nJets20BTaggedLoose++;
 	  }
 	}
@@ -1389,14 +1407,14 @@ void fillTrees_TauTauStream(TChain* currentTree,
 	  diJetPhi = (pfJetsP4_[0] + pfJetsP4_[1]).phi();
 	  
 	  //check CJV
-	  if(pfJetsP4_.size() > 2){
+	  if(pfJetsP4_.size() > 2 ){
 	    ptVeto = pfJetsP4_[2].pt();
 	    etaVeto = pfJetsP4_[2].eta();
 	    phiVeto = pfJetsP4_[2].phi();
 
 	    nVetoJets = 0;
 	    for(size_t ijet = 2; ijet < pfJetsP4_.size(); ijet++){
-	      if((pfJetsP4_[ijet].eta() - pfJetsP4_[0].eta())*(pfJetsP4_[ijet].eta() - pfJetsP4_[1].eta()) <= 0)
+	      if(pfJetsP4_[ijet].pt() > 30 && (pfJetsP4_[ijet].eta() - pfJetsP4_[0].eta())*(pfJetsP4_[ijet].eta() - pfJetsP4_[1].eta()) <= 0)
 		nVetoJets++;
 	    }
 	  }
@@ -1726,8 +1744,7 @@ int main(int argc, const char* argv[])
   cout<<"nDiv = "<<nDiv<<endl;
 
 
-  fillTrees_TauTauStream(currentTree,outTree,nEventsRead,analysis,sample,xSection,skimEff,iJson,true,iDiv,nDiv);
-  //   fillTrees_TauTauStream(currentTree,outTree,nEventsRead,analysis,sample,xSection,skimEff,iJson,antiElecMVAcuts,iDiv,nDiv);
+  fillTrees_TauTauStream(currentTree,outTree,nEventsRead,analysis,sample,xSection,skimEff,iJson,iDiv,nDiv);
 
   //delete outTree;
   //delete currentTree;
