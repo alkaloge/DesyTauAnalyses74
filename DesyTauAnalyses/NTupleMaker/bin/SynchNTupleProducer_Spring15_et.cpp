@@ -589,13 +589,13 @@ int main(int argc, char * argv[]) {
 	  bool trigMatch = isTrigEle32 || (isTrigEle22 && isTrigTau);
 
 	  if (isTrigEle32 && analysisTree.hltriggerresults_second[4]==false)
-	    //if (debug)
-	    std::cout<<"IsoEle32 Trigger Mismatch"<<std::endl;
+	    if (debug)
+	      std::cout<<"IsoEle32 Trigger Mismatch"<<std::endl;
 
 	  
 	  if (isTrigEle22 && isTrigTau && analysisTree.hltriggerresults_second[1]==false)
-	    //if (debug)
-	    std::cout<<"xEleTau Trigger Mismatch"<<std::endl;
+	    if (debug)
+	      std::cout<<"xEleTau Trigger Mismatch"<<std::endl;
 	      
 	  if (!trigMatch) continue;
 	  
