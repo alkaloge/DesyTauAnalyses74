@@ -676,7 +676,7 @@ int main(int argc, char * argv[]) {
       evt = int(analysisTree.event_nr);
 
       // weights
-      mcweight = 0;
+      mcweight = analysisTree.genweight;
       puweight = 0;
       trigweight_1 = 0;
       trigweight_2 = 0;
