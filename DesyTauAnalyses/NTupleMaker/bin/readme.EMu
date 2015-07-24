@@ -91,7 +91,8 @@ ApplyMuonId = true
 
 In addition there are also topological cuts:
 
-# topological cuts                                                                                                                                                                                        dRleptonsCut = 0.4
+# topological cuts
+dRleptonsCut = 0.4
 MEtCut   = 80
 dZetaCut = -60
 oppositeSign = true
