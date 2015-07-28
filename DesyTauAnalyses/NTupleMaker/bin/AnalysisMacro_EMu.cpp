@@ -26,6 +26,9 @@
 #include "DesyTauAnalyses/NTupleMaker/interface/Config.h"
 #include "DesyTauAnalyses/NTupleMaker/interface/AC1B.h"
 
+#include "DesyTauAnalyses/NTupleMaker/interface/RunLumiReader.h"
+
+
 const float MuMass = 0.105658367;
 
 int binNumber(float x, int nbins, float * bins) {
@@ -180,6 +183,7 @@ double EFromPandM0(double M0,double Pt,double Eta){
   return E;
 
 }
+
 bool electronMvaIdTight(float eta, float mva) {
 
   float absEta = fabs(eta);
@@ -199,6 +203,83 @@ bool electronMvaIdTight(float eta, float mva) {
 
 }
 
+bool electronMvaIdLoose(float eta, float mva) {
+
+  float absEta = fabs(eta);
+
+  bool passed = false;
+  if (absEta<0.8) {
+    if (mva>0.35) passed = true;
+  }
+  else if (absEta<1.479) {
+    if (mva>0.20) passed = true;
+  }
+  else {
+    if (mva>-0.52) passed = true;
+  }
+
+  return passed;
+
+}
+
+bool electronMvaIdWP80(float pt, float eta, float mva) {
+
+  float absEta = fabs(eta);
+  bool passed = false;
+  if (absEta<0.8) {
+    if (pt<10) 
+      passed = mva > -0.253;
+    else 
+      passed = mva > 0.965;
+  }
+  else if (absEta<1.479) {
+    if (pt<10)
+      passed = mva > 0.081;
+    else
+      passed = mva > 0.917;
+  }
+  else {
+    if (pt<10)
+      passed = mva > -0.081;
+    else
+      passed = mva > 0.683;
+  }
+
+  return passed;
+
+}
+
+bool electronMvaIdWP90(float pt, float eta, float mva) {
+
+  float absEta = fabs(eta);
+  bool passed = false;
+  if (absEta<0.8) {
+    if (pt<10) 
+      passed = mva > -0.483;
+    else 
+      passed = mva > 0.933;
+  }
+  else if (absEta<1.479) {
+    if (pt<10)
+      passed = mva > -0.267;
+    else
+      passed = mva > 0.825;
+  }
+  else {
+    if (pt<10)
+      passed = mva > -0.323;
+    else
+      passed = mva > 0.337;
+  }
+
+  return passed;
+
+}
+
+struct myclass {
+  bool operator() (int i,int j) { return (i<j);}
+} myobject;
+
 const float electronMass = 0;
 const float muonMass = 0.10565837;
 const float pionMass = 0.1396;
@@ -213,10 +294,15 @@ int main(int argc, char * argv[]) {
   // **** configuration
   Config cfg(argv[1]);
 
+  // Data
+  const bool isData = cfg.get<bool>("IsData");
+  const bool applyGoodRunSelection = cfg.get<bool>("ApplyGoodRunSelection"); 
+
   // kinematic cuts on electrons
   const float ptElectronLowCut   = cfg.get<float>("ptElectronLowCut");
   const float ptElectronHighCut  = cfg.get<float>("ptElectronHighCut");
-  const float etaElectronCut     = cfg.get<float>("etaElectronCut");
+  const float etaElectronLowCut  = cfg.get<float>("etaElectronLowCut");
+  const float etaElectronHighCut = cfg.get<float>("etaElectronHighCut");
   const float dxyElectronCut     = cfg.get<float>("dxyElectronCut");
   const float dzElectronCut      = cfg.get<float>("dzElectronCut");
   const float isoElectronLowCut  = cfg.get<float>("isoElectronLowCut");
@@ -225,7 +311,8 @@ int main(int argc, char * argv[]) {
   // kinematic cuts on muons
   const float ptMuonLowCut   = cfg.get<float>("ptMuonLowCut");
   const float ptMuonHighCut  = cfg.get<float>("ptMuonHighCut");
-  const float etaMuonCut     = cfg.get<float>("etaMuonCut");
+  const float etaMuonLowCut  = cfg.get<float>("etaMuonLowCut");
+  const float etaMuonHighCut = cfg.get<float>("etaMuonHighCut");
   const float dxyMuonCut     = cfg.get<float>("dxyMuonCut");
   const float dzMuonCut      = cfg.get<float>("dzMuonCut");
   const float isoMuonLowCut  = cfg.get<float>("isoMuonLowCut");
@@ -237,8 +324,21 @@ int main(int argc, char * argv[]) {
   const float MEtCut         = cfg.get<float>("MEtCut");
   const float dZetaCut       = cfg.get<float>("dZetaCut");
   const bool oppositeSign    = cfg.get<bool>("oppositeSign");
-
+  const float DRTrigMatch    = cfg.get<float>("DRTrigMatch");
   const float MEtCutTTJets   = cfg.get<float>("MEtCutTTJets");
+
+  // trigger
+  const unsigned int trigger = cfg.get<unsigned int>("Trigger");
+  const string muonHLTName  = cfg.get<string>("MuonHLTName");
+  const string electronHLTName  = cfg.get<string>("ElectronHLTName");
+  const string muonHLTFilterName  = cfg.get<string>("MuonHLTFilterName");
+  const string electronHLTFilterName  = cfg.get<string>("ElectronHLTFilterName");
+
+  TString MuonHLTName(muonHLTName);
+  TString ElectronHLTName(electronHLTName);
+  TString MuonHLTFilterName(muonHLTFilterName);
+  TString ElectronHLTFilterName(electronHLTFilterName);
+
   // cuts on jets
   const float jetEtaCut = cfg.get<float>("JetEtaCut");
   const float jetPtLowCut = cfg.get<float>("JetPtLowCut");
@@ -249,8 +349,6 @@ int main(int argc, char * argv[]) {
   const float btagLooseCut = cfg.get<float>("btagLooseCut");
   const float btagMediumCut = cfg.get<float>("btagMediumCut");
 
-  const bool applyTriggerMatch = cfg.get<bool>("ApplyTriggerMatch");
-
   // vertex cuts
   const float ndofVertexCut  = cfg.get<float>("NdofVertexCut");   
   const float zVertexCut     = cfg.get<float>("ZVertexCut");
@@ -258,6 +356,13 @@ int main(int argc, char * argv[]) {
 
 
   // **** end of configuration
+
+  // Run-lumi selector
+  std::vector<std::string> jsonFiles;
+  jsonFiles.push_back("/nfs/dust/cms/user/rasp/CMSSW/CMSSW_7_4_6/src/DesyTauAnalyses/NTupleMaker/test/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt");
+
+  RunLumiSelector runLumiSelector;
+  runLumiSelector = RunLumiSelector(jsonFiles);
 
   // file name and tree name
   std::string rootFileName(argv[2]);
@@ -272,6 +377,9 @@ int main(int argc, char * argv[]) {
   TFile * file = new TFile(TStrName+TString(".root"),"recreate");
   file->cd("");
   TH1F * inputEventsH = new TH1F("inputEventsH","",1,-0.5,0.5);
+  TH1F * weightsH = new TH1F("weightsH","",1,-0.5,0.5);
+  TH1F * weightsTriggerH = new TH1F("weightsTriggerH","",1,-0.5,0.5);
+  TH1F * weightsEMuH = new TH1F("weightsEMuH","",1,-0.5,0.5);
 
   TH1F * muonPtAllH = new TH1F("muonPtAllH","",40,0,200);
   TH1F * electronPtAllH = new TH1F("electronPtAllH","",40,0,200);
@@ -365,21 +473,32 @@ int main(int argc, char * argv[]) {
   TH1F * TTJetsDiLeptonH = new TH1F("TTJetsDiLeptonH","",1,-0.5,0.5);
   TH1F * TTJetsDiLeptonElePtH = new TH1F("TTJetsDiLeptonElePtH","",1000,0,1000);
   TH1F * TTJetsDiLeptonMuPtH = new TH1F("TTJetsDiLeptonMuPtH","",1000,0,1000);
-  TH1F * TTJetsDiLeptonEleEtaH = new TH1F("TTJetsDiLeptonElePtH","",100,-5,5);
-  TH1F * TTJetsDiLeptonMuEtaH = new TH1F("TTJetsDiLeptonMuPtH","",100,-5,5);
+  TH1F * TTJetsDiLeptonEleEtaH = new TH1F("TTJetsDiLeptonEleEtaH","",100,-5,5);
+  TH1F * TTJetsDiLeptonMuEtaH = new TH1F("TTJetsDiLeptonMuEtaH","",100,-5,5);
   TH1F * TTJetsDiLeptonAccH = new TH1F("TTJetsDiLeptonAccH","",1,-0.5,0.5);
 
   TH1F * DYJetsDiLeptonH = new TH1F("DYJetsDiLeptonH","",1,-0.5,0.5);
   TH1F * DYJetsDiLeptonElePtH = new TH1F("DYJetsDiLeptonElePtH","",1000,0,1000);
   TH1F * DYJetsDiLeptonMuPtH = new TH1F("DYJetsDiLeptonMuPtH","",1000,0,1000);
-  TH1F * DYJetsDiLeptonEleEtaH = new TH1F("DYJetsDiLeptonElePtH","",100,-5,5);
-  TH1F * DYJetsDiLeptonMuEtaH = new TH1F("DYJetsDiLeptonMuPtH","",100,-5,5);
+  TH1F * DYJetsDiLeptonEleEtaH = new TH1F("DYJetsDiLeptonEleEtaH","",100,-5,5);
+  TH1F * DYJetsDiLeptonMuEtaH = new TH1F("DYJetsDiLeptonMuEtaH","",100,-5,5);
   TH1F * DYJetsDiLeptonAccH = new TH1F("DYJetsDiLeptonAccH","",1,-0.5,0.5);
+
+  unsigned int iRun;
+  unsigned int iEvent;
+  TTree * eventTree = new TTree("eventTree","eventTree");
+  eventTree->Branch("Run",&iRun,"Run/i");
+  eventTree->Branch("Event",&iEvent,"Event/i");
 
 
   int nFiles = 0;
   int nEvents = 0;
   int selEvents = 0;
+
+  unsigned int minRun = 99999999;
+  unsigned int maxRun = 0;
+
+  std::vector<unsigned int> allRuns; allRuns.clear();
 
   int nTotalFiles = 0;
   std::string dummy;
@@ -428,6 +547,26 @@ int main(int argc, char * argv[]) {
 
       float weight = 1;
 
+      if (analysisTree.event_run>maxRun)
+	maxRun = analysisTree.event_run;
+
+      if (analysisTree.event_run<minRun)
+	minRun = analysisTree.event_run;
+
+
+      bool isNewRun = true;
+      if (allRuns.size()>0) {
+	for (unsigned int iR=0; iR<allRuns.size(); ++iR) {
+	  if (analysisTree.event_run==allRuns.at(iR)) {
+	    isNewRun = false;
+	    break;
+	  }
+	}
+      }
+
+      if (isNewRun) 
+	allRuns.push_back(analysisTree.event_run);
+
       //      std::cout << "Entry : " << iEntry << std::endl;
       //      std::cout << "Number of gen particles = " << analysisTree.genparticles_count << std::endl;
       //      std::cout << "Number of taus  = " << analysisTree.tau_count << std::endl;
@@ -435,183 +574,256 @@ int main(int argc, char * argv[]) {
       //      std::cout << "Number of muons = " << analysisTree.muon_count << std::endl;
       
       // **** Analysis of generator info
-      vector<int> indexW; indexW.clear();
-      vector<int> indexNu; indexNu.clear(); 
-      vector<int> indexMu; indexMu.clear();
-      vector<int> indexE; indexE.clear();
-      vector<int> indexMuTau; indexMuTau.clear();
-      vector<int> indexETau; indexETau.clear();
-      vector<TLorentzVector> lvW; lvW.clear();
-      vector<TLorentzVector> lvNu; lvNu.clear(); 
-      vector<TLorentzVector> lvMu; lvMu.clear();
-      vector<TLorentzVector> lvE; lvE.clear();
-      vector<TLorentzVector> lvMuTau; lvMuTau.clear();
-      vector<TLorentzVector> lvETau; lvETau.clear();
-      
-      // int nGenMuons = 0;
-      // int nGenElectrons = 0;
-      for (unsigned int igen=0; igen<analysisTree.genparticles_count; ++igen) {
+      if (!isData) {
 
-       	float pxGen = analysisTree.genparticles_px[igen];
-       	float pyGen = analysisTree.genparticles_py[igen];
-       	float pzGen = analysisTree.genparticles_pz[igen];
-	float enGen = analysisTree.genparticles_e[igen];
+	// weight 
+	weight = analysisTree.genweight;
 
-	TLorentzVector lorentzVector; lorentzVector.SetPxPyPzE(pxGen,pyGen,pzGen,enGen);
-
-       	if (fabs(analysisTree.genparticles_pdgid[igen])==24 && 
-	    (analysisTree.genparticles_status[igen]==62||analysisTree.genparticles_status[igen]==52)) { 
-       	  indexW.push_back(igen);
-	  lvW.push_back(lorentzVector);
-	}
-
-       	if ((fabs(analysisTree.genparticles_pdgid[igen])==12 
-       	     ||fabs(analysisTree.genparticles_pdgid[igen])==14)
-       	    && analysisTree.genparticles_info[igen]==2 && analysisTree.genparticles_status[igen]==1) {
-       	  indexNu.push_back(igen);
-	  lvNu.push_back(lorentzVector);
-	}
-
-       	if (fabs(analysisTree.genparticles_pdgid[igen])==13 &&
-	    analysisTree.genparticles_info[igen]==2 && analysisTree.genparticles_status[igen]==1) {
-	  indexMu.push_back(igen);
-	  lvMu.push_back(lorentzVector);
-	}
-
-       	if (fabs(analysisTree.genparticles_pdgid[igen])==13 &&
-	    analysisTree.genparticles_info[igen]==5 && analysisTree.genparticles_status[igen]==1) {
-	  indexMuTau.push_back(igen);
-	  lvMuTau.push_back(lorentzVector);
-	}
-
-     	if (fabs(analysisTree.genparticles_pdgid[igen])==11 &&
-	    analysisTree.genparticles_info[igen]==2 && analysisTree.genparticles_status[igen]==1 ) {
-	  indexE.push_back(igen);
-	  lvE.push_back(lorentzVector);
-	}
-
-     	if (fabs(analysisTree.genparticles_pdgid[igen])==11 &&
-	    analysisTree.genparticles_info[igen]==5 && analysisTree.genparticles_status[igen]==1 ) {
-	  indexETau.push_back(igen);
-	  lvETau.push_back(lorentzVector);
-	}
-
-      }
-      // w bosons;
-      //      std::cout << "Number of W " << indexW.size() << std::endl;
-
-      vector<int> indexEfromW; indexEfromW.clear();
-      vector<int> indexMufromW; indexMufromW.clear();
-
-      //      for (unsigned int iW=0; iW<indexW.size(); ++iW) {
-      //	int index = indexW.at(iW);
-      //	int pdgId = analysisTree.genparticles_pdgid[index];
-      //	if (pdgId==24)
-      //	  printf("W +    : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
-      //		 lvW[iW].Px(),lvW[iW].Py(),lvW[iW].Pz(),lvW[iW].M());
-      //	else
-      //	  printf("W -    : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
-      //                 lvW[iW].Px(),lvW[iW].Py(),lvW[iW].Pz(),lvW[iW].M());
-      //      }
-
-      for (unsigned int iNu=0; iNu<indexNu.size(); ++iNu) {
-
-	int IndexNu = indexNu.at(iNu);
-	int PdgIdNu = analysisTree.genparticles_pdgid[IndexNu];
-
-	for (unsigned int iE=0; iE<indexE.size(); ++iE) {
-	  int IndexE = indexE.at(iE);
-	  int PdgIdE = analysisTree.genparticles_pdgid[IndexE];
-	  bool isWplus = (PdgIdE==-11) && (PdgIdNu==12);
-	  bool isWminus = (PdgIdE==11) && (PdgIdNu==-12);
-	  if (isWplus||isWminus) {
-	    TLorentzVector sumLV = lvNu[iNu]+lvE[iE];
-	    if (sumLV.M()>60) indexEfromW.push_back(IndexE);
-	    //	    if (isWplus)
-	    //	      printf("(e,v)+ : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
-	    //		     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
-	    //	    if (isWminus)
-	    //              printf("(e,v)- : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
-	    //                     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
+	vector<int> indexW; indexW.clear();
+	vector<int> indexNu; indexNu.clear(); 
+	vector<int> indexMu; indexMu.clear();
+	vector<int> indexE; indexE.clear();
+	vector<int> indexMuTau; indexMuTau.clear();
+	vector<int> indexETau; indexETau.clear();
+	vector<TLorentzVector> lvW; lvW.clear();
+	vector<TLorentzVector> lvNu; lvNu.clear(); 
+	vector<TLorentzVector> lvMu; lvMu.clear();
+	vector<TLorentzVector> lvE; lvE.clear();
+	vector<TLorentzVector> lvMuTau; lvMuTau.clear();
+	vector<TLorentzVector> lvETau; lvETau.clear();
+	
+	// int nGenMuons = 0;
+	// int nGenElectrons = 0;
+	for (unsigned int igen=0; igen<analysisTree.genparticles_count; ++igen) {
+	  
+	  float pxGen = analysisTree.genparticles_px[igen];
+	  float pyGen = analysisTree.genparticles_py[igen];
+	  float pzGen = analysisTree.genparticles_pz[igen];
+	  float enGen = analysisTree.genparticles_e[igen];
+	  
+	  TLorentzVector lorentzVector; lorentzVector.SetPxPyPzE(pxGen,pyGen,pzGen,enGen);
+	  
+	  if (fabs(analysisTree.genparticles_pdgid[igen])==24 && 
+	      (analysisTree.genparticles_status[igen]==62||analysisTree.genparticles_status[igen]==52)) { 
+	    indexW.push_back(igen);
+	    lvW.push_back(lorentzVector);
 	  }
-	}
-
-	for (unsigned int iM=0; iM<indexMu.size(); ++iM) {
-	  int IndexM = indexMu.at(iM);
-	  int PdgIdM = analysisTree.genparticles_pdgid[IndexM];
-	  bool isWplus = (PdgIdM==-13) && (PdgIdNu==14);
-	  bool isWminus = (PdgIdM==13) && (PdgIdNu==-14);
-	  if (isWplus||isWminus) {
-	    TLorentzVector sumLV = lvNu[iNu]+lvMu[iM];
-	    if (sumLV.M()>60) indexMufromW.push_back(IndexM);
-	    //	    if (isWplus)
-	    //	      printf("(m,v)+ : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
-	    //		     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
-	    //	    if (isWminus)
-	    //              printf("(m,v)- : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
-	    //                     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
+	  
+	  if ((fabs(analysisTree.genparticles_pdgid[igen])==12 
+	       ||fabs(analysisTree.genparticles_pdgid[igen])==14)
+	      && analysisTree.genparticles_info[igen]==2 && analysisTree.genparticles_status[igen]==1) {
+	    indexNu.push_back(igen);
+	    lvNu.push_back(lorentzVector);
 	  }
+	  
+	  if (fabs(analysisTree.genparticles_pdgid[igen])==13 &&
+	      analysisTree.genparticles_info[igen]==2 && analysisTree.genparticles_status[igen]==1) {
+	    indexMu.push_back(igen);
+	    lvMu.push_back(lorentzVector);
+	  }
+	  
+	  if (fabs(analysisTree.genparticles_pdgid[igen])==13 &&
+	      analysisTree.genparticles_info[igen]==5 && analysisTree.genparticles_status[igen]==1) {
+	    indexMuTau.push_back(igen);
+	    lvMuTau.push_back(lorentzVector);
+	  }
+	  
+	  if (fabs(analysisTree.genparticles_pdgid[igen])==11 &&
+	      analysisTree.genparticles_info[igen]==2 && analysisTree.genparticles_status[igen]==1 ) {
+	    indexE.push_back(igen);
+	    lvE.push_back(lorentzVector);
+	  }
+	  
+	  if (fabs(analysisTree.genparticles_pdgid[igen])==11 &&
+	      analysisTree.genparticles_info[igen]==5 && analysisTree.genparticles_status[igen]==1 ) {
+	    indexETau.push_back(igen);
+	    lvETau.push_back(lorentzVector);
+	  }
+	  
 	}
-
-      }	
-
-      if (indexETau.size()>0&&indexMuTau.size()>0) {
-	DYJetsDiLeptonH->Fill(0.);
-
-	DYJetsDiLeptonElePtH->Fill(lvETau[0].Pt());
-        DYJetsDiLeptonEleEtaH->Fill(lvETau[0].Eta());
-        DYJetsDiLeptonMuPtH->Fill(lvMuTau[0].Pt());
-        DYJetsDiLeptonMuEtaH->Fill(lvMuTau[0].Eta());
-
-	if (fabs(lvMuTau[0].Eta())<etaMuonCut && fabs(lvETau[0].Eta())<etaElectronCut) {
-          bool isAccepted = ( lvMuTau[0].Pt()>ptMuonLowCut && lvETau[0].Pt()>ptElectronHighCut) ||
-            ( lvMuTau[0].Pt()>ptMuonHighCut && lvETau[0].Pt()>ptElectronLowCut ) ;
-          if (isAccepted)
-            DYJetsDiLeptonAccH->Fill(0.);
-        }
-
-
-
+	// w bosons;
+	//      std::cout << "Number of W " << indexW.size() << std::endl;
+	
+	vector<int> indexEfromW; indexEfromW.clear();
+	vector<int> indexMufromW; indexMufromW.clear();
+	
+	//      for (unsigned int iW=0; iW<indexW.size(); ++iW) {
+	//	int index = indexW.at(iW);
+	//	int pdgId = analysisTree.genparticles_pdgid[index];
+	//	if (pdgId==24)
+	//	  printf("W +    : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
+	//		 lvW[iW].Px(),lvW[iW].Py(),lvW[iW].Pz(),lvW[iW].M());
+	//	else
+	//	  printf("W -    : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
+	//                 lvW[iW].Px(),lvW[iW].Py(),lvW[iW].Pz(),lvW[iW].M());
+	//      }
+	
+	for (unsigned int iNu=0; iNu<indexNu.size(); ++iNu) {
+	  
+	  int IndexNu = indexNu.at(iNu);
+	  int PdgIdNu = analysisTree.genparticles_pdgid[IndexNu];
+	  
+	  for (unsigned int iE=0; iE<indexE.size(); ++iE) {
+	    int IndexE = indexE.at(iE);
+	    int PdgIdE = analysisTree.genparticles_pdgid[IndexE];
+	    bool isWplus = (PdgIdE==-11) && (PdgIdNu==12);
+	    bool isWminus = (PdgIdE==11) && (PdgIdNu==-12);
+	    if (isWplus||isWminus) {
+	      TLorentzVector sumLV = lvNu[iNu]+lvE[iE];
+	      if (sumLV.M()>60) indexEfromW.push_back(IndexE);
+	      //	    if (isWplus)
+	      //	      printf("(e,v)+ : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
+	      //		     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
+	      //	    if (isWminus)
+	      //              printf("(e,v)- : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
+	      //                     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
+	    }
+	  }
+	  
+	  for (unsigned int iM=0; iM<indexMu.size(); ++iM) {
+	    int IndexM = indexMu.at(iM);
+	    int PdgIdM = analysisTree.genparticles_pdgid[IndexM];
+	    bool isWplus = (PdgIdM==-13) && (PdgIdNu==14);
+	    bool isWminus = (PdgIdM==13) && (PdgIdNu==-14);
+	    if (isWplus||isWminus) {
+	      TLorentzVector sumLV = lvNu[iNu]+lvMu[iM];
+	      if (sumLV.M()>60) indexMufromW.push_back(IndexM);
+	      //	    if (isWplus)
+	      //	      printf("(m,v)+ : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
+	      //		     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
+	      //	    if (isWminus)
+	      //              printf("(m,v)- : p = %7.1f, %7.1f, %7.1f,  mass = %4.1f\n",
+	      //                     sumLV.Px(),sumLV.Py(),sumLV.Pz(),sumLV.M());
+	    }
+	  }
+	  
+	}	
+	
+	if (indexETau.size()>0&&indexMuTau.size()>0) {
+	  DYJetsDiLeptonH->Fill(0.);
+	  
+	  DYJetsDiLeptonElePtH->Fill(lvETau[0].Pt());
+	  DYJetsDiLeptonEleEtaH->Fill(lvETau[0].Eta());
+	  DYJetsDiLeptonMuPtH->Fill(lvMuTau[0].Pt());
+	  DYJetsDiLeptonMuEtaH->Fill(lvMuTau[0].Eta());
+	  
+	  if (fabs(lvMuTau[0].Eta())<etaMuonLowCut && fabs(lvETau[0].Eta())<etaElectronLowCut) {
+	    bool isAccepted = ( lvMuTau[0].Pt()>ptMuonLowCut && lvETau[0].Pt()>ptElectronHighCut) ||
+	      ( lvMuTau[0].Pt()>ptMuonHighCut && lvETau[0].Pt()>ptElectronLowCut ) ;
+	    if (isAccepted)
+	      DYJetsDiLeptonAccH->Fill(0.);
+	  }
+	  
+	  
+	  
+	}
+	
+	
+	if (indexEfromW.size()>0&&indexMufromW.size()>0) {
+	  TTJetsDiLeptonH->Fill(0.);
+	  int IndexM = indexMufromW.at(0);
+	  int IndexE = indexEfromW.at(0);
+	  
+	  float pxGenM = analysisTree.genparticles_px[IndexM];
+	  float pyGenM = analysisTree.genparticles_py[IndexM];
+	  float pzGenM = analysisTree.genparticles_pz[IndexM];
+	  float enGenM = analysisTree.genparticles_e[IndexM];
+	  
+	  TLorentzVector fourVecM; fourVecM.SetPxPyPzE(pxGenM,pyGenM,pzGenM,enGenM);
+	  
+	  float pxGenE = analysisTree.genparticles_px[IndexE];
+	  float pyGenE = analysisTree.genparticles_py[IndexE];
+	  float pzGenE = analysisTree.genparticles_pz[IndexE];
+	  float enGenE = analysisTree.genparticles_e[IndexE];
+	  
+	  TLorentzVector fourVecE; fourVecE.SetPxPyPzE(pxGenE,pyGenE,pzGenE,enGenE);
+	  
+	  TTJetsDiLeptonElePtH->Fill(fourVecE.Pt());
+	  TTJetsDiLeptonEleEtaH->Fill(fourVecE.Eta());
+	  TTJetsDiLeptonMuPtH->Fill(fourVecM.Pt());
+	  TTJetsDiLeptonMuEtaH->Fill(fourVecM.Eta());
+	  
+	  if (fabs(fourVecM.Eta())<etaMuonLowCut && fabs(fourVecE.Eta())<etaElectronLowCut) {
+	    bool isAccepted = ( fourVecM.Pt()>ptMuonLowCut && fourVecE.Pt()>ptElectronHighCut) ||
+	      ( fourVecM.Pt()>ptMuonHighCut && fourVecE.Pt()>ptElectronLowCut ) ;
+	    if (isAccepted)
+	      TTJetsDiLeptonAccH->Fill(0.);
+	  }
+	  
+	  
+	}
       }
 
-
-      if (indexEfromW.size()>0&&indexMufromW.size()>0) {
-	TTJetsDiLeptonH->Fill(0.);
-	int IndexM = indexMufromW.at(0);
-	int IndexE = indexEfromW.at(0);
-
-	float pxGenM = analysisTree.genparticles_px[IndexM];
-        float pyGenM = analysisTree.genparticles_py[IndexM];
-        float pzGenM = analysisTree.genparticles_pz[IndexM];
-        float enGenM = analysisTree.genparticles_e[IndexM];
-
-        TLorentzVector fourVecM; fourVecM.SetPxPyPzE(pxGenM,pyGenM,pzGenM,enGenM);
-
-	float pxGenE = analysisTree.genparticles_px[IndexE];
-        float pyGenE = analysisTree.genparticles_py[IndexE];
-        float pzGenE = analysisTree.genparticles_pz[IndexE];
-        float enGenE = analysisTree.genparticles_e[IndexE];
-
-        TLorentzVector fourVecE; fourVecE.SetPxPyPzE(pxGenE,pyGenE,pzGenE,enGenE);
-
-	TTJetsDiLeptonElePtH->Fill(fourVecE.Pt());
-	TTJetsDiLeptonEleEtaH->Fill(fourVecE.Eta());
-	TTJetsDiLeptonMuPtH->Fill(fourVecM.Pt());
-	TTJetsDiLeptonMuEtaH->Fill(fourVecM.Eta());
-
-	if (fabs(fourVecM.Eta())<etaMuonCut && fabs(fourVecE.Eta())<etaElectronCut) {
-	  bool isAccepted = ( fourVecM.Pt()>ptMuonLowCut && fourVecE.Pt()>ptElectronHighCut) ||
-	    ( fourVecM.Pt()>ptMuonHighCut && fourVecE.Pt()>ptElectronLowCut ) ;
-	  if (isAccepted)
-	    TTJetsDiLeptonAccH->Fill(0.);
-	}
-
-
+      if (isData) {
+	if (applyGoodRunSelection && !runLumiSelector.accept(analysisTree.event_run, analysisTree.event_luminosityblock))
+	  continue;
       }
 
-      continue;
+      weightsH->Fill(0.0,weight);
+
+      // triggers
+      bool isTriggerMuon = false;
+      bool isTriggerElectron = false;
+      for (std::map<string,int>::iterator it=analysisTree.hltriggerresults->begin(); it!=analysisTree.hltriggerresults->end(); ++it) {
+	TString trigName(it->first);
+	if (trigName.Contains(MuonHLTName)) {
+	  //	  std::cout << MuonHLTName << " : " << it->second << std::endl;
+	  if (it->second==1)
+	    isTriggerMuon = true;
+	}
+	if (trigName.Contains(ElectronHLTName)) {
+	  //	  std::cout << ElectronHLTName << " : " << it->second << std::endl;
+	  if (it->second==1)
+            isTriggerElectron = true;
+	}
+      }
+
+      bool acceptTrig = false;
+      if (trigger==0) { 
+	if (isTriggerMuon||isTriggerElectron) acceptTrig = true;
+      }
+      if (trigger==1) {
+	if (isTriggerMuon) acceptTrig = true;
+      }
+      if (trigger==2) {
+	if (isTriggerElectron) acceptTrig = true;
+      }
+      if (trigger==3) {
+	if (isTriggerMuon&&!isTriggerElectron) acceptTrig = true;
+      }
+      if (trigger==4) {
+	if (!isTriggerMuon&&isTriggerElectron) acceptTrig = true;
+      }
+      if (!acceptTrig) continue;
+      weightsTriggerH->Fill(0.0,weight);
+
+
+      unsigned int nMuonHLTFilter = 0;
+      bool isMuonHLTFilter = false;
+      unsigned int nElectronHLTFilter = 0;
+      bool isElectronHLTFilter = false;
+      unsigned int nfilters = analysisTree.run_hltfilters->size();
+      for (unsigned int i=0; i<nfilters; ++i) {
+        TString HLTFilter(analysisTree.run_hltfilters->at(i));
+	if (HLTFilter==MuonHLTFilterName) {
+	  nMuonHLTFilter = i;
+	  isMuonHLTFilter = true;
+	}
+	if (HLTFilter==ElectronHLTFilterName) {
+	  nElectronHLTFilter = i;
+	  isElectronHLTFilter = true;
+	}
+      }
+      if (!isElectronHLTFilter) {
+	std::cout << "HLT filter " << ElectronHLTFilterName << " not found" << std::endl;
+	exit(-1);
+      }
+      if (!isMuonHLTFilter) {
+	std::cout << "HLT filter " << MuonHLTFilterName << " not found" << std::endl;
+	exit(-1);
+      }
+
       // vertex cuts
-
       if (fabs(analysisTree.primvertex_z)>zVertexCut) continue;
       if (analysisTree.primvertex_ndof<ndofVertexCut) continue;
       float dVertex = (analysisTree.primvertex_x*analysisTree.primvertex_x+
@@ -625,7 +837,7 @@ int main(int argc, char * argv[]) {
       for (unsigned int ie = 0; ie<analysisTree.electron_count; ++ie) {
 	electronPtAllH->Fill(analysisTree.electron_pt[ie],weight);
 	if (analysisTree.electron_pt[ie]<ptElectronLowCut) continue;
-	if (fabs(analysisTree.electron_eta[ie])>etaElectronCut) continue;
+	if (fabs(analysisTree.electron_eta[ie])>etaElectronLowCut) continue;
 	if (fabs(analysisTree.electron_dxy[ie])>dxyElectronCut) continue;
 	if (fabs(analysisTree.electron_dz[ie])>dzElectronCut) continue;
 	float neutralIso = 
@@ -637,11 +849,12 @@ int main(int argc, char * argv[]) {
 	float relIso = absIso/analysisTree.electron_pt[ie];
 	if (relIso>isoElectronHighCut) continue;
 	if (relIso<isoElectronLowCut) continue;
-	bool electronMvaId = electronMvaIdTight(analysisTree.electron_superclusterEta[ie],
-						analysisTree.electron_mva_id_nontrigPhys14[ie]);
+	bool electronMvaId = electronMvaIdWP80(analysisTree.electron_pt[ie],
+					       analysisTree.electron_superclusterEta[ie],
+					       analysisTree.electron_mva_id_nontrigPhys14[ie]);
 	if (!electronMvaId&&applyElectronId) continue;
 	if (!analysisTree.electron_pass_conversion[ie]&&applyElectronId) continue;
-	if (analysisTree.electron_nmissinginnerhits[ie]!=0&&applyElectronId) continue;
+	if (analysisTree.electron_nmissinginnerhits[ie]>1&&applyElectronId) continue;
 	electrons.push_back(ie);
       }
 
@@ -651,7 +864,7 @@ int main(int argc, char * argv[]) {
       for (unsigned int im = 0; im<analysisTree.muon_count; ++im) {
 	muonPtAllH->Fill(analysisTree.muon_pt[im],weight);
 	if (analysisTree.muon_pt[im]<ptMuonLowCut) continue;
-	if (fabs(analysisTree.muon_eta[im])>etaMuonCut) continue;
+	if (fabs(analysisTree.muon_eta[im])>etaMuonLowCut) continue;
 	if (fabs(analysisTree.muon_dxy[im])>dxyMuonCut) continue;
 	if (fabs(analysisTree.muon_dz[im])>dzMuonCut) continue;
 	float neutralIso = 
@@ -667,8 +880,15 @@ int main(int argc, char * argv[]) {
 	muons.push_back(im);
       }
 
+      //      std::cout << "# electrons = " << electrons.size() << std::endl;
+      //      std::cout << "# muons = " << muons.size() << std::endl;
+      //      std::cout << std::endl;
+
       if (electrons.size()==0) continue;
       if (muons.size()==0) continue;
+
+ 
+      weightsEMuH->Fill(0.0,weight);
 
       // selecting muon and electron pair (OS or SS);
       float ptScalarSum = -1;
@@ -676,9 +896,41 @@ int main(int argc, char * argv[]) {
       int electronIndex = -1;
       int muonIndex = -1;
       for (unsigned int ie=0; ie<electrons.size(); ++ie) {
+	//	std::cout << "Electron " << ie << std::endl;
 	int eIndex = electrons[ie];
+	bool electronMatch = false;
+	for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
+	  if (analysisTree.trigobject_filters[iT][nElectronHLTFilter]) { // Electron Leg
+	    //	    std::cout << "  Electron HLT " << std::endl;
+	    float dRtrig = deltaR(analysisTree.electron_eta[eIndex],analysisTree.electron_phi[eIndex],
+				  analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
+	    if (dRtrig<DRTrigMatch && 
+		analysisTree.electron_pt[eIndex]>ptElectronHighCut && 
+		fabs(analysisTree.electron_eta[eIndex])<etaElectronHighCut) {
+	      electronMatch = true;
+	    }
+	  }
+	}
 	for (unsigned int im=0; im<muons.size(); ++im) {
+	  //	  std::cout << "Muon " << im << std::endl;
 	  int mIndex = muons[im];
+	  bool muonMatch = false;
+	  for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
+	    if (analysisTree.trigobject_filters[iT][nMuonHLTFilter]) { // Muon Leg
+	      //	      std::cout << "  Muon HLT " << std::endl;
+	      float dRtrig = deltaR(analysisTree.muon_eta[mIndex],analysisTree.muon_phi[mIndex],
+				    analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
+	      if (dRtrig<DRTrigMatch && 
+		  analysisTree.muon_pt[mIndex]>ptMuonHighCut && 
+		  fabs(analysisTree.muon_eta[mIndex])<etaMuonHighCut) {
+		muonMatch = true;
+	      }
+	    }
+	  }
+
+	  bool trigMatch = electronMatch || muonMatch;
+	  if (!trigMatch) continue;
+
 	  float qProd = analysisTree.electron_charge[eIndex]*analysisTree.muon_charge[mIndex];
 	  if (oppositeSign && qProd>0) continue;
 	  if (!oppositeSign && qProd<0) continue;
@@ -686,12 +938,6 @@ int main(int argc, char * argv[]) {
 			    analysisTree.muon_eta[mIndex],analysisTree.muon_phi[mIndex]);
 
 	  if (dR<dRleptonsCut) continue;
-
-	  bool kinematics = 
-	    (analysisTree.electron_pt[eIndex]>ptElectronLowCut && analysisTree.muon_pt[mIndex]>ptMuonHighCut) || 
-	    (analysisTree.electron_pt[eIndex]>ptElectronHighCut && analysisTree.muon_pt[mIndex]>ptMuonLowCut);
-
-	  if (!kinematics) continue;
 
 	  float sumPt = analysisTree.electron_pt[eIndex] + analysisTree.muon_pt[mIndex];
 	  if (sumPt>ptScalarSum) {
@@ -703,64 +949,9 @@ int main(int argc, char * argv[]) {
 	  
 	}
       }
+      //      std::cout << std::endl;
 
       if (ptScalarSum<0) continue;
-
-      // Trigger matching
-
-      bool triggerMatch = false;
-
-      if (analysisTree.hltriggerresults_second[5]==1) { // HLT_Mu23_Ele12
-	if (analysisTree.muon_pt[muonIndex]>ptMuonHighCut&&analysisTree.electron_pt[electronIndex]>ptElectronLowCut) {
-	  bool muonMatch = false;
-	  bool electronMatch = false;
-	  for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
-	    if (analysisTree.trigobject_filters[iT][2]) { // Mu23 Leg
-	      float dRtrig = deltaR(analysisTree.muon_eta[muonIndex],analysisTree.muon_phi[muonIndex],
-				    analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
-	      if (dRtrig<0.3) {
-		muonMatch = true;
-	      }
-	    }
-	    if (analysisTree.trigobject_filters[iT][6]) { // Ele12 Leg
-	      float dRtrig = deltaR(analysisTree.electron_eta[electronIndex],analysisTree.electron_phi[electronIndex],
-				    analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
-	      if (dRtrig<0.3) {
-		electronMatch = true;
-	      }
-	    }
-	  }
-	  if (muonMatch&&electronMatch)
-	    triggerMatch = true;
-	}
-      }
-
-      if (analysisTree.hltriggerresults_second[6]==1) { // HLT_Mu8_Ele23
-	if (analysisTree.muon_pt[muonIndex]>ptMuonLowCut&&analysisTree.electron_pt[electronIndex]>ptElectronHighCut) {
-	  bool muonMatch = false;
-	  bool electronMatch = false;
-	  for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
-	    if (analysisTree.trigobject_filters[iT][3]) { // Mu8 Leg
-	      float dRtrig = deltaR(analysisTree.muon_eta[muonIndex],analysisTree.muon_phi[muonIndex],
-				    analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
-	      if (dRtrig<0.3) {
-		muonMatch = true;
-	      }
-	    }
-	    if (analysisTree.trigobject_filters[iT][7]) { // Ele23 Leg
-	      float dRtrig = deltaR(analysisTree.electron_eta[electronIndex],analysisTree.electron_phi[electronIndex],
-				    analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
-	      if (dRtrig<0.3) {
-		electronMatch = true;
-	      }
-	    }
-	  }
-	  if (muonMatch&&electronMatch)
-	    triggerMatch = true;
-	}
-      }
-
-      if (!triggerMatch&&applyTriggerMatch) continue;
 
       // computation of kinematic variables
 
@@ -980,7 +1171,10 @@ int main(int argc, char * argv[]) {
 
 
       //      std::cout << std::endl;
-      
+
+      iRun = analysisTree.event_run;
+      iEvent = analysisTree.event_nr;
+      eventTree->Fill();
       selEvents++;
       
     } // end of file processing (loop over events in one file)
@@ -995,7 +1189,14 @@ int main(int argc, char * argv[]) {
   std::cout << "Total number of events in Tree  = " << nEvents << std::endl;
   std::cout << "Total number of selected events = " << selEvents << std::endl;
   std::cout << std::endl;
-
+  std::cout << "Run range " << minRun << ":" << maxRun << std::endl;
+  std::cout << std::endl;
+  // using object as comp
+  std::sort (allRuns.begin(), allRuns.end(), myobject);
+  std::cout << "Runs : ";
+  for (unsigned int iR=0; iR<allRuns.size(); ++iR)
+    std::cout << " " << allRuns.at(iR);
+  std::cout << std::endl;
   file->cd("");
   file->Write();
   file->Close();
