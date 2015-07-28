@@ -121,6 +121,8 @@ void compareSync(TString myGroup,TString myPath,TString myRootFile, TString myTr
   //drawHistos(&C,filename,"inclusive",Tmine,Tother,"metPullPerp",200,-100,100,selection,myGroup,myRootFile,group,groupRootFile,mySel,groupSel);
   //drawHistos(&C,filename,"inclusive",Tmine,Tother,"m_sv",60,0,300,selection,myGroup,myRootFile,group,groupRootFile,mySel,groupSel);
   
+  drawHistos(&C,filename,"inclusive",Tmine,Tother,"extraelec_veto",2,0,2,selection,myGroup,myRootFile,group,groupRootFile,mySel,groupSel);
+  drawHistos(&C,filename,"inclusive",Tmine,Tother,"extramuon_veto",2,0,2,selection,myGroup,myRootFile,group,groupRootFile,mySel,groupSel);
 
   //drawHistos(&C,filename,"inclusive",Tmine,Tother,"puweight",25,-.1,0.9,selection,myGroup,myRootFile,group,groupRootFile,mySel,groupSel);
   //drawHistos(&C,filename,"inclusive",Tmine,Tother,"effweight",80,.7,1.3,selection,myGroup,myRootFile,group,groupRootFile,mySel,groupSel);

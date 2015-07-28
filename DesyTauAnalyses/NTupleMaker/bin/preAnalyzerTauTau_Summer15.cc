@@ -94,8 +94,8 @@ typedef map< int , MAPDITAU_lumi > MAPDITAU_run;
 typedef std::vector<std::string> vstring;
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LV;
 
-edm::LumiReWeighting *LumiWeights_ = new edm::LumiReWeighting("/nfs/dust/cms/user/anayak/CMS/MyHTTAnalysis/data/MC_Summer12_PU_S10-600bins.root",
-				     "/nfs/dust/cms/user/anayak/CMS/MyHTTAnalysis/data/Data_Pileup_2012_ReRecoPixel-600bins.root","pileup","pileup");
+//edm::LumiReWeighting *LumiWeights_ = new edm::LumiReWeighting("/nfs/dust/cms/user/anayak/CMS/MyHTTAnalysis/data/MC_Summer12_PU_S10-600bins.root",
+//"/nfs/dust/cms/user/anayak/CMS/MyHTTAnalysis/data/Data_Pileup_2012_ReRecoPixel-600bins.root","pileup","pileup");
 
 //RecoilCorrector *RecoilCorrector_;
 
@@ -139,12 +139,12 @@ float reweightHEPNUPDYJets(int hepNUP) {
   else return 1 ;
 
 }
-
+/*
 float pileupWeight( float intimepileup){
   float weight_ = LumiWeights_->weight(intimepileup); 
   return weight_;
 }
-
+*/
 int getJetIDMVALoose(double pt, double eta, double rawMVA)
 {
   float eta_bin[] = {0,2.5,2.75,3.0,5.0};
@@ -415,6 +415,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
   
   //Event info
   UInt_t event_nr, event_run, event_luminosityblock;
+  Float_t genweight;
 
   //PV
   unsigned int primvertex_count;
@@ -425,13 +426,13 @@ void fillTrees_TauTauStream(TChain* currentTree,
   //Muons
   UInt_t muon_count; 
   float muon_px[40], muon_py[40], muon_pz[40];
-  float muon_chi2[40], muon_ndof[40], // muon_innertrack_dxy[40],
-    //muon_innertrack_dz[40], 
-    muon_chargedHadIso[40], muon_neutralHadIso[40],
-    muon_photonIso[40],  muon_puIso[40];
+  float muon_dxy[40], muon_dz[40];
+  float //muon_chi2[40], muon_ndof[40], // muon_innertrack_dxy[40], muon_innertrack_dz[40], 
+    muon_r03_sumChargedHadronPt[40], muon_r03_sumNeutralHadronEt[40],
+    muon_r03_sumPhotonEt[40],  muon_r03_sumPUPt[40];
   
-  UInt_t muon_nMuonStations[40], muon_nMuonHits[40], 
-    muon_nTrackerHits[40], muon_nPixelHits[40];
+  //UInt_t muon_nMuonStations[40], muon_nMuonHits[40], 
+  //muon_nTrackerHits[40], muon_nPixelHits[40];
   Float_t muon_charge[40];
   bool muon_isGlobal[40], muon_isTracker[40], muon_isTight[40],
     muon_isLoose[40], muon_isMedium[40];
@@ -440,13 +441,13 @@ void fillTrees_TauTauStream(TChain* currentTree,
   UInt_t electron_count;
   float electron_px[40], electron_py[40], electron_pz[40],
     electron_superclusterEta[40],
-    electron_trackchi2[40], electron_trackndof[40],
+    //electron_trackchi2[40], electron_trackndof[40],
     electron_dxy[40], electron_dz[40], electron_charge[40],
-    electron_deltaetasuperclustertrack[40], electron_deltaphisuperclustertrack[40], 
-    electron_full5x5_sigmaietaieta[40], electron_ehcaloverecal[40],
-    electron_ooemoop[40],
-    electron_chargedHadIso[40], electron_neutralHadIso[40], 
-    electron_photonIso[40], electron_puIso[40],
+    //electron_deltaetasuperclustertrack[40], electron_deltaphisuperclustertrack[40], 
+    //electron_full5x5_sigmaietaieta[40], electron_ehcaloverecal[40],
+    //electron_ooemoop[40],
+    electron_r03_sumChargedHadronPt[40], electron_r03_sumNeutralHadronEt[40], 
+    electron_r03_sumPhotonEt[40], electron_r03_sumPUPt[40],
     electron_mva_id_nontrigPhys14[40];
   bool electron_pass_conversion[40];
   UChar_t electron_nmissinginnerhits[40];
@@ -511,6 +512,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchStatus("event_nr"        ,1);
   currentTree->SetBranchStatus("event_run"        ,1);
   currentTree->SetBranchStatus("event_luminosityblock"        ,1);
+  currentTree->SetBranchStatus("genweight"        ,1);
   currentTree->SetBranchStatus("primvertex_count"      ,1);
   currentTree->SetBranchStatus("primvertex_x"        ,1);
   currentTree->SetBranchStatus("primvertex_y"        ,1);
@@ -522,20 +524,21 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchStatus("muon_px"        ,1);
   currentTree->SetBranchStatus("muon_py"        ,1);
   currentTree->SetBranchStatus("muon_pz"        ,1);
-  currentTree->SetBranchStatus("muon_chi2"        ,1);
-  currentTree->SetBranchStatus("muon_ndof"        ,1);
+  currentTree->SetBranchStatus("muon_dxy"       ,1);
+  currentTree->SetBranchStatus("muon_dz"        ,1);
+  //currentTree->SetBranchStatus("muon_chi2"        ,1);
+  //currentTree->SetBranchStatus("muon_ndof"        ,1);
   //currentTree->SetBranchStatus("muon_innertrack_dxy"        ,1);
   //currentTree->SetBranchStatus("muon_innertrack_dz"        ,1);
-  currentTree->SetBranchStatus("muon_chargedHadIso"        ,1);
-  currentTree->SetBranchStatus("muon_neutralHadIso"        ,1);
-  currentTree->SetBranchStatus("muon_photonIso"        ,1);
-  currentTree->SetBranchStatus("muon_puIso"        ,1);
-  currentTree->SetBranchStatus("muon_nMuonStations"        ,1);
+  currentTree->SetBranchStatus("muon_r03_sumChargedHadronPt"        ,1);
+  currentTree->SetBranchStatus("muon_r03_sumNeutralHadronEt"        ,1);
+  currentTree->SetBranchStatus("muon_r03_sumPhotonEt"        ,1);
+  currentTree->SetBranchStatus("muon_r03_sumPUPt"        ,1);
   currentTree->SetBranchStatus("muon_charge"        ,1);
-  currentTree->SetBranchStatus("muon_nMuonHits"        ,1);
-  currentTree->SetBranchStatus("muon_nPixelHits"        ,1);
-  currentTree->SetBranchStatus("muon_nTrackerHits"        ,1);
-  currentTree->SetBranchStatus("muon_nMuonStations"        ,1);
+  //currentTree->SetBranchStatus("muon_nMuonHits"        ,1);
+  //currentTree->SetBranchStatus("muon_nPixelHits"        ,1);
+  //currentTree->SetBranchStatus("muon_nTrackerHits"        ,1);
+  //currentTree->SetBranchStatus("muon_nMuonStations"        ,1);
   currentTree->SetBranchStatus("muon_isGlobal", 1);
   currentTree->SetBranchStatus("muon_isTracker", 1);
   currentTree->SetBranchStatus("muon_isTight", 1);
@@ -546,21 +549,20 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchStatus("electron_py"        ,1);
   currentTree->SetBranchStatus("electron_pz"        ,1);
   currentTree->SetBranchStatus("electron_superclusterEta"   ,1);
-  currentTree->SetBranchStatus("electron_trackchi2"        ,1);
-  currentTree->SetBranchStatus("electron_trackndof"        ,1);
+  //currentTree->SetBranchStatus("electron_trackchi2"        ,1);
+  //currentTree->SetBranchStatus("electron_trackndof"        ,1);
   currentTree->SetBranchStatus("electron_dxy"        ,1);
   currentTree->SetBranchStatus("electron_dz"        ,1);
   currentTree->SetBranchStatus("electron_charge"        ,1);
-  currentTree->SetBranchStatus("electron_deltaetasuperclustertrack", 1);
-  currentTree->SetBranchStatus("electron_deltaphisuperclustertrack", 1);
-  currentTree->SetBranchStatus("electron_full5x5_sigmaietaieta", 1);
-  currentTree->SetBranchStatus("electron_ehcaloverecal", 1);
-  currentTree->SetBranchStatus("electron_full5x5_sigmaietaieta", 1);
-  currentTree->SetBranchStatus("electron_ooemoop", 1);
-  currentTree->SetBranchStatus("electron_chargedHadIso", 1);
-  currentTree->SetBranchStatus("electron_neutralHadIso", 1);
-  currentTree->SetBranchStatus("electron_photonIso", 1);
-  currentTree->SetBranchStatus("electron_puIso", 1);
+  //currentTree->SetBranchStatus("electron_deltaetasuperclustertrack", 1);
+  //currentTree->SetBranchStatus("electron_deltaphisuperclustertrack", 1);
+  //currentTree->SetBranchStatus("electron_full5x5_sigmaietaieta", 1);
+  //currentTree->SetBranchStatus("electron_ehcaloverecal", 1);
+  //currentTree->SetBranchStatus("electron_ooemoop", 1);
+  //currentTree->SetBranchStatus("electron_r03_sumChargedHadronPt", 1);
+  currentTree->SetBranchStatus("electron_r03_sumNeutralHadronEt", 1);
+  currentTree->SetBranchStatus("electron_r03_sumPhotonEt", 1);
+  currentTree->SetBranchStatus("electron_r03_sumPUPt", 1);
   currentTree->SetBranchStatus("electron_mva_id_nontrigPhys14", 1);
   currentTree->SetBranchStatus("electron_pass_conversion", 1);
   currentTree->SetBranchStatus("electron_nmissinginnerhits", 1);
@@ -663,6 +665,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchAddress("event_nr"        ,&event_nr);
   currentTree->SetBranchAddress("event_run"        ,&event_run);
   currentTree->SetBranchAddress("event_luminosityblock"        ,&event_luminosityblock);
+  currentTree->SetBranchAddress("genweight"        ,&genweight);
   currentTree->SetBranchAddress("primvertex_count"      ,&primvertex_count);
   currentTree->SetBranchAddress("primvertex_x"        ,&primvertex_x);
   currentTree->SetBranchAddress("primvertex_y"        ,&primvertex_y);
@@ -674,19 +677,21 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchAddress("muon_px"        ,muon_px);
   currentTree->SetBranchAddress("muon_py"        ,muon_py);
   currentTree->SetBranchAddress("muon_pz"        ,muon_pz);
-  currentTree->SetBranchAddress("muon_chi2"        ,muon_chi2);
-  currentTree->SetBranchAddress("muon_ndof"        ,muon_ndof);
+  currentTree->SetBranchAddress("muon_dxy"       ,muon_dxy);
+  currentTree->SetBranchAddress("muon_dz"        ,muon_dz);
+  //currentTree->SetBranchAddress("muon_chi2"        ,muon_chi2);
+  //currentTree->SetBranchAddress("muon_ndof"        ,muon_ndof);
   //currentTree->SetBranchAddress("muon_innertrack_dxy"        ,muon_innertrack_dxy);
   //currentTree->SetBranchAddress("muon_innertrack_dz"        ,muon_innertrack_dz);
-  currentTree->SetBranchAddress("muon_chargedHadIso"        ,muon_chargedHadIso);
-  currentTree->SetBranchAddress("muon_neutralHadIso"        ,muon_neutralHadIso);
-  currentTree->SetBranchAddress("muon_photonIso"        ,muon_photonIso);
-  currentTree->SetBranchAddress("muon_puIso"        ,muon_puIso);
-  currentTree->SetBranchAddress("muon_nMuonStations"        ,muon_nMuonStations);
+  currentTree->SetBranchAddress("muon_r03_sumChargedHadronPt"        ,muon_r03_sumChargedHadronPt);
+  currentTree->SetBranchAddress("muon_r03_sumNeutralHadronEt"        ,muon_r03_sumNeutralHadronEt);
+  currentTree->SetBranchAddress("muon_r03_sumPhotonEt"        ,muon_r03_sumPhotonEt);
+  currentTree->SetBranchAddress("muon_r03_sumPUPt"        ,muon_r03_sumPUPt);
   currentTree->SetBranchAddress("muon_charge"        ,muon_charge);
-  currentTree->SetBranchAddress("muon_nTrackerHits"        ,muon_nTrackerHits);
-  currentTree->SetBranchAddress("muon_nMuonHits"        ,muon_nMuonHits);
-  currentTree->SetBranchAddress("muon_nPixelHits"        ,muon_nPixelHits);
+  //currentTree->SetBranchAddress("muon_nTrackerHits"        ,muon_nTrackerHits);
+  //currentTree->SetBranchAddress("muon_nMuonHits"        ,muon_nMuonHits);
+  //currentTree->SetBranchAddress("muon_nPixelHits"        ,muon_nPixelHits);
+  //currentTree->SetBranchAddress("muon_nMuonStations"        ,muon_nMuonStations);
   currentTree->SetBranchAddress("muon_isGlobal", muon_isGlobal);
   currentTree->SetBranchAddress("muon_isTracker", muon_isTracker);
   currentTree->SetBranchAddress("muon_isTight", muon_isTight);
@@ -697,21 +702,20 @@ void fillTrees_TauTauStream(TChain* currentTree,
   currentTree->SetBranchAddress("electron_py"        ,electron_py);
   currentTree->SetBranchAddress("electron_pz"        ,electron_pz);
   currentTree->SetBranchAddress("electron_superclusterEta"   ,electron_superclusterEta);
-  currentTree->SetBranchAddress("electron_trackchi2"        ,electron_trackchi2);
-  currentTree->SetBranchAddress("electron_trackndof"        ,electron_trackndof);
+  //currentTree->SetBranchAddress("electron_trackchi2"        ,electron_trackchi2);
+  //currentTree->SetBranchAddress("electron_trackndof"        ,electron_trackndof);
   currentTree->SetBranchAddress("electron_dxy"        ,electron_dxy);
   currentTree->SetBranchAddress("electron_dz"        ,electron_dz);
   currentTree->SetBranchAddress("electron_charge"        ,electron_charge);
-  currentTree->SetBranchAddress("electron_deltaetasuperclustertrack", electron_deltaetasuperclustertrack);
-  currentTree->SetBranchAddress("electron_deltaphisuperclustertrack", electron_deltaphisuperclustertrack);
-  currentTree->SetBranchAddress("electron_full5x5_sigmaietaieta", electron_full5x5_sigmaietaieta);
-  currentTree->SetBranchAddress("electron_ehcaloverecal", electron_ehcaloverecal);
-  currentTree->SetBranchAddress("electron_full5x5_sigmaietaieta", electron_full5x5_sigmaietaieta);
-  currentTree->SetBranchAddress("electron_ooemoop", electron_ooemoop);
-  currentTree->SetBranchAddress("electron_chargedHadIso", electron_chargedHadIso);
-  currentTree->SetBranchAddress("electron_neutralHadIso", electron_neutralHadIso);
-  currentTree->SetBranchAddress("electron_photonIso", electron_photonIso);
-  currentTree->SetBranchAddress("electron_puIso", electron_puIso);
+  //currentTree->SetBranchAddress("electron_deltaetasuperclustertrack", electron_deltaetasuperclustertrack);
+  //currentTree->SetBranchAddress("electron_deltaphisuperclustertrack", electron_deltaphisuperclustertrack);
+  //currentTree->SetBranchAddress("electron_full5x5_sigmaietaieta", electron_full5x5_sigmaietaieta);
+  //currentTree->SetBranchAddress("electron_ehcaloverecal", electron_ehcaloverecal);
+  //currentTree->SetBranchAddress("electron_ooemoop", electron_ooemoop);
+  currentTree->SetBranchAddress("electron_r03_sumChargedHadronPt", electron_r03_sumChargedHadronPt);
+  currentTree->SetBranchAddress("electron_r03_sumNeutralHadronEt", electron_r03_sumNeutralHadronEt);
+  currentTree->SetBranchAddress("electron_r03_sumPhotonEt", electron_r03_sumPhotonEt);
+  currentTree->SetBranchAddress("electron_r03_sumPUPt", electron_r03_sumPUPt);
   currentTree->SetBranchAddress("electron_mva_id_nontrigPhys14", electron_mva_id_nontrigPhys14);
   currentTree->SetBranchAddress("electron_pass_conversion", electron_pass_conversion);
   currentTree->SetBranchAddress("electron_nmissinginnerhits", electron_nmissinginnerhits);
@@ -873,6 +877,9 @@ void fillTrees_TauTauStream(TChain* currentTree,
   //trigger
   int HLTx, HLTmatchL1, HLTmatchL2;
   
+  //event weights
+  float evtweight, mcweight, puweight; 
+
   outTree->Branch("ptj1",  &ptj1,"ptj1/F");
   outTree->Branch("ptj2",  &ptj2,"ptj2/F");
   outTree->Branch("etaj1", &etaj1,"etaj1/F");
@@ -1038,9 +1045,21 @@ void fillTrees_TauTauStream(TChain* currentTree,
   outTree->Branch("HLTmatchL1", &HLTmatchL1, "HLTmatchL1/I");
   outTree->Branch("HLTmatchL2", &HLTmatchL2, "HLTmatchL2/I");
   
+  outTree->Branch("weight", &evtweight, "weight/F");
+  outTree->Branch("mcweight", &mcweight,"mcweight/F");
+  outTree->Branch("puweight", &puweight, "puweight/F");
+  
   int nEntries    = currentTree->GetEntries() ;
   float crossSection = xsec_;
-  float scaleFactor = (crossSection != 0) ? Lumi / (  float(nEventsRead)/(crossSection*skimEff_) )  : 1.0;
+  //float scaleFactor = (crossSection != 0) ? Lumi / (  float(nEventsRead)/(crossSection*skimEff_) )  : 1.0;
+  //first loop over the whole events once to get the total sum of gen weights for normalization
+  float totalGenWeight_ = 0;
+  for(int n = 0 ; n < nEntries ; n++) {
+    currentTree->GetEntry(n);
+
+    totalGenWeight_ += genweight;
+  }
+  float scaleFactor = (crossSection != 0) ? (Lumi*crossSection) / float(totalGenWeight_)  : 1.0;
 
   int nProc,n1,n2 = nEntries;
   //cout<<"nDiv = "<<nDiv<<endl;
@@ -1083,6 +1102,10 @@ void fillTrees_TauTauStream(TChain* currentTree,
     if(primvertex_ndof < 4)continue;
     if(primvertex_z < -24 || primvertex_z > 24) continue;
     
+    evtweight = scaleFactor;
+    mcweight = genweight;
+    puweight = 1.0; //no Pileup weight for now
+
     run_ = event_run;
     event_ = event_nr;
     lumi_ = event_luminosityblock;
@@ -1247,7 +1270,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
     }
   
     
-    //sort diTaus, first OS and then according to sumIso  
+    //sort diTaus, 1st according to sumIso, then sumPt  
     std::sort(sortDiTauInfos.begin(), sortDiTauInfos.end(), SortDiTauPairs()); 
 
     int diTauCounter = -1;
@@ -1521,7 +1544,7 @@ void fillTrees_TauTauStream(TChain* currentTree,
       float scalarSumPtLeg1  = Leg1P4_.pt() + pfMetP4_.pt();
       float vectorSumPtLeg1  = (Leg1P4_ +  pfMetP4_).pt() ;
       MtLeg1_  = TMath::Sqrt( scalarSumPtLeg1*scalarSumPtLeg1 - vectorSumPtLeg1*vectorSumPtLeg1 ) ;
-
+      
       float scalarSumPtLeg2  = Leg2P4_.pt() + pfMetP4_.pt();
       float vectorSumPtLeg2  = (Leg2P4_ +  pfMetP4_).pt() ;
       MtLeg2_  = TMath::Sqrt( scalarSumPtLeg2*scalarSumPtLeg2 - vectorSumPtLeg2*vectorSumPtLeg2 ) ;
@@ -1563,6 +1586,8 @@ void fillTrees_TauTauStream(TChain* currentTree,
 
       delete inputFile_visPtResolution;
       */
+
+      //DiTau Visible Mass
       LV diTauVisP4_ = Leg1P4_+Leg2P4_;
       diTauVisMass = diTauVisP4_.mass();
       diTauVisPt = diTauVisP4_.pt();
@@ -1578,22 +1603,18 @@ void fillTrees_TauTauStream(TChain* currentTree,
 	LV eleP4_(electron_px[ie], electron_py[ie], electron_pz[ie], sqrt(electron_px[ie]*electron_px[ie] + electron_py[ie]*electron_py[ie] + electron_pz[ie]*electron_pz[ie]));
 	float scEta = electron_superclusterEta[ie];
 	if(eleP4_.pt() < 10 || TMath::Abs(eleP4_.eta()) > 2.5) continue;
-	//if(TMath::Abs(electron_dxy[ie]) > 0.045 || TMath::Abs(electron_dz[ie]) > 0.2) continue;
-
-	//Isolation
-	float eleIso_ = (electron_chargedHadIso[ie] + std::max(electron_photonIso[ie]+electron_neutralHadIso[ie] - 0.5*electron_puIso[ie], 0.0)); 
-	//Id
-	/*
-	bool pass_eid = ((eleP4_.pt() < 20 && ((TMath::Abs(eleP4_.eta())< 0.8 && electron_mva_id_nontrigPhys14[ie] > 0.925 ) || 
-					       (TMath::Abs(eleP4_.eta())> 0.8 && TMath::Abs(eleP4_.eta())< 1.479 && electron_mva_id_nontrigPhys14[ie] > 0.915 ) ||
-					       (TMath::Abs(eleP4_.eta())> 1.479 && electron_mva_id_nontrigPhys14[ie] > 0.965 )))
-			 ||
-			 (eleP4_.pt() > 20 && ((TMath::Abs(eleP4_.eta())< 0.8 && electron_mva_id_nontrigPhys14[ie] > 0.905 ) ||
-                                               (TMath::Abs(eleP4_.eta())> 0.8 && TMath::Abs(eleP4_.eta())< 1.479 && electron_mva_id_nontrigPhys14[ie] > 0.955 ) ||
-                                               (TMath::Abs(eleP4_.eta())> 1.479 && electron_mva_id_nontrigPhys14[ie] > 0.975 )))
-			 );
-	*/
+	if(TMath::Abs(electron_dxy[ie]) > 0.045 || TMath::Abs(electron_dz[ie]) > 0.2) continue;
 	
+	
+	//Isolation
+	float eleIso_ = (electron_r03_sumChargedHadronPt[ie] + std::max(electron_r03_sumPhotonEt[ie]+electron_r03_sumNeutralHadronEt[ie] - 0.5*electron_r03_sumPUPt[ie], 0.0))/eleP4_.pt(); 
+	//MVA Id, 90% Eff WP
+	bool pass_eid_ = ((TMath::Abs(scEta)< 0.8 && electron_mva_id_nontrigPhys14[ie] > 0.933 ) || 
+			  (TMath::Abs(scEta)> 0.8 && TMath::Abs(scEta)< 1.479 && electron_mva_id_nontrigPhys14[ie] > 0.825 ) ||
+			  (TMath::Abs(scEta)> 1.479 && electron_mva_id_nontrigPhys14[ie] > 0.337 )
+			  );
+	
+	/* //Cut Based ID (not used)
 	bool pass_eid = ((TMath::Abs(scEta) <= 1.479 && electron_full5x5_sigmaietaieta[ie] < 0.011100 && electron_deltaetasuperclustertrack[ie] < 0.016315
 			  && electron_deltaphisuperclustertrack[ie] < 0.252044 && electron_ehcaloverecal[ie] < 0.345843 && electron_ooemoop[ie] < 0.248070
 			  && TMath::Abs(electron_dxy[ie]) < 0.060279 && TMath::Abs(electron_dz[ie]) < 0.800538 && electron_nmissinginnerhits[ie] <= 2
@@ -1604,15 +1625,23 @@ void fillTrees_TauTauStream(TChain* currentTree,
                           && TMath::Abs(electron_dxy[ie]) < 0.273097 && TMath::Abs(electron_dz[ie]) < 0.885860 && electron_nmissinginnerhits[ie] <= 3
                           && electron_pass_conversion[ie] == true)
 			 );
-	if(pass_eid && eleIso_ < 0.3)nVetoElectron_++;
+	*/
+
+	bool pass_conversion_ = (electron_pass_conversion[ie] == true && electron_nmissinginnerhits[ie] <= 1);
+
+	if(pass_eid_ && pass_conversion_ && eleIso_ < 0.3)nVetoElectron_++;
       } 
 
       nVetoMuon_ = 0;
       for(unsigned int im = 0; im < muon_count; im++){
 	LV muP4_(muon_px[im], muon_py[im], muon_pz[im], sqrt(muon_px[im]*muon_px[im] + muon_py[im]*muon_py[im] + muon_pz[im]*muon_pz[im]));
 	if(muP4_.pt() < 10 || TMath::Abs(muP4_.eta()) > 2.4) continue;
-	float muIso_ = (muon_chargedHadIso[im] + std::max(muon_photonIso[im]+muon_neutralHadIso[im] - 0.5*muon_puIso[im], 0.0));
-	if(muon_isGlobal[im] && muIso_ < 0.3)nVetoMuon_++;
+	if(TMath::Abs(muon_dxy[im]) > 0.045 || TMath::Abs(muon_dz[im]) > 0.2) continue;
+
+	bool pass_muid_ = muon_isMedium[im]; 
+	float muIso_ = (muon_r03_sumChargedHadronPt[im] + std::max(muon_r03_sumPhotonEt[im]+muon_r03_sumNeutralHadronEt[im] - 0.5*muon_r03_sumPUPt[im], 0.0)) / muP4_.pt();
+
+	if(pass_muid_ && muIso_ < 0.3)nVetoMuon_++;
       }
 
       //Get Trigger Informations
