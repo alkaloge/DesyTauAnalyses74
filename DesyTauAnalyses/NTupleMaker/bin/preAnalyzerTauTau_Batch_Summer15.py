@@ -84,8 +84,24 @@ os.system('python preAnalyzerTauTau_Summer15.py')
 ###########################################
 ###########################################
 ##Data
+
+##Signal
 #preAnalyze("nominal","GGFH125",False)
 #preAnalyze("nominal","VBFH125",False)
-preAnalyze("nominal","SUSYGGH160",True)
+#preAnalyze("nominal","SUSYGGH160",True)
+#preAnalyze("nominal","SUSYBBH160",True)
 
-#  LocalWords:  cfg configFileName
+## Background
+#preAnalyze("nominal","DYJets_TauTau",True)
+#preAnalyze("nominal","WJetsToLNu",True)
+#preAnalyze("nominal","TTJets",True)
+preAnalyze("nominal","SingleTop_t",True)
+preAnalyze("nominal","SingleAntiTop_t",True)
+preAnalyze("nominal","SingleTop_tW",True)
+preAnalyze("nominal","SingleAntiTop_tW",True)
+preAnalyze("nominal","WWTo2L2Nu",True)
+preAnalyze("nominal","WWTo4Q",True)
+preAnalyze("nominal","WWToLNuQQ",True)
+preAnalyze("nominal","WZTo1L1Nu2Q",True)
+preAnalyze("nominal","WZTo3LNu",True)
+preAnalyze("nominal","ZZ",True)

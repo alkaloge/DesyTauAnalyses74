@@ -111,6 +111,8 @@ void synchNtuple(string sample = "GGFH125", string stream = "MuTau", bool incl=f
    //veto lepton
    int lNVetoMuon     ; lOTree->Branch("nVetoMuon",     &lNVetoMuon );
    int lNVetoElectron ; lOTree->Branch("nVetoElectron",      &lNVetoElectron );
+   bool lExtraelec_veto; lOTree->Branch("extraelec_veto",    &lExtraelec_veto);
+   bool lExtramuon_veto; lOTree->Branch("extramuon_veto",    &lExtramuon_veto);
 
    //Met related variables
    float lMet         = 0; lOTree->Branch("met"        ,&lMet           ,"lMet/F"      ); //pfmet
@@ -466,7 +468,9 @@ void synchNtuple(string sample = "GGFH125", string stream = "MuTau", bool incl=f
      //veto lepton
      lNVetoMuon = iNVetoMuon;
      lNVetoElectron = iNVetoElectron;
-
+     lExtraelec_veto = (iNVetoElectron > 0);
+     lExtramuon_veto = (iNVetoMuon > 0);
+     
      //Met related variables
      lMet         = iMet;
      lMetPhi      = iMetPhi;
