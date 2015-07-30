@@ -31,8 +31,12 @@ vector<string> CutList;
 TH1D * histWeights = new TH1D("histWeights","",1,0,0);
 TH1D * histWeights2 = new TH1D("histWeights2","",1,0,0);
 
+TH1D * hWeights [CutN];
 
 TH1D *hHT[CutN];
+TH1D *hHT2[CutN];
+TH1D *hHT3[CutN];
+TH1D *hHT4[CutN];
 //TH1D *hST[CutN];
 //TH1D *h0JetpT[CutN];
 TH1D *hnJet[CutN];
@@ -475,6 +479,12 @@ void SetupHists(int CutNer){
 	//Jets
         hHT[cj] = new TH1D ("HT_"+nCut,"HT "+cutName,400,0.0,4000.0);
         hHT[cj]->Sumw2();
+        hHT2[cj] = new TH1D ("HT2_"+nCut,"HT2 "+cutName,400,0.0,4000.0);
+        hHT2[cj]->Sumw2();
+        hHT3[cj] = new TH1D ("HT3_"+nCut,"HT3 "+cutName,400,0.0,4000.0);
+        hHT3[cj]->Sumw2();
+        hHT4[cj] = new TH1D ("HT4_"+nCut,"HT4 "+cutName,400,0.0,4000.0);
+        hHT4[cj]->Sumw2();
 
 
         //h0JetpT[cj] = new TH1D ("0JetpT_"+nCut,"0JetpT "+cutName,200,0.0,2000.0);
@@ -484,6 +494,8 @@ void SetupHists(int CutNer){
         hnBJet[cj] = new TH1D ("nBJet_"+nCut,"nBJet "+cutName,20,0,20);
         hnBJet[cj]->Sumw2();
 
+        hWeights[cj] = new TH1D ("hWeights_"+nCut,"hWeights "+cutName,20,0,0);
+        hWeights[cj]->Sumw2();
 	
         hInvMassMuTau[cj] = new TH1D ("hInvMassMuTau_"+nCut,"hInvMassMuTau "+cutName,80,0,160);
         hInvMassMuMu[cj] = new TH1D ("hInvMassMuMu_"+nCut,"hInvMassMuMu "+cutName,80,0,160);
@@ -658,13 +670,14 @@ void FillMainHists(int CutIndex, Double_t EvWeight, vector<TLorentzVector>  ElV,
 void FillMainHists(int CutIndex, Double_t EvWeight, vector<TLorentzVector>  ElV, vector<TLorentzVector>  MuV, vector<TLorentzVector>  TauV, vector<TLorentzVector>  JetsV, TLorentzVector  MetV, AC1B &tree_, string & Sel, int  mIndex, int eIndex, int  tIndex){	
 	//void FillMainHists(int CutIndex, Double_t EvWeight, vector<TLorentzVector>  *JetsV){
 if (JetsV.size()>0 )	hnJet[CutIndex]->Fill(JetsV.size(),EvWeight);
-if (MuV.size() >0  && mIndex >-1)      hnMu[CutIndex]->Fill(MuV.size(),EvWeight);
-if (TauV.size() >0 && tIndex >-1 )      hnTau[CutIndex]->Fill(TauV.size(),EvWeight);
-if (ElV.size() >0   && eIndex >-1)     hnEl[CutIndex]->Fill(ElV.size(),EvWeight);
+if (MuV.size() >0  )      hnMu[CutIndex]->Fill(MuV.size(),EvWeight);
+if (TauV.size() >0 )      hnTau[CutIndex]->Fill(TauV.size(),EvWeight);
+if (ElV.size() >0  )     hnEl[CutIndex]->Fill(ElV.size(),EvWeight);
         hnLep[CutIndex]->Fill(ElV.size()+MuV.size()+TauV.size(),EvWeight);
 	hnpu[CutIndex]->Fill(tree_.numpileupinteractions,EvWeight);
 	hnpv[CutIndex]->Fill(tree_.primvertex_count,EvWeight);
 	hnrho[CutIndex]->Fill(tree_.rho,EvWeight);
+	hWeights[CutIndex]->Fill(EvWeight);
 
 	TLorentzVector muV ; muV.SetPtEtaPhiM(tree_.muon_pt[mIndex], tree_.muon_eta[mIndex], tree_.muon_phi[mIndex], muonMass);
 	TLorentzVector tauV; tauV.SetPtEtaPhiM(tree_.tau_pt[tIndex], tree_.tau_eta[tIndex], tree_.tau_phi[tIndex], tauMass);
@@ -851,15 +864,25 @@ if (ElV.size() >0   && eIndex >-1)     hnEl[CutIndex]->Fill(ElV.size(),EvWeight)
     int bjets=0;
     
     if (JetsV.size()>0){
-    for (unsigned int ij=0;ij<JetsV.size();ij++){
+  
+	    if (JetsV.size()>1)
+	hHT2[CutIndex]->Fill(JetsV.at(0).Pt()+JetsV.at(1).Pt(),EvWeight);
+	    if (JetsV.size()>2)
+	hHT3[CutIndex]->Fill(JetsV.at(0).Pt()+JetsV.at(1).Pt()+JetsV.at(2).Pt(),EvWeight);
+	    if (JetsV.size()>3)
+	hHT4[CutIndex]->Fill(JetsV.at(0).Pt()+JetsV.at(1).Pt()+JetsV.at(2).Pt()+JetsV.at(3).Pt(),EvWeight);
+
+	    for (unsigned int ij=0;ij<JetsV.size();ij++){
          sumpT+=JetsV.at(ij).Pt();
          Float_t dPhiJ=dPhiFrom2P( JetsV.at(ij).Px(), JetsV.at(ij).Py(), MetV.Px(),  MetV.Py() );
     
      hdPhiJMET[CutIndex]->Fill(dPhiJ,EvWeight);
 	 
      for (unsigned int ib = 0; ib <tree_.pfjet_count;ib++){
-        if (tree_.pfjet_pt[ib] == JetsV.at(ij).Pt()  &&  tree_.pfjet_btag[ib][8]  > 0.814) bjets++;
-      //  cout<<tree_.pfjet_pt[ib] <<"  "<<JetsV.at(ij).Pt()<<"  "<< tree_.pfjet_btag[ib][6]  <<endl;
+        if (float(tree_.pfjet_pt[ib]) == float(JetsV.at(ij).Pt())  &&  tree_.pfjet_btag[ib][8]  > 0.814) {
+		bjets++;
+	// cout<<tree_.pfjet_pt[ib] <<"  "<<JetsV.at(ij).Pt()<<"  "<< tree_.pfjet_btag[ib][8]  <<endl;
+     	}
      }
       hnBJet[CutIndex]->Fill(bjets,EvWeight);
 	    
