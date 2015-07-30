@@ -87,7 +87,7 @@ int main(int argc, char * argv[]) {
   
   
   // topological cuts
-  const Float_t dRleptonsCut   = cfg.get<Float_t>("dRleptonsCut");
+  const Float_t dRleptonsCutmutau   = cfg.get<Float_t>("dRleptonsCutmutau");
   const Float_t dZetaCut       = cfg.get<Float_t>("dZetaCut");
   const float deltaRTrigMatch = cfg.get<float>("DRTrigMatch");
   const bool oppositeSign    = cfg.get<bool>("oppositeSign");
@@ -124,11 +124,12 @@ int main(int argc, char * argv[]) {
   CutList.push_back("No cut");
   CutList.push_back("$mu$");
   CutList.push_back("$tau_h$");
-  CutList.push_back("$DeltaR<0.5$");
+  CutList.push_back("$DeltaR>0.5$");
   CutList.push_back("Trigger");
   CutList.push_back("2nd lept-Veto");
   CutList.push_back("3rd lept-Veto");
   CutList.push_back("b-Veto ");
+  CutList.push_back("ZMass cut ");
   CutList.push_back("MET $>$ 50");
   CutList.push_back("MET $>$ 100");
   CutList.push_back("dPhi > 1");
@@ -199,6 +200,7 @@ int main(int argc, char * argv[]) {
   int nEvents = 0;
   int selEvents = 0;
 
+  Float_t Weight=0;
   int nTotalFiles = 0;
   int iCut=0;
   double CFCounter[CutNumb];
@@ -216,7 +218,7 @@ int main(int argc, char * argv[]) {
  
   SetupHists(CutNumb); 
   //if (nTotalFiles>50) nTotalFiles=50;
-  //nTotalFiles = 5;
+  //nTotalFiles = 10;
   for (int iF=0; iF<nTotalFiles; ++iF) {
 
     std::string filen;
@@ -236,7 +238,12 @@ int main(int argc, char * argv[]) {
     TH1D * histoInputEvents = NULL;
    
     histoInputEvents = (TH1D*)file_->Get("makeroottree/nEvents");
-
+    //if ((TH1D*)file_->Get("histoWeights")) 
+    // histWeights2= (TH1D*)file_->Get("makeroottree/histoWeights");
+     //histWeights= (TH1D*)file_->Get("makeroottree/histoWeights");
+    // Weight =  histWeights2->GetSumOfWeights();
+     //histWeights->Fill(histWeights2->GetBinContent(1));
+     //if (histWeights2 ==NULL) continue;
     if (histoInputEvents==NULL) continue;
     
     int NE = int(histoInputEvents->GetEntries());
@@ -252,14 +259,13 @@ int main(int argc, char * argv[]) {
     Long64_t numberOfEntries = analysisTree.GetEntries();
     //numberOfEntries = 1000;
     
-    std::cout << "      number of entries in Tree = " << numberOfEntries << std::endl;
-    //numberOfEntries = 10000;
+    std::cout << "      number of entries in Tree = " << numberOfEntries <<" Weight  "<<Weight<< std::endl;
+   // numberOfEntries = 1000;
     for (Long64_t iEntry=0; iEntry<numberOfEntries; iEntry++) { 
      
       analysisTree.GetEntry(iEntry);
       nEvents++;
     
-     
       iCut = 0;
       
       
@@ -268,18 +274,19 @@ int main(int argc, char * argv[]) {
       bool lumi=false;
 
       if (XSec == 1)  isData = true;
-      if (!isData && XSec !=1 )  { weight *=analysisTree.genweight;   lumi=true;} 
-   	
-      //cout<<"weight  "<<weight<<" ana.genweigh "<<analysisTree.genweight<<endl;
+      if (!isData && XSec !=1 )  { 
+	      
+      histWeights->Fill(1,analysisTree.genweight);  
+	     weight *= analysisTree.genweight;
+	     //weight *= histWeights2->GetBinContent(1); 
+	      lumi=true;
+      		} 
 
-      if( !isData && analysisTree.genweight){
-     histWeights->Fill(1,weight); 
-     histWeights2->Fill(weight); 
-      }  
-      else histWeights->Fill(1); 
+    // cout<<"  "<<histWeights->GetBinContent(1)<<"  "<<histWeights2->GetSumOfWeights()<<"  "<<weight<<endl; //(TH1D*)file_->Get("makeroottree/histoWeights");
+   	
 
      
-     if (nEvents%10000==0) 
+     if (nEvents%50000==0) 
 	cout << "      processed " << nEvents << " events" << endl; 
      
          
@@ -352,14 +359,14 @@ int main(int argc, char * argv[]) {
       TauMV.clear();
       MuMV.clear();
       LeptMV.clear();
-	mu_index=-1;
-	tau_index=-1;
-	el_index=-1;
+      mu_index=-1;
+      tau_index=-1;
+      el_index=-1;
       Float_t MET = sqrt ( analysisTree.pfmet_ex*analysisTree.pfmet_ex + analysisTree.pfmet_ey*analysisTree.pfmet_ey);
       
       METV.SetPx(analysisTree.pfmet_ex);	      
       METV.SetPy(analysisTree.pfmet_ey);
- 
+    
  
       for (unsigned int ijj = 0; ijj<analysisTree.pfjet_count; ++ijj) {
 	JetsV.SetPxPyPzE(analysisTree.pfjet_px[ijj], analysisTree.pfjet_py[ijj], analysisTree.pfjet_pz[ijj], analysisTree.pfjet_e[ijj]);
@@ -370,19 +377,19 @@ int main(int argc, char * argv[]) {
       for (unsigned int imm = 0; imm<analysisTree.muon_count; ++imm) {
 	MuV.SetPtEtaPhiM(analysisTree.muon_pt[imm], analysisTree.muon_eta[imm], analysisTree.muon_phi[imm], muonMass);
 	MuMV.push_back(MuV);
-	mu_index=0;
+//	mu_index=0;
       }
 
       for (unsigned int ie = 0; ie<analysisTree.electron_count; ++ie) {
 	ElV.SetPtEtaPhiM(analysisTree.electron_pt[ie], analysisTree.electron_eta[ie], analysisTree.electron_phi[ie], electronMass);
 	ElMV.push_back(ElV);
-	el_index=0;
+//	el_index=0;
       }
    
       for (unsigned int itt = 0; itt<analysisTree.tau_count; ++itt) {
 	TauV.SetPtEtaPhiM(analysisTree.tau_pt[itt], analysisTree.tau_eta[itt], analysisTree.tau_phi[itt], tauMass);
 	TauMV.push_back(TauV);
-	tau_index=0;
+//	tau_index=0;
       }
 
 
@@ -541,11 +548,11 @@ int main(int argc, char * argv[]) {
 */
 
       /////now clear the Mu.El.Jets again to fill them again after cleaning
-      MuMV.clear();
+    /*  MuMV.clear();
       ElMV.clear();
       TauMV.clear();
       LeptMV.clear();
-
+*/
       Float_t isoMuMin = 9999;
       bool mu_iso=false;
       vector<int> muons; muons.clear();
@@ -573,9 +580,9 @@ int main(int argc, char * argv[]) {
 	      mu_index = im;
 	      mu_iso=true;
 	      muons.push_back(im);
-	      LeptMV.push_back(MuV);
 	      MuV.SetPtEtaPhiM(analysisTree.muon_pt[im], analysisTree.muon_eta[im], analysisTree.muon_phi[im], muonMass);
-              MuMV.push_back(MuV);
+	      LeptMV.push_back(MuV);
+            //  MuMV.push_back(MuV);
 	    }
 
 	    if (relIso!=0 && relIso==isoMuMin && im != mu_index) {
@@ -623,7 +630,7 @@ int main(int argc, char * argv[]) {
 	      tau_index = it;
 	      tau.push_back(it);
 	      TauV.SetPtEtaPhiM(analysisTree.tau_pt[it], analysisTree.tau_eta[it], analysisTree.tau_phi[it], tauMass);
-	      TauMV.push_back(TauV);
+//	      TauMV.push_back(TauV);
 
 	    }
 
@@ -649,7 +656,7 @@ int main(int argc, char * argv[]) {
       float dR = deltaR(analysisTree.tau_eta[tau_index],analysisTree.tau_phi[tau_index],
 			    analysisTree.muon_eta[mu_index],analysisTree.muon_phi[mu_index]);
 
-      if (dR<dRleptonsCut) continue;
+      if (dR<dRleptonsCutmutau) continue;
       FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
       iCFCounter[iCut]++;
@@ -682,7 +689,13 @@ int main(int argc, char * argv[]) {
 	bool isMu27 = false;
 	bool isMuTau_MuLegA = false;
 	bool isMuTau_MuLegB = false;
+	bool isMuTau_TauLegA = false;
+	bool isMuTau_TauLegB = false;
         for (unsigned int im=0; im<muons.size(); ++im) {
+	 isMu24 = false;
+	 isMu27 = false;
+	 isMuTau_MuLegA = false;
+	 isMuTau_MuLegB = false;
         unsigned int mIndex  = muons.at(im);
 
 
@@ -739,9 +752,9 @@ int main(int argc, char * argv[]) {
      	if ((!isMu24) && (!isMu27) && (!isMuTau_MuLegA || !isMuTau_MuLegB) ) continue;
 
 
-	bool isMuTau_TauLegA = false;
-	bool isMuTau_TauLegB = false;
         for (unsigned int it=0; it<tau.size(); ++it) {
+	 isMuTau_TauLegA = false;
+	 isMuTau_TauLegB = false;
         unsigned int tIndex  = tau.at(it);
 	for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
 	    if (analysisTree.trigobject_filters[iT][nMuon17Tau20TauLegA] ) { 
@@ -898,19 +911,33 @@ int main(int argc, char * argv[]) {
 
       // selecting muon and electron pair (OS or SS);
       Float_t ptScalarSum = -1;
-      
-
 
 
       bool btagged= false;
-      for (unsigned int ib = 0; ib <analysisTree.pfjet_count;ib++){
-	if (analysisTree.pfjet_pt[ib] > 30 && analysisTree.pfjet_btag[ib][8]  > bTag) btagged = true;
-	//cout<<" pfjet_b "<<ib<<"  "<<analysisTree.pfjet_btag[ib][6]<<endl;
-      }
-         bool JetsPt30C =false;
-      if (analysisTree.pfjet_pt[0] < 30 || analysisTree.pfjet_pt[1] < 30 ||  analysisTree.pfjet_pt[2] < 30) JetsPt30C = true; 
-      if (JetsPt30C || btagged ||  JetsMV.size() >3) continue;
+      bool JetsPt30C =false;
+      
 
+      if (JetsMV.size() >3) continue;
+
+	int xj = -1;
+      
+	for (unsigned int ib = 0; ib <JetsMV.size();++ib){
+	
+		if (JetsMV.at(ib).Pt()>30) JetsPt30C = true;
+		for (unsigned int il = 0; il < analysisTree.pfjet_count; ++il)
+	    	{
+	
+    		if (float(JetsMV.at(ib).Pt()) == float(analysisTree.pfjet_pt[il])) {xj=il;
+	      //cout<<" found Jets "<<analysisTree.pfjet_pt[il]<<"  "<<JetsMV.at(ib).Pt()<<"  "<<ib<<"  "<<xj<<"  "<<il<<endl;
+		        }
+		}
+
+	//     cout<<" Jets "<<analysisTree.pfjet_pt[xj]<<"  "<<JetsMV.at(ib).Pt()<<"  "<<ib<<"  "<<xj<<endl;
+      	      if (analysisTree.pfjet_btag[xj][8]  > bTag) btagged = true;
+      }
+      
+      if (JetsPt30C || btagged ||  JetsMV.size() >3) continue;
+	
       // Jets
       FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
       CFCounter[iCut]+= weight;
@@ -919,6 +946,14 @@ int main(int argc, char * argv[]) {
       // pt Scalar
       // computations of kinematic variables
 
+//cout<<"  "<<mu_index<<"  "<<tau_index<<"   "<<MuMV.at(mu_index).M()<<"  "<<TauMV.at(tau_index).M()<<endl;
+
+      TLorentzVector diL = MuMV.at(mu_index) + TauMV.at(tau_index);
+      if ( diL.M() <80 && diL.M()>40 ) continue;
+      FillMainHists(iCut, weight, ElMV, MuMV, TauMV,JetsMV,METV, analysisTree, SelectionSign, mu_index,el_index,tau_index);
+      CFCounter[iCut]+= weight;
+      iCFCounter[iCut]++;
+      iCut++;
 
       Float_t ETmiss = TMath::Sqrt(analysisTree.pfmet_ex*analysisTree.pfmet_ex + analysisTree.pfmet_ey*analysisTree.pfmet_ey);
 
@@ -962,27 +997,40 @@ int main(int argc, char * argv[]) {
       //      std::cout << std::endl;
       
       selEvents++;
-      
+      //histWeights->SetBinContent(1,Weight+ histWeights->GetBinContent(1));  
     } // end of file processing (loop over events in one file)
+	//histWeights->Fill(Weight);
+  
+    cout<< " Weight  "<<Weight<<  "   histWeigh Sum " <<histWeights->GetBinContent(1)<<"  "<<histWeights2->GetSumOfWeights()<<"   "<<" Events "<<inputEventsH->GetSum()<<"  "<<inputEventsH->GetSumOfWeights()<<endl;
     nFiles++;
     delete _tree;
     file_->Close();
     delete file_;
   }
-
-
-
-cout<< " histWeigh Sum " <<histWeights->GetSumOfWeights()<<"   "<<histWeights->GetSum()<<" Events "<<inputEventsH->GetSum()<<"  "<<inputEventsH->GetSumOfWeights()<<endl;
+cout<<"done"<<endl;
 	
-cout<<" Will use weight  "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;
+cout<<" Will use weight  "<<histWeights->GetSumOfWeights()<<" Norm Factor "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;
+/*
+ for (int i=0;i<CutNumb;++i){
+    CFCounter[i] *= Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));
+    if (iCFCounter[i] <0.2) statUnc[i] =0;
+    else statUnc[i] = CFCounter[i]/sqrt(iCFCounter[i]);
+  }
+*/
 
 for (int i=0;i<CutNumb;++i){
  if (!isData) { cout << " i "<<i<<" "<<iCFCounter[i]<<"  "<<XSec*Lumi/( histWeights->GetSumOfWeights())<<endl;  
-	 CFCounter[i] = iCFCounter[i]*Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));}
+	 CFCounter[i] *= Float_t(XSec*Lumi/( histWeights->GetSumOfWeights()));}
     if (iCFCounter[i] <0.2) statUnc[i] =0;
     //else statUnc[i] = CFCounter[i]/sqrt(iCFCounter[i]);
     else statUnc[i] = sqrt(CFCounter[i]);
   }
+  //ofstream tfile1;
+  //TString textfile_Con = "CMG_cutflow_Con_Mu_"+outname+".txt";
+  //tfile1.open(textfile_Con);
+  //tfile1 << "########################################" << endl;
+  //tfile1 << "RCS:" << endl;
+
 
 
   //write out cutflow
@@ -999,16 +1047,11 @@ for (int i=0;i<CutNumb;++i){
     {
       tfile << CutList[ci]<<"\t & \t"
 	    << CFCounter[ci]  <<"\t & \t"<< statUnc[ci] <<"\t & \t"<< iCFCounter[ci] << endl;
-      CutFlow->SetBinContent(1+ci,iCFCounter[ci]);
+       CutFlow->SetBinContent(1+ci,CFCounter[ci]);
+      //CutFlow->SetBinContent(1+ci,);
     }
 
   tfile.close();
-  //ofstream tfile1;
-  //TString textfile_Con = "CMG_cutflow_Con_Mu_"+outname+".txt";
-  //tfile1.open(textfile_Con);
-  //tfile1 << "########################################" << endl;
-  //tfile1 << "RCS:" << endl;
-
 
 
 
@@ -1024,6 +1067,7 @@ for (int i=0;i<CutNumb;++i){
   hxsec->Write();
   inputEventsH->Write();
   histWeights->Write();
+  //histWeights2->Write();
   
   CutFlow->Write();
 
