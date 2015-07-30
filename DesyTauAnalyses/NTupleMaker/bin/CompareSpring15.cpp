@@ -76,6 +76,8 @@ int main(int argc, char * argv[]) {
   
   using namespace std;
 
+  if(argc < 2) return -1;  
+
   TChain* tref = new TChain("TauCheck");
   TChain* ttest = new TChain("TauCheck");
   
@@ -90,14 +92,14 @@ int main(int argc, char * argv[]) {
   
   tref->Add(argv[1]);
   if(!tref) return -3;
-
+  
   TFile* ftest = new TFile(argv[2], "read");
   if(!ftest->FindObjectAny("TauCheck")) return -2;
   ftest->Close();
   
   ttest->Add(argv[2]);
   if(!ttest) return -3;
-
+  
   Spring15Tree* ref = new Spring15Tree(tref);
   std::vector<std::pair<int, int> > ref_entry;  
   load_entries(*ref, ref_entry);
@@ -119,21 +121,22 @@ int main(int argc, char * argv[]) {
   std::vector<std::pair<int, int> > test_missing; 
 
   std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > bad_events;
+  std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > bad_leptons;
   std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > bad_met;
   std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > bad_mvamet;
-  std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > bad_jets;  
-  //std::vector<std::pair<int, std::pair< int, int> > > good;  
-
-  bool check_mvamet = false;
+  std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > bad_jets;
   
+  std::vector<std::pair< std::pair< int, int>, std::pair< int, int> > > good_events;  
 
+  bool check_mvamet = true;
+  
   Float_t ref_min_pt_1 = 9999999999.;
   Float_t ref_min_pt_2 = 9999999999.;
 
   Float_t test_min_pt_1 = 9999999999.;
   Float_t test_min_pt_2 = 9999999999.;  
 
-  /*for( ; iref < ref_entry.size(); iref++){
+  for( ; iref < ref_entry.size(); iref++){
     ref->GetEntry(ref_entry.at(iref).first);
 
     if(ref->pt_1 < ref_min_pt_1)
@@ -151,7 +154,7 @@ int main(int argc, char * argv[]) {
 
     if(test->pt_2 < test_min_pt_2)
       test_min_pt_2 = test->pt_2;	
-  }*/
+  }
 
   std::cout<<"ref: "<<ref_min_pt_1<<" "<<ref_min_pt_2<<std::endl;
   std::cout<<"test: "<<test_min_pt_1<<" "<<test_min_pt_2<<std::endl;  
@@ -179,14 +182,19 @@ int main(int argc, char * argv[]) {
       continue;
     
     // lets compare!
+    bool isGood = true;
+    
     ref->GetEntry(ref_entry.at(iref).first);
     test->GetEntry(test_entry.at(itest).first);
-
+    
     // compare leptons
     if( !areEqual(ref->pt_1, test->pt_1) ||
 	!areEqual(ref->iso_1, test->iso_1) ||
 	!areEqual(ref->pt_2, test->pt_2) ||
 	!areEqual(ref->iso_2, test->iso_2)){
+
+      isGood = false;
+      
       std::cout<<"Event "<<ref_entry.at(iref).second<<":"<<std::endl;
       std::cout<<"    lep1: pt="<<ref->pt_1<<" "<<test->pt_1<<" eta="<<ref->eta_1<<" "<<test->eta_1
 	       <<" phi="<<ref->phi_1<<" "<<test->phi_1<<" iso="<<ref->iso_1<<" "<<test->iso_1
@@ -203,17 +211,19 @@ int main(int argc, char * argv[]) {
       std::cout<<"    deltaR(lep1, lep2)="<<deltaR(ref->eta_1, ref->phi_1, ref->eta_2, ref->phi_2)
 	       <<" "<<deltaR(test->eta_1, test->phi_1, test->eta_2, test->phi_2)<<std::endl;
 
-      bad_events.push_back(std::make_pair( ref_entry.at(iref), test_entry.at(itest)));
+      bad_leptons.push_back(std::make_pair( ref_entry.at(iref), test_entry.at(itest)));
     }
 
     
-    // compare pfme
+    // compare pfmet
     if( !areEqual(ref->met, test->met) ||
 	!areEqual(ref->metphi, test->metphi) ||
 	!areEqual(ref->metcov00, test->metcov00) ||
 	!areEqual(ref->metcov01, test->metcov01) ||
 	!areEqual(ref->metcov10, test->metcov10) ||
 	!areEqual(ref->metcov11, test->metcov11)) {
+      isGood = false;
+      
       std::cout<<"Event "<<ref_entry.at(iref).second<<":"<<std::endl;
       std::cout<<"    met: |met|="<<ref->met<<" "<<test->met<<" phi="<<ref->metphi<<" "<<test->metphi
 	       <<" cov00="<<ref->metcov00<<" "<<test->metcov00<<" cov01="<<ref->metcov01<<" "<<test->metcov01
@@ -231,6 +241,8 @@ int main(int argc, char * argv[]) {
 	 !areEqual(ref->mvacov01, test->mvacov01) ||
 	 !areEqual(ref->mvacov10, test->mvacov10) ||
 	 !areEqual(ref->mvacov11, test->mvacov11))) {
+      isGood = false;
+      
       std::cout<<"Event "<<ref_entry.at(iref).second<<":"<<std::endl;
       std::cout<<"    mvamet: |met|="<<ref->mvamet<<" "<<test->mvamet<<" phi="<<ref->mvametphi<<" "<<test->mvametphi
 	       <<" cov00="<<ref->mvacov00<<" "<<test->mvacov00<<" cov01="<<ref->mvacov01<<" "<<test->mvacov01
@@ -239,6 +251,11 @@ int main(int argc, char * argv[]) {
       
       bad_mvamet.push_back(std::make_pair( ref_entry.at(iref), test_entry.at(itest)));
     }
+
+    if(isGood)
+      good_events.push_back(std::make_pair( ref_entry.at(iref), test_entry.at(itest)));
+    else
+      bad_events.push_back(std::make_pair( ref_entry.at(iref), test_entry.at(itest)));
     
     // compare jets
     /*if (!areEqual(ref->njets, test->njets) ||
@@ -246,7 +263,7 @@ int main(int argc, char * argv[]) {
 	!areEqual(ref->nbtag, test->nbtag) ||
 	!areEqual(ref->jpt_1, test->jpt_1) ||
 	!areEqual(ref->jpt_2, test->jpt_2)) {*/
-    if (ref->njets > test->njets){
+    /*if (ref->njets > test->njets){
       std::cout<<"Event "<<ref_entry.at(iref).second<<":"<<std::endl;
       std::cout<<"    njets = "<<ref->njets<<" "<<test->njets<<" njetspt20="<<ref->njetspt20<<" "<<test->njetspt20
 	       <<" nbtag="<<ref->nbtag<<" "<<test->nbtag<<std::endl;
@@ -302,9 +319,9 @@ int main(int argc, char * argv[]) {
     std::cout<<ref_missing.at(i).second<<", ";
   std::cout<<std::endl<<std::endl;
 
-  std::cout<<bad_jets.size()<<" events show differences:"<<std::endl;
-  for( UInt_t i = 0; i < bad_jets.size(); i++)
-    std::cout<<bad_jets.at(i).second.second<<", ";
+  std::cout<<bad_events.size()<<" events show differences:"<<std::endl;
+  for( UInt_t i = 0; i < bad_events.size(); i++)
+    std::cout<<bad_events.at(i).second.second<<", ";
   std::cout<<std::endl<<std::endl;
     
   return 0;
