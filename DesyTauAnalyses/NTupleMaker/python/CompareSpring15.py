@@ -1,4 +1,5 @@
 from math import fabs, log10, sin, cos, acos
+from ROOT import TFile, TChain
 
 def areEqual( x1, x2):
     if( x1 == 0. or x2 == 0.):
@@ -34,3 +35,19 @@ def deltaR( Eta1, Phi1,	Eta2, Phi2):
     dEta = Eta1 - Eta2
 
     return sqrt(dPhi*dPhi+dEta*dEta)
+
+
+class CompareSpring15:
+    def __init__(self, ref, test):
+        self.cref=TChain(ref.split(":")[1])
+        self.ctest=TChain(test.split(":")[1])
+
+        self.cref.Add(ref.split(":")[0])
+        self.ctest.Add(test.split(":")[0])
+        
+    def Compare(self):
+        print self.cref.GetEntries(), self.ctest.GetEntries()
+        
+
+
+        
