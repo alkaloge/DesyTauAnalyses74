@@ -219,6 +219,34 @@ bool puJetIdLoose(float eta, float mva) {
   return id;
 }
 
+bool electronMvaIdWP80(float pt, float eta, float mva) {
+
+  float absEta = fabs(eta);
+  bool passed = false;
+  if (absEta<0.8) {
+    if (pt<10) 
+      passed = mva > -0.253;
+    else 
+      passed = mva > 0.965;
+  }
+  else if (absEta<1.479) {
+    if (pt<10)
+      passed = mva > 0.081;
+    else
+      passed = mva > 0.917;
+  }
+  else {
+    if (pt<10)
+      passed = mva > -0.081;
+    else
+      passed = mva > 0.683;
+  }
+
+  return passed;
+
+}
+
+
 #define pi 3.14159265358979312
 #define d2r 1.74532925199432955e-02
 #define r2d 57.2957795130823229
@@ -257,6 +285,7 @@ int main(int argc, char * argv[]) {
   const float ptTauLowCut    = cfg.get<float>("ptTauLowCut");
   const float ptTauHighCut   = cfg.get<float>("ptTauHighCut");  
   const float etaTauCut      = cfg.get<float>("etaTauCut");
+  const float dzTauCut      = cfg.get<float>("dzTauCut");
   const bool applyTauId      = cfg.get<bool>("ApplyTauId");
 
   // pair selection
@@ -429,9 +458,10 @@ int main(int argc, char * argv[]) {
       if (debug)
 	fileOutput << "# electrons = " << analysisTree.electron_count << std::endl;
       for (unsigned int ie = 0; ie<analysisTree.electron_count; ++ie) {
-	bool electronMvaId = electronMvaIdTight(analysisTree.electron_superclusterEta[ie],
-						analysisTree.electron_mva_id_nontrigPhys14[ie]);
-	if (checkOverlap)
+	bool electronMvaId = electronMvaIdWP80(analysisTree.electron_pt[ie],
+					       analysisTree.electron_superclusterEta[ie],
+					       analysisTree.electron_mva_id_nontrigPhys14[ie]);
+	if (debug)
 	  fileOutput << "  " << ie 
 		     << " pt = " << analysisTree.electron_pt[ie] 
 		     << " eta = " << analysisTree.electron_eta[ie]
@@ -446,7 +476,7 @@ int main(int argc, char * argv[]) {
 	if (fabs(analysisTree.electron_dz[ie])>dzElectronCut) continue;
 	if (!electronMvaId&&applyElectronId) continue;
 	if (!analysisTree.electron_pass_conversion[ie]&&applyElectronId) continue;
-	if (analysisTree.electron_nmissinginnerhits[ie]!=0&&applyElectronId) continue;
+	if (analysisTree.electron_nmissinginnerhits[ie]>1&&applyElectronId) continue;
 	electrons.push_back(ie);
       }
 
@@ -464,16 +494,16 @@ int main(int argc, char * argv[]) {
 		     << " tau_vertexz = " << analysisTree.tau_vertexz[it] <<std::endl;
 	if (analysisTree.tau_pt[it]<ptTauLowCut) continue;
 	if (fabs(analysisTree.tau_eta[it])>etaTauCut) continue;
+	if (fabs(fabs(analysisTree.tau_charge[it])-1)>0.001) continue;
+	if (fabs(analysisTree.tau_leadchargedhadrcand_dz[it])>dzTauCut) continue;
 	if (applyTauId &&
-	    analysisTree.tau_decayModeFinding[it] < 0.5 &&
 	    analysisTree.tau_decayModeFindingNewDMs[it] < 0.5) continue;
 	
 	float ctgTheta = analysisTree.tau_pz[it] / sqrt(analysisTree.tau_px[it]*analysisTree.tau_px[it] + analysisTree.tau_py[it]*analysisTree.tau_py[it]);
 	float zImpact = analysisTree.tau_vertexz[it] + 130. * ctgTheta;
 
 	if ( zImpact > -1.5 && zImpact < 0.5) continue;
-	
-	if (analysisTree.tau_vertexz[it]!=analysisTree.primvertex_z) continue;
+
 	taus.push_back(it);
       }
 
@@ -485,7 +515,7 @@ int main(int argc, char * argv[]) {
       if (electrons.size()==0) continue;
       if (taus.size()==0) continue;
 
-      // selecting muon and tau pair (OS or SS);
+      // selecting electron and tau pair (OS or SS);
       int electronIndex = -1;
       int tauIndex = -1;
       
@@ -516,9 +546,7 @@ int main(int argc, char * argv[]) {
 	  fileOutput << "Electron " << eIndex << " -> relIso = "<<relIsoEle<<" absIso = "<<absIsoEle<<std::endl;
 
 	for (unsigned int iT=0; iT<analysisTree.trigobject_count; ++iT) {
-	  /*if (analysisTree.trigobject_isElectron[iT] ||
-	      !analysisTree.trigobject_isMuon[iT] ||
-	      analysisTree.trigobject_isTau[iT]) continue;*/
+	  //if (!analysisTree.trigobject_isElectron[iT]) continue;
 	  
 	  float dRtrig = deltaR(analysisTree.electron_eta[eIndex],analysisTree.electron_phi[eIndex],
 				analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
@@ -567,15 +595,15 @@ int main(int argc, char * argv[]) {
 		fileOutput<<" trigObj "<<iT<<" both e and tau"<<std::endl;
 	    }
 	    
-	    if (analysisTree.trigobject_isElectron[iT] ||
+	    /*if (analysisTree.trigobject_isElectron[iT] ||
 		analysisTree.trigobject_isMuon[iT] ||
-		!analysisTree.trigobject_isTau[iT]) continue;
+		!analysisTree.trigobject_isTau[iT]) continue;*/
 	    
 	    float dRtrig = deltaR(analysisTree.tau_eta[tIndex],analysisTree.tau_phi[tIndex],
 				  analysisTree.trigobject_eta[iT],analysisTree.trigobject_phi[iT]);
 	    
 	    if (dRtrig < deltaRTrigMatch){
-	      if (analysisTree.trigobject_filters[iT][7] && analysisTree.trigobject_filters[iT][8]){
+	      if (analysisTree.trigobject_filters[iT][14] && analysisTree.trigobject_filters[iT][8]){
 		isTrigTau = true;
 		if (dRtrig < dRtrig_min)
 		  dRtrig_min = dRtrig;
@@ -670,9 +698,9 @@ int main(int argc, char * argv[]) {
       otree->pt_2 = analysisTree.tau_pt[tauIndex];
       otree->eta_2 = analysisTree.tau_eta[tauIndex];
       otree->phi_2 = analysisTree.tau_phi[tauIndex];
-      otree->q_2 = -1;
-      if (analysisTree.tau_charge[tauIndex]>0)
-	otree->q_2 = 1;
+      otree->q_2 = analysisTree.tau_charge[tauIndex];
+      //if (analysisTree.tau_charge[tauIndex]>0)
+      //otree->q_2 = 1;
       otree->mva_2 = log(0);
       otree->d0_2 = analysisTree.tau_dxy[tauIndex];
       otree->dZ_2 = analysisTree.tau_dz[tauIndex];
